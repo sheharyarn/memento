@@ -13,6 +13,32 @@ def Memento.Query.Translate do
 
 
   @doc """
+  Translate a query into erlang match_spec by replacing
+  values from previously generated map
+  """
+  def translate(map, list) when is_list(list) do
+    Enum.map(list, &translate(map, &1))
+  end
+
+  def translate(map, atom) when is_atom(atom) do
+    case map[atom] do
+      nil -> atom
+      value -> value
+    end
+  end
+
+  def translate(map, {operation, arg1, arg2}) do
+    {operation, translate(map, arg1), translate(map, arg2)}
+  end
+
+  def translate(_map, term) do
+    term
+  end
+
+
+
+
+  @doc """
   Builds the base of the `match_spec`, to be later used
   in `select` calls. Should ideally be called once
   during compile-time.
