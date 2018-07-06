@@ -1,28 +1,64 @@
-defmodule Memento.MixProject do
+defmodule Memento.Mixfile do
   use Mix.Project
+
+  @app     :memento
+  @name    "Memento"
+  @version "0.0.1"
+  @github  "https://github.com/sheharyarn/#{@app}"
+  @author  "Sheharyar Naseer"
+  @license "MIT"
+
 
   def project do
     [
-      app: :memento,
-      version: "0.1.0",
-      elixir: "~> 1.3",
-      start_permanent: Mix.env() == :prod,
-      deps: deps()
+      # Project
+      app:          @app,
+      version:      @version,
+      elixir:       "~> 1.3",
+      description:  description(),
+      package:      package(),
+      deps:         deps(),
+
+      # ExDoc
+      name:         @name,
+      source_url:   @github,
+      homepage_url: @github,
+      docs: [
+        main:       @name,
+        canonical:  "https://hexdocs.pm/#{@app}",
+        extras:     ["README.md"]
+      ]
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
+
   def application do
-    [
-      extra_applications: [:logger]
-    ]
+    [extra_applications: [:logger]]
   end
 
-  # Run "mix help deps" to learn about dependencies.
+
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:amnesia, "~> 0.2.0"},
+      {:ex_doc,  ">= 0.0.0", only: :dev},
     ]
   end
+
+
+  defp description do
+    "Mnesia Simplified"
+  end
+
+
+  defp package do
+    [
+      name: @app,
+      maintainers: [@author],
+      licenses: [@license],
+      files: ~w(mix.exs lib README.md),
+      links: %{"Github" => @github}
+    ]
+  end
+
 end
+
