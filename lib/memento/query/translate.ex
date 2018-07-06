@@ -13,6 +13,28 @@ def Memento.Query.Translate do
 
 
   @doc """
+  Builds the base of the `match_spec`, to be later used
+  in `select` calls. Should ideally be called once
+  during compile-time.
+
+  Takes attribute keywords or list `[:a, :b, :c, ...]`
+  and converts them into `{module, :$1, :$2, ...}`
+  """
+  def build_base(module, attributes) do
+    attributes =
+      attributes
+      |> Enum.count
+      |> Range.new(1)
+      |> Enum.reverse
+      |> Enum.map(&:"$#{&1}")
+
+    List.to_tuple([ module | attributes ])
+  end
+
+
+
+
+  @doc """
   Builds a map with attributes and their corresponding
   keys, to later help with quickly replacing attributes
   with their ids. Should ideally be called once during
