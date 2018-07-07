@@ -4,12 +4,23 @@ defmodule Memento.Query do
   """
 
 
+
+  # Public API
+  # ----------
+
+
   @doc "Define functions and attributes for making queries"
   defmacro __using__(_opts) do
     quote do
       @query_map    Memento.Query.Translate.build_map(@attributes)
       @query_base   Memento.Query.Translate.build_base(__MODULE__, @attributes)
       @query_result [:"$_"]
+
+
+      def query(pattern) do
+        Amnesia.transaction(do: Memento.Query.query(pattern))
+      end
+
     end
   end
 
@@ -17,12 +28,14 @@ defmodule Memento.Query do
 
   @doc "Run a Query"
   defmacro query(pattern) do
-    query = Memento.Query.build(@query_map, unquote(pattern))
+    quote do
+      query = Memento.Query.build(@query_map, unquote(pattern))
 
-    [{ @query_base, query, @query_result }]
-    |> __MODULE__.select
-    |> Amnesia.Selection.coerce(__MODULE__)
-    |> Amnesia.Selection.values
+      [{ @query_base, query, @query_result }]
+      |> __MODULE__.select
+      |> Amnesia.Selection.coerce(__MODULE__)
+      |> Amnesia.Selection.values
+    end
   end
 
 

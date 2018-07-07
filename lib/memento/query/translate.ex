@@ -1,4 +1,4 @@
-def Memento.Query.Translate do
+defmodule Memento.Query.Translate do
   @moduledoc """
   Helper module to convert Memento queries into Erlang
   match_spec
@@ -6,10 +6,8 @@ def Memento.Query.Translate do
 
 
 
-
   # Public API
   # ----------
-
 
 
   @doc """
