@@ -1,4 +1,4 @@
-def Memento.Query do
+defmodule Memento.Query do
   @moduledoc """
   Module to help build Mnesia Queries
   """
@@ -11,6 +11,29 @@ def Memento.Query do
       @query_base   Memento.Query.Translate.build_base(__MODULE__, @attributes)
       @query_result [:"$_"]
     end
+  end
+
+
+
+  @doc "Run a Query"
+  defmacro query(pattern) do
+    query = Memento.Query.build(@query_map, unquote(pattern))
+
+    [{ @query_base, query, @query_result }]
+    |> __MODULE__.select
+    |> Amnesia.Selection.coerce(__MODULE__)
+    |> Amnesia.Selection.values
+  end
+
+
+
+  @doc "Build a query"
+  def build(query_map, pattern) when is_list(pattern) do
+    Memento.Query.Translate.translate(query_map, pattern)
+  end
+
+  def build(query_map, pattern) when is_tuple(pattern) do
+    build(query_map, [pattern])
   end
 
 end
