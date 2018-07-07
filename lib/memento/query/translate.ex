@@ -26,7 +26,11 @@ defmodule Memento.Query.Translate do
   end
 
   def translate(map, {operation, arg1, arg2}) do
-    {operation, translate(map, arg1), translate(map, arg2)}
+    {
+      translate_operation(operation),
+      translate(map, arg1),
+      translate(map, arg2)
+    }
   end
 
   def translate(_map, term) do
@@ -69,7 +73,7 @@ defmodule Memento.Query.Translate do
   """
   def build_map(attributes) do
     attributes
-    |> Enum.reduce({%{}, 1}, &translator/2)
+    |> Enum.reduce({%{}, 1}, &build_reducer/2)
     |> elem(0)
   end
 
@@ -83,12 +87,19 @@ defmodule Memento.Query.Translate do
 
   # Helper function for building translation map.
   # Used in the reduce call inside `build_map`
-  defp translator({attr, nil}, {map, position}) do
+  defp build_reducer({attr, nil}, {map, position}) do
     {
       Map.put(map, attr, :"$#{position}"),
       position + 1
     }
   end
+
+
+  # Translates Operations into those defined by the
+  # Erlang match spec
+  defp translate_operation(:or),  do: :orelse
+  defp translate_operation(:and), do: :andalso
+  defp translate_operation(term), do: term
 
 
 end
