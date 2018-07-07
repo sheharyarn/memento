@@ -40,7 +40,7 @@ defmodule Memento.Mixfile do
   defp deps do
     [
       {:amnesia, "~> 0.2.0"},
-      {:ex_doc,  ">= 0.0.0", only: :dev},
+      {:ex_doc,  "~> 0.18.0", only: :dev},
     ]
   end
 
