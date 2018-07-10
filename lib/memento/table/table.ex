@@ -53,16 +53,22 @@ defmodule Memento.Table do
       @table_type  Keyword.get(opts, :type, :set)
       @table_opts  Keyword.drop(opts, [:attributes, :type])
 
+      @query_map  Memento.Query.Translate.build_map(@table_attrs)
+      @query_base Memento.Query.Translate.build_base(__MODULE__, @table_attrs)
+
       @info %{
         meta: Memento.Table,
         table_attributes: @table_attrs,
         table_type: @table_type,
         table_opts: @table_opts,
+        query_base: @query_base,
+        query_map: @query_map,
       }
-      def __info__, do: @info
 
+      def __info__, do: @info
     end
   end
+
 
 
 

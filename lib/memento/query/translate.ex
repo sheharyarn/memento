@@ -68,8 +68,8 @@ defmodule Memento.Query.Translate do
   with their ids. Should ideally be called once during
   compile-time.
 
-  Takes attribute keywords `[a: nil, b: nil, ...]` them
-  into `%{a: :$1, b: :$2, ...}`
+  Takes attribute keywords `[a: nil, b: nil, ...]` or
+  list, and converts them into `%{a: :$1, b: :$2, ...}`
   """
   def build_map(attributes) do
     attributes
@@ -87,11 +87,16 @@ defmodule Memento.Query.Translate do
 
   # Helper function for building translation map.
   # Used in the reduce call inside `build_map`
-  defp build_reducer({attr, nil}, {map, position}) do
+  defp build_reducer(attr, {map, position}) when is_atom(attr) do
     {
       Map.put(map, attr, :"$#{position}"),
       position + 1
     }
+  end
+
+  # TODO: Delete this when Amnesia is removed
+  defp build_reducer({attr, nil}, {map, position}) do
+    build_reducer(attr, {map, position})
   end
 
 
