@@ -53,6 +53,9 @@ defmodule Memento.Table do
   # ---------------
 
 
+  @allowed_types [:set, :ordered_set, :bag]
+
+
   defp validate_options!(opts) do
     error =
       cond do
@@ -67,6 +70,9 @@ defmodule Memento.Table do
 
         !Enum.all?(opts[:attributes], &is_atom/1) ->
           "Invalid attributes specified"
+
+        !Enum.member?(@allowed_types, Keyword.get(opts, :type, :set)) ->
+          "Invalid table type specified"
 
         true ->
           nil

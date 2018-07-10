@@ -42,6 +42,17 @@ defmodule Memento.Tests.Table do
         end
       end)
     end
+
+
+    test "raises error for invalid table type" do
+      assert_raise(Memento.Error, ~r/invalid.*type/i, fn ->
+        defmodule MetaApp.InvalidType do
+          use Memento.Table,
+            attributes: [:id, :username],
+            type: :invalid
+        end
+      end)
+    end
   end
 
 
