@@ -57,26 +57,38 @@ defmodule Memento.Table do
 
 
   defp validate_options!(opts) do
-    error =
-      cond do
-        !Keyword.keyword?(opts) ->
-          "Invalid options specified"
+    error = cond do
+      !Keyword.keyword?(opts) ->
+        "Invalid options specified"
 
-        opts[:attributes] == nil ->
-          "Table attributes not specified"
+      true ->
+        attrs = Keyword.get(opts, :attributes)
+        type  = Keyword.get(opts, :type, :set)
+        index = Keyword.get(opts, :index, [])
 
-        !is_list(opts[:attributes]) ->
-          "Invalid attributes specified"
+        cond do
+          attrs == nil ->
+            "Table attributes not specified"
 
-        !Enum.all?(opts[:attributes], &is_atom/1) ->
-          "Invalid attributes specified"
+          !is_list(attrs) ->
+            "Invalid attributes specified"
 
-        !Enum.member?(@allowed_types, Keyword.get(opts, :type, :set)) ->
-          "Invalid table type specified"
+          !Enum.all?(attrs, &is_atom/1) ->
+            "Invalid attributes specified"
 
-        true ->
-          nil
+          !is_list(index) ->
+            "Invalid index list specified"
+
+          !Enum.all?(index, &is_atom/1) ->
+            "Invalid index list specified"
+
+          !Enum.member?(@allowed_types, type) ->
+            "Invalid table type specified"
+
+          true ->
+            nil
       end
+    end
 
     case error do
       nil   -> :ok

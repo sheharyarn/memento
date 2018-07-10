@@ -20,6 +20,15 @@ defmodule Memento.Tests.Table do
     end
 
 
+    test "raises error for invalid options" do
+      assert_raise(Memento.Error, ~r/invalid options/i, fn ->
+        defmodule MetaApp.InvalidOptions do
+          use Memento.Table, :invalid
+        end
+      end)
+    end
+
+
     test "raises error if attributes are not specifed" do
       assert_raise(Memento.Error, ~r/attributes not specified/i, fn ->
         defmodule MetaApp.NoAttributes do
