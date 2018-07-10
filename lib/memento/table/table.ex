@@ -39,5 +39,44 @@ defmodule Memento.Table do
   end
   ```
   """
+
+
+
+  @doc false
+  defmacro __using__(opts) do
+    validate_options!(opts)
+  end
+
+
+
+  # Private Helpers
+  # ---------------
+
+
+  defp validate_options!(opts) do
+    error =
+      cond do
+        !Keyword.keyword?(opts) ->
+          "Invalid options specified"
+
+        opts[:attributes] == nil ->
+          "Table attributes not specified"
+
+        !is_list(opts[:attributes]) ->
+          "Invalid attributes specified"
+
+        !Enum.all?(opts[:attributes], &is_atom/1) ->
+          "Invalid attributes specified"
+
+        true ->
+          nil
+      end
+
+    case error do
+      nil   -> :ok
+      error -> raise Memento.Error, message: error
+    end
+  end
+
 end
 
