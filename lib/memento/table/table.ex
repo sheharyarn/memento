@@ -42,6 +42,26 @@ defmodule Memento.Table do
 
 
 
+
+
+  # Type Definitions
+  # ----------------
+
+
+  @typedoc "A Memento.Table module"
+  @type table :: module()
+
+  @typedoc "A Memento.Table data struct"
+  @type data :: map()
+
+
+
+
+
+  # Use Macro
+  # ---------
+
+
   @doc false
   defmacro __using__(opts) do
     validate_options!(opts)
@@ -65,6 +85,7 @@ defmodule Memento.Table do
         query_map: @query_map,
       }
 
+      defstruct [{:__meta__, Memento.Table} | @table_attrs]
       def __info__, do: @info
     end
   end
@@ -79,6 +100,7 @@ defmodule Memento.Table do
   @allowed_types [:set, :ordered_set, :bag]
 
 
+  # Validate options given to __using__
   defp validate_options!(opts) do
     error = cond do
       !Keyword.keyword?(opts) ->
