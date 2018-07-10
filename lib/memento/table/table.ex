@@ -45,6 +45,23 @@ defmodule Memento.Table do
   @doc false
   defmacro __using__(opts) do
     validate_options!(opts)
+
+    quote do
+      opts = unquote(opts)
+
+      @table_attrs Keyword.get(opts, :attributes)
+      @table_type  Keyword.get(opts, :type, :set)
+      @table_opts  Keyword.drop(opts, [:attributes, :type])
+
+      @info %{
+        meta: Memento.Table,
+        table_attributes: @table_attrs,
+        table_type: @table_type,
+        table_opts: @table_opts,
+      }
+      def __info__, do: @info
+
+    end
   end
 
 
