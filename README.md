@@ -15,8 +15,20 @@ end
 
 ## Roadmap
 
- - Mnesia implementation
- - Memento.Query integration
+ - [ ] Memento.Table
+    - [ ] Create/Delete helpers
+    - [ ] Info/Debugging Helpers
+    - [ ] Ecto-like DSL
+    - [ ] Migration Support
+ - [x] Memento.Query
+    - [ ] Integration with Memento.Table
+    - [ ] `match`
+    - [ ] `select`
+ - [ ] Memento.Transaction
+    - [ ] Lock Helpers
+ - [ ] Memento.Collection
+    - [ ] Easy Helpers
+    - [ ] Custom DSL
 
 
 ## License
