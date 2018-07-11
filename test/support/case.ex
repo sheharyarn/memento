@@ -9,6 +9,7 @@ defmodule Memento.Support.Case do
   using do
     quote do
       alias Memento.Support
+      alias Memento.Support.Definitions.Tables
     end
   end
 

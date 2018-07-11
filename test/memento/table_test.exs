@@ -68,7 +68,22 @@ defmodule Memento.Tests.Table do
 
 
   describe "#create" do
+    @table Tables.User
     test "creates an mnesia table from memento definition" do
+      assert :ok = Memento.Table.create(@table)
+    end
+
+
+    test "returns :error if the table already exists" do
+      assert {:atomic, :ok} = :mnesia.create_table(@table, [])
+      assert {:error, {:already_exists, _}} = Memento.Table.create(@table)
+    end
+
+
+    test "raises error if module is not a memento table" do
+      assert_raise(Memento.Error, ~r/not a memento table/i, fn ->
+        Memento.Table.create(RandomModule)
+      end)
     end
   end
 
