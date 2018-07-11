@@ -13,8 +13,12 @@ defmodule Memento.Support.Case do
   end
 
 
-  setup _tags do
-    Memento.Support.Mnesia.reset
+  setup tags do
+    unless tags[:async] do
+      Memento.Support.Mnesia.reset
+    end
+
+    :ok
   end
 
 end

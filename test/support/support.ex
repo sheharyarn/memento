@@ -18,8 +18,6 @@ defmodule Memento.Support do
         :mnesia.delete_schema([node()])
         Application.start(:mnesia)
       end)
-
-      :ok
     end
   end
 

@@ -1,5 +1,5 @@
 defmodule Memento.Tests.Error do
-  use Memento.Support.Case
+  use Memento.Support.Case, async: true
   require Memento.Error
 
 
