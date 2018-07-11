@@ -1,5 +1,5 @@
 defmodule Memento.Tests.Error do
-  use ExUnit.Case
+  use Memento.Support.Case
   require Memento.Error
 
 

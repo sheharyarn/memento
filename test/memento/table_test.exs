@@ -1,5 +1,5 @@
 defmodule Memento.Tests.Table do
-  use ExUnit.Case
+  use Memento.Support.Case
 
 
   describe "__using__" do
@@ -64,5 +64,17 @@ defmodule Memento.Tests.Table do
     end
   end
 
+
+
+
+  describe "#create" do
+    test "creates an mnesia table from memento definition" do
+    end
+  end
+
+
+
+  describe "#delete" do
+  end
 
 end
