@@ -95,6 +95,44 @@ defmodule Memento.Table do
 
 
 
+
+  # Public API
+  # ----------
+
+
+  @doc """
+  Creates a Memento Table for Mnesia
+
+  This must be called before you can interact with the table in any way.
+  Uses the attributes specified in the table definition. Returns `:ok` on
+  success or `{:error, reason}` on failure. Will raise an error if the
+  passed module isn't a Memento Table.
+
+  You can optionally pass a set of options keyword, which will override
+  all options specified in the definition except `:attributes`.  See
+  `:mnesia.create_table/2` for all available options.
+  """
+  @spec create(table, opts :: Keyword.t) :: :ok | {:error, any()}
+  def create(table, opts \\ []) do
+    validate_table!(table)
+
+    info = table.__info__()
+    main = [attributes: info.attributes]
+    opts =
+      info.table_opts
+      |> Keyword.merge(opts)
+      |> Keyword.merge(main)
+
+    case :mnesia.create_table(table, opts) do
+      {:atomic, :ok}     -> :ok
+      {:aborted, reason} -> {:error, reason}
+    end
+  end
+
+
+
+
+
   # Private Helpers
   # ---------------
 
