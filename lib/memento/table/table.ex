@@ -1,4 +1,6 @@
 defmodule Memento.Table do
+  require Memento.Error
+
   @moduledoc """
   Defines a Memento Table schema for Mnesia
 
@@ -71,14 +73,14 @@ defmodule Memento.Table do
 
       @table_attrs Keyword.get(opts, :attributes)
       @table_type  Keyword.get(opts, :type, :set)
-      @table_opts  Keyword.drop(opts, [:attributes, :type])
+      @table_opts  Keyword.drop(opts, [:attributes])
 
       @query_map  Memento.Query.Translate.build_map(@table_attrs)
       @query_base Memento.Query.Translate.build_base(__MODULE__, @table_attrs)
 
       @info %{
         meta: Memento.Table,
-        table_attributes: @table_attrs,
+        attributes: @table_attrs,
         table_type: @table_type,
         table_opts: @table_opts,
         query_base: @query_base,
@@ -137,8 +139,18 @@ defmodule Memento.Table do
 
     case error do
       nil   -> :ok
-      error -> raise Memento.Error, message: error
+      error -> Memento.Error.raise(error)
     end
+  end
+
+
+  # Validate if a module is a Memento Table
+  defp validate_table!(module) do
+    Memento.Table = module.__info__.meta
+    :ok
+  rescue
+    _ ->
+      Memento.Error.raise("#{inspect(module)} is not a Memento Table")
   end
 
 end
