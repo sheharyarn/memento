@@ -12,12 +12,13 @@ defmodule Memento.Mixfile do
   def project do
     [
       # Project
-      app:          @app,
-      version:      @version,
-      elixir:       "~> 1.3",
-      description:  description(),
-      package:      package(),
-      deps:         deps(),
+      app:           @app,
+      version:       @version,
+      elixir:        "~> 1.3",
+      description:   description(),
+      package:       package(),
+      deps:          deps(),
+      elixirc_paths: elixirc_paths(Mix.env),
 
       # ExDoc
       name:         @name,
@@ -32,11 +33,13 @@ defmodule Memento.Mixfile do
   end
 
 
+  # BEAM Application
   def application do
     [extra_applications: [:logger]]
   end
 
 
+  # Dependencies
   defp deps do
     [
       {:amnesia, "~> 0.2.0"},
@@ -45,11 +48,19 @@ defmodule Memento.Mixfile do
   end
 
 
+  # Compilation Paths
+  defp elixirc_paths(:dev),  do: elixirc_paths(:test)
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
+
+
+  # Package Description
   defp description do
     "Mnesia Simplified"
   end
 
 
+  # Package Information
   defp package do
     [
       name: @app,
