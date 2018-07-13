@@ -17,6 +17,7 @@ defmodule Memento.Table.Definition do
   Takes attribute keywords or list `[:a, :b, :c, ...]`
   and converts them into `{module, :$1, :$2, ...}`
   """
+  @spec build_base(Memento.Table.t, list) :: tuple
   def build_base(module, attributes) do
     attributes =
       attributes
@@ -39,6 +40,7 @@ defmodule Memento.Table.Definition do
   Takes attribute keywords `[a: nil, b: nil, ...]` or
   list, and converts them into `%{a: :$1, b: :$2, ...}`
   """
+  @spec build_map(list) :: map
   def build_map(attributes) do
     attributes
     |> Enum.reduce({%{}, 1}, &build_reducer/2)
@@ -54,6 +56,7 @@ defmodule Memento.Table.Definition do
   Prepends an extra `:__meta__` field with the default
   value of `Memento.Table`.
   """
+  @spec build_map(list) :: list
   def struct_fields(attributes) do
     [{:__meta__, Memento.Table} | attributes]
   end

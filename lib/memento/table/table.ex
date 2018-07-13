@@ -51,7 +51,7 @@ defmodule Memento.Table do
 
 
   @typedoc "A Memento.Table module"
-  @type table :: module()
+  @type t :: module()
 
   @typedoc "A Memento.Table data struct"
   @type data :: map()
@@ -112,7 +112,7 @@ defmodule Memento.Table do
   all options specified in the definition except `:attributes`.  See
   `:mnesia.create_table/2` for all available options.
   """
-  @spec create(table, opts :: Keyword.t) :: :ok | {:error, any()}
+  @spec create(t, Keyword.t) :: :ok | {:error, any}
   def create(table, opts \\ []) do
     validate_table!(table)
 
