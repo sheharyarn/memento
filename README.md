@@ -15,17 +15,26 @@ end
 
 ## Roadmap
 
+ - [ ] Memento
+    - [ ] start/stop
+    - [ ] system_info
+    - [ ] 
  - [ ] Memento.Table
     - [ ] Create/Delete helpers
-    - [ ] Info/Debugging Helpers
+    - [ ] clear_table
+    - [ ] table_info
     - [ ] Ecto-like DSL
     - [ ] Migration Support
  - [x] Memento.Query
     - [ ] Integration with Memento.Table
-    - [ ] `match`
-    - [ ] `select`
+    - [ ] match/select
+    - [ ] read/write/delete
+    - [ ] all_keys
  - [ ] Memento.Transaction
     - [ ] Lock Helpers
+ - [ ] Memento.Schema
+    - [ ] create/delete
+    - [ ] print (schema/1)
  - [ ] Memento.Collection
     - [ ] Easy Helpers
     - [ ] Custom DSL
