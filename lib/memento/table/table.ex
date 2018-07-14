@@ -131,6 +131,22 @@ defmodule Memento.Table do
 
 
 
+  @doc """
+  Deletes a Memento Table for Mnesia
+
+  Returns `:ok` on success and `{:error, reason}` on failure.
+  """
+  @spec delete(t) :: :ok | {:error, any}
+  def delete(table) do
+    validate_table!(table)
+
+    :delete_table
+    |> Memento.Mnesia.call([table])
+    |> Memento.Mnesia.handle_response
+  end
+
+
+
 
 
   # Private Helpers
