@@ -1,4 +1,5 @@
 defmodule Memento.Table do
+  require Memento.Mnesia
   require Memento.Error
 
   @moduledoc """
@@ -123,10 +124,9 @@ defmodule Memento.Table do
       |> Keyword.merge(opts)
       |> Keyword.merge(main)
 
-    case :mnesia.create_table(table, opts) do
-      {:atomic, :ok}     -> :ok
-      {:aborted, reason} -> {:error, reason}
-    end
+    :create_table
+    |> Memento.Mnesia.call([table, opts])
+    |> Memento.Mnesia.handle_response
   end
 
 
