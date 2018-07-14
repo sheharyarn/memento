@@ -10,7 +10,7 @@ defmodule Memento.Mnesia do
 
 
   @doc "Call an Mnesia function"
-  defmacro call(method, arguments \\ []) when is_atom(method) do
+  defmacro call(method, arguments \\ []) do
     quote(bind_quoted: [fun: method, args: arguments]) do
       apply(:mnesia, fun, args)
     end
@@ -18,11 +18,11 @@ defmodule Memento.Mnesia do
 
 
 
-  @doc "Handle a response from an :mnesia call"
-  def normalize(nil),                 do: nil
-  def normalize(:ok),                 do: :ok
-  def normalize({:atomic, :ok}),      do: :ok
-  def normalize({:error, reason}),    do: {:error, reason}
-  def normalize({:aborted, reason}),  do: {:error, reason}
+  @doc "Normalize the response from an :mnesia call"
+  def handle_response(nil),                 do: nil
+  def handle_response(:ok),                 do: :ok
+  def handle_response({:atomic, :ok}),      do: :ok
+  def handle_response({:error, reason}),    do: {:error, reason}
+  def handle_response({:aborted, reason}),  do: {:error, reason}
 
 end
