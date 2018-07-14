@@ -112,4 +112,31 @@ defmodule Memento.Tests.Table do
     end
   end
 
+
+
+
+  describe "#info" do
+    @table Tables.User
+    @key   :type
+
+    setup(do: Memento.Table.create(@table))
+
+    test "raises error if module is not a memento table" do
+      assert_raise(Memento.Error, ~r/not a memento table/i, fn ->
+        Memento.Table.info(RandomModule)
+      end)
+    end
+
+
+    test "returns table information" do
+      assert Memento.Table.info(@table) == :mnesia.table_info(@table, :all)
+    end
+
+
+    test "returns specific table information if key is given" do
+      assert Memento.Table.info(@table, @key) == :mnesia.table_info(@table, @key)
+    end
+  end
+
+
 end

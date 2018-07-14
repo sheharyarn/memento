@@ -147,6 +147,22 @@ defmodule Memento.Table do
 
 
 
+  @doc """
+  Returns all table information.
+
+  Optionally accepts an extra atom argument `key` which returns result
+  for only that key. Will throw an exception if the key is invalid. See
+  `:mnesia.table_info/2` for a full list of allowed keys.
+  """
+  @spec info(t, atom) :: any
+  def info(table, key \\ :all) do
+    validate_table!(table)
+
+    Memento.Mnesia.call(:table_info, [table, key])
+  end
+
+
+
 
 
   # Private Helpers
