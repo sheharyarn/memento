@@ -102,7 +102,7 @@ defmodule Memento.Table do
 
 
   @doc """
-  Creates a Memento Table for Mnesia
+  Creates a Memento Table for Mnesia.
 
   This must be called before you can interact with the table in any way.
   Uses the attributes specified in the table definition. Returns `:ok` on
@@ -113,7 +113,7 @@ defmodule Memento.Table do
   all options specified in the definition except `:attributes`.  See
   `:mnesia.create_table/2` for all available options.
   """
-  @spec create(t, Keyword.t) :: :ok | {:error, any}
+  @spec create(t, Keyword.t) :: Memento.Mnesia.result
   def create(table, opts \\ []) do
     validate_table!(table)
 
@@ -126,23 +126,23 @@ defmodule Memento.Table do
 
     :create_table
     |> Memento.Mnesia.call([table, opts])
-    |> Memento.Mnesia.handle_response
+    |> Memento.Mnesia.handle_result
   end
 
 
 
   @doc """
-  Deletes a Memento Table for Mnesia
+  Deletes a Memento Table for Mnesia.
 
   Returns `:ok` on success and `{:error, reason}` on failure.
   """
-  @spec delete(t) :: :ok | {:error, any}
+  @spec delete(t) :: Memento.Mnesia.result
   def delete(table) do
     validate_table!(table)
 
     :delete_table
     |> Memento.Mnesia.call([table])
-    |> Memento.Mnesia.handle_response
+    |> Memento.Mnesia.handle_result
   end
 
 
@@ -160,6 +160,8 @@ defmodule Memento.Table do
 
     Memento.Mnesia.call(:table_info, [table, key])
   end
+
+
 
 
 

@@ -4,6 +4,14 @@ defmodule Memento.Mnesia do
   """
 
 
+  # Type Definitions
+  # ----------------
+
+  @typedoc "Normalized response of an Mnesia call"
+  @type result :: :ok | {:error, any}
+
+
+
 
   # Public API
   # ----------
@@ -18,11 +26,12 @@ defmodule Memento.Mnesia do
 
 
 
-  @doc "Normalize the response from an :mnesia call"
-  def handle_response(nil),                 do: nil
-  def handle_response(:ok),                 do: :ok
-  def handle_response({:atomic, :ok}),      do: :ok
-  def handle_response({:error, reason}),    do: {:error, reason}
-  def handle_response({:aborted, reason}),  do: {:error, reason}
+  @doc "Normalize the result of an :mnesia call"
+  @spec handle_result(any) :: result
+  def handle_result(:ok),                 do: :ok
+  def handle_result({:atomic, :ok}),      do: :ok
+  def handle_result({:error, reason}),    do: {:error, reason}
+  def handle_result({:aborted, reason}),  do: {:error, reason}
+
 
 end
