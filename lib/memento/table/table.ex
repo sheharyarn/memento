@@ -163,6 +163,22 @@ defmodule Memento.Table do
 
 
 
+  @doc """
+  Deletes all entries in the given Memento Table.
+
+  Returns `:ok` on success and `{:error, reason}` on failure.
+  """
+  @spec clear(t) :: Memento.Mnesia.result
+  def clear(table) do
+    validate_table!(table)
+
+    :clear_table
+    |> Memento.Mnesia.call([table])
+    |> Memento.Mnesia.handle_result
+  end
+
+
+
 
 
 
