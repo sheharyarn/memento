@@ -17,12 +17,12 @@ end
 
  - [ ] Memento
     - [ ] start/stop
+    - [ ] info
     - [ ] system_info
-    - [ ] 
- - [ ] Memento.Table
-    - [ ] Create/Delete helpers
-    - [ ] clear_table
-    - [ ] table_info
+ - [x] Memento.Table
+    - [x] Create/Delete helpers
+    - [x] clear_table
+    - [x] table_info
     - [ ] Ecto-like DSL
     - [ ] Migration Support
  - [x] Memento.Query

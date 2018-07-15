@@ -2,6 +2,7 @@ defmodule Memento.Table do
   require Memento.Mnesia
   require Memento.Error
 
+
   @moduledoc """
   Defines a Memento Table schema for Mnesia
 
@@ -16,7 +17,18 @@ defmodule Memento.Table do
   end
   ```
 
+  Each table then must be created before you can interact with it. You can do
+  that by calling `create/2`. It's usually a good idea to call this while
+  your application is being started:
+
+  ```
+  Memento.Table.create(Blog.Post)
+  ```
+
   ## Options
+
+  The table definition and the `create/2` function both accept a keyword list
+  specifying the options for the table:
 
   - `attributes` - A required list of atoms representing the attribute names
     of the records of the table. Must have at least two attributes, where the
@@ -39,6 +51,10 @@ defmodule Memento.Table do
       attributes: [:id, :title, :content, :status, :author_id],
       index: [:status, :author_id],
       type: :ordered_set
+
+
+    # You can also define other methods
+    # or helper functions in the module
   end
   ```
   """
