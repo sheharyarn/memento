@@ -34,4 +34,20 @@ defmodule Memento.Mnesia do
   def handle_result({:aborted, reason}),  do: {:error, reason}
 
 
+
+  @doc "Suppress Console Logs while the given function runs"
+  @spec suppress_log(fun) :: any
+  def suppress_log(fun) do
+    backend = Logger.remove_backend(:console)
+    result = fun.()
+
+    case backend do
+      :ok         -> Logger.add_backend(:console)
+      {:error, _} -> nil
+    end
+
+    result
+  end
+
+
 end
