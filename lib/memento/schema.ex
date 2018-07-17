@@ -27,12 +27,19 @@ defmodule Memento.Schema do
 
 
 
+
+  # Public API
+  # ----------
+
+
   @doc """
   Creates a new database on disk on the specified nodes.
 
   Calling `:mnesia.create_schema` for a custom path throws an exception
   if that path does not exist. Memento's version avoids this by ensuring
   that the directory exists.
+
+  Also see `:mnesia.create_schema/1`.
   """
   @spec create(list(node)) :: Memento.Mnesia.result
   def create(nodes) do
@@ -41,6 +48,23 @@ defmodule Memento.Schema do
     end
 
     :create_schema
+    |> Memento.Mnesia.call([nodes])
+    |> Memento.Mnesia.handle_result
+  end
+
+
+
+
+  @doc """
+  Deletes the database previously created by `create/1` on the specified
+  nodes.
+
+  Use this with caution, as it makes persisting data obsolete. Also see
+  `:mnesia.delete_schema/1`.
+  """
+  @spec delete(list(node)) :: Memento.Mnesia.result
+  def delete(nodes) do
+    :delete_schema
     |> Memento.Mnesia.call([nodes])
     |> Memento.Mnesia.handle_result
   end

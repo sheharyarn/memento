@@ -15,10 +15,12 @@ end
 
 ## Roadmap
 
- - [ ] Memento
-    - [ ] start/stop
-    - [ ] info
-    - [ ] system_info
+ - [x] Memento
+    - [x] start/stop
+    - [x] info
+    - [x] system_info
+    - [ ] Application
+    - [ ] Config Vars
  - [x] Memento.Table
     - [x] Create/Delete helpers
     - [x] clear_table
