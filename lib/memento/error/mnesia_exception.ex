@@ -1,16 +1,20 @@
-defmodule Memento.Error.MnesiaException do
+defmodule Memento.MnesiaException do
+  alias __MODULE__
+
   defexception [:message, :data]
+
   @moduledoc false
+  @message "Mnesia Operation failed with:\n     "
 
 
 
   # Re-raise Mnesia exits as Exceptions
   defmacro raise(data) do
     quote do
-      data = Memento.Error.MnesiaException.fetch(unquote(data))
+      data = MnesiaException.fetch(unquote(data))
 
-      raise Memento.Error.MnesiaException,
-        message: "Mnesia Operation failed with: #{inspect(data)}",
+      raise MnesiaException,
+        message: (unquote(@message) <> inspect(data)),
         data: data
     end
   end

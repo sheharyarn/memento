@@ -1,7 +1,10 @@
 defmodule Memento.Mnesia do
+  alias Memento.MnesiaException
+
   @moduledoc """
   Helper wrapper module to delegate calls to Erlang's `:mnesia`
   """
+
 
 
   # Type Definitions
@@ -20,7 +23,14 @@ defmodule Memento.Mnesia do
   @doc "Call an Mnesia function"
   defmacro call(method, arguments \\ []) do
     quote(bind_quoted: [fun: method, args: arguments]) do
-      apply(:mnesia, fun, args)
+      require MnesiaException
+
+      try do
+        apply(:mnesia, fun, args)
+      catch
+        :exit, error -> MnesiaException.raise(error)
+      end
+
     end
   end
 
