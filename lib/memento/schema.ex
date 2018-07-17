@@ -26,4 +26,23 @@ defmodule Memento.Schema do
   """
 
 
+
+  @doc """
+  Creates a new database on disk on the specified nodes.
+
+  Calling `:mnesia.create_schema` for a custom path throws an exception
+  if that path does not exist. Memento's version avoids this by ensuring
+  that the directory exists.
+  """
+  @spec create(list(node)) :: Memento.Mnesia.result
+  def create(nodes) do
+    if path = Application.get_env(:mnesia, :dir) do
+      :ok = File.mkdir_p!(path)
+    end
+
+    :create_schema
+    |> Memento.Mnesia.call([nodes])
+    |> Memento.Mnesia.handle_result
+  end
+
 end
