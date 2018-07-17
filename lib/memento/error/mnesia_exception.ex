@@ -4,12 +4,12 @@ defmodule Memento.Error.MnesiaException do
 
 
 
-  # Throw an Mnesia Exception
-  defmacro throw(data) do
+  # Re-raise Mnesia exits as Exceptions
+  defmacro raise(data) do
     quote do
       data = Memento.Error.MnesiaException.fetch(unquote(data))
 
-      throw Memento.Error.MnesiaException,
+      raise Memento.Error.MnesiaException,
         message: "Mnesia Operation failed with: #{inspect(data)}",
         data: data
     end
