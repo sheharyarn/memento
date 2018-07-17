@@ -1,15 +1,22 @@
 defmodule Memento.Tests.Error.MnesiaException do
   use Memento.Support.Case, async: true
 
-  alias Memento.Error.MnesiaException
+  alias Memento.MnesiaException
   require MnesiaException
 
 
   describe "#throw" do
     @error :hello
     @message ":hello"
+
+    test "prints standard error message" do
+      assert_raise(MnesiaException, ~r/mnesia operation failed/i, fn ->
+        MnesiaException.raise(@error)
+      end)
+    end
+
     test "throws an exception with data" do
-      assert_raise(MnesiaException, ~r/operation failed.*#{@message}/i, fn ->
+      assert_raise(MnesiaException, ~r/#{@message}/i, fn ->
         MnesiaException.raise(@error)
       end)
     end
