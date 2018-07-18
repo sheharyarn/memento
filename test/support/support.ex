@@ -13,12 +13,13 @@ defmodule Memento.Support do
     @moduledoc "Mnesia-related helpers"
 
     def reset do
-      Support.capture_log(fn ->
-        Application.stop(:mnesia)
-        :mnesia.delete_schema([node()])
-        Application.start(:mnesia)
-      end)
+      stop()
+      :mnesia.delete_schema([node()])
+      start()
     end
+
+    def start, do: Support.capture_log(fn -> Application.start(:mnesia) end)
+    def stop,  do: Support.capture_log(fn -> Application.stop(:mnesia) end)
   end
 
 end
