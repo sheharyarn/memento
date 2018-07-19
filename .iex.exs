@@ -13,5 +13,5 @@ alias Memento.{
 
 
 # User Table
-table = Definitions.Table.User
+table = Definitions.Tables.User
 
