@@ -3,9 +3,11 @@ defmodule Memento.Tests.Schema do
 
   alias Memento.Table
   alias Memento.Schema
+  alias Memento.MnesiaException
 
 
   # No need to test all the methods (create/delete)
+  # Just one is enough
 
 
   describe "#info" do
@@ -14,6 +16,15 @@ defmodule Memento.Tests.Schema do
     @pattern "{'#{@table}',\n?.+'_','_'}"
 
     setup(do: Table.create(@table))
+
+
+    test "raises error when mnesia is not running" do
+      Support.Mnesia.stop
+
+      assert_raise(MnesiaException, ~r/node not running/i, fn ->
+        Schema.info
+      end)
+    end
 
 
     test "prints full schema information when no argument is provided" do
