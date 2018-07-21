@@ -4,17 +4,18 @@ defmodule Memento.Transaction do
 
   @moduledoc """
   Memento's wrapper around Mnesia transactions. This module exports
-  methos `execute/2` and `execute!/2` which accept a function to be
-  executed an and optional argument to set the maximum no. of
+  methods `execute/2` and `execute_sync/2`, which accept a function
+  to be executed an and optional argument to set the maximum no. of
   retries until the transaction succeeds.
 
   Both methods can be directly called on the base `Memento` module
-  as `Memento.transaction/2` and `Memento.transaction!/2`.
+  as `Memento.transaction/2` and `Memento.transaction_sync/2`.
 
   # TODO: Add delegate in root module
   #
   # TODO: Add examples
   """
+
 
 
 
@@ -25,7 +26,8 @@ defmodule Memento.Transaction do
   @doc """
   Execute passed function as part of an Mnesia transaction.
 
-  Default value of `retries` is `:infinity`. Also see
+  Default value of `retries` is `:infinity`. Returns either
+  `{:ok, result}` or `{:error, reason}`. Also see
   `:mnesia.transaction/2`.
   """
   @spec execute(fun, integer) :: any
@@ -37,6 +39,7 @@ defmodule Memento.Transaction do
 
 
 
+
   @doc """
   Execute the transaction in synchronization with all nodes.
 
@@ -45,13 +48,25 @@ defmodule Memento.Transaction do
   useful to ensure that a transaction process does not overload the
   databases on other nodes.
 
-  Also see `:mnesia_sync_transaction/2`.
+  Returns either `{:ok, result}` or `{:error, reason}`. Also see
+  `:mnesia.sync_transaction/2`.
   """
-  @spec execute!(fun, integer) :: any
-  def execute!(function, retries \\ :infinity) do
+  @spec execute_sync(fun, integer) :: any
+  def execute_sync(function, retries \\ :infinity) do
     :sync_transaction
     |> Memento.Mnesia.call([function, retries])
     |> Memento.Mnesia.handle_result
+  end
+
+
+
+
+  @doc """
+  Checks if you are inside a transaction.
+  """
+  @spec inside?() :: boolean
+  def inside? do
+    Memento.Mnesia.call(:is_transaction)
   end
 
 

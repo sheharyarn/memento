@@ -9,7 +9,7 @@ defmodule Memento.Tests.Transaction do
 
 
   describe "#execute" do
-    test "re-raises mnesia rescues as original errors" do
+    test "re-raises mnesia rescues as real errors" do
       assert_raise(UndefinedFunctionError, ~r/is undefined/i, fn ->
         Transaction.execute fn ->
           RandomModule.undefined_fun
@@ -18,29 +18,39 @@ defmodule Memento.Tests.Transaction do
     end
 
 
-    test "function is actually executed inside a transaction" do
-      Transaction.execute fn ->
-        assert true == :mnesia.is_transaction
-      end
+    @term "some result"
+    test "the output is returned with :ok outside the transaction" do
+      assert {:ok, @term} = Transaction.execute(fn -> @term end)
     end
   end
 
 
 
-  describe "#execute!" do
-    test "re-raises mnesia rescues as original errors" do
-      assert_raise(UndefinedFunctionError, ~r/is undefined/i, fn ->
-        Transaction.execute! fn ->
-          RandomModule.undefined_fun
-        end
-      end)
+  describe "#execute_sync" do
+    @term "some result"
+    test "the output is returned with :ok outside the transaction" do
+      assert {:ok, @term} = Transaction.execute_sync(fn -> @term end)
     end
 
 
-    test "function is actually executed inside a transaction" do
-      Transaction.execute! fn ->
-        assert {:atomic, true} == :mnesia.is_transaction
-      end
+    test "re-raises mnesia rescues as real errors" do
+      assert_raise(UndefinedFunctionError, ~r/is undefined/i, fn ->
+        Transaction.execute_sync(fn -> RandomModule.undefined_fun end)
+      end)
+    end
+  end
+
+
+
+  describe "#inside?" do
+    test "returns true when inside a transaction" do
+      assert {:atomic, true} = :mnesia.transaction(&Transaction.inside?/0)
+      assert {:atomic, true} = :mnesia.sync_transaction(&Transaction.inside?/0)
+    end
+
+
+    test "returns false when outside a transaction" do
+      refute Transaction.inside?
     end
   end
 
