@@ -53,15 +53,29 @@ defmodule Memento.Mnesia do
       {:error, reason} ->
         {:error, reason}
 
-      {:aborted, {:transaction_aborted, term}} ->
-        {:error, {:transaction_aborted, term}}
-
-      {:aborted, {exception, stacktrace}} ->
-        reraise Exception.normalize(:error, exception), stacktrace
+      {:aborted, reason = {exception, stacktrace}} ->
+        if erlang_error?(exception, stacktrace) do
+          reraise Exception.normalize(:error, exception, stacktrace), stacktrace
+        else
+          {:error, reason}
+        end
 
       {:aborted, reason} ->
         {:error, reason}
     end
   end
+
+
+
+
+  # Private Helpers
+  # ---------------
+
+  # Check if the error is actually an erlang error
+  defp erlang_error?(exception, stacktrace) do
+    %ErlangError{original: exception} !=
+      ErlangError.normalize(exception, stacktrace)
+  end
+
 
 end

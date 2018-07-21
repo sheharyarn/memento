@@ -15,7 +15,7 @@ defmodule Memento.Schema do
   Memento.Schema.create([ node() ]
 
   # Create disk copies on many nodes
-  node_list = [node(), :bob@machine_x, :alice@machine_y, :eve@machine_z]
+  node_list = [node(), :alice@host_x, :bob@host_y, :eve@host_z]
   Memento.Schema.create(node_list)
   ```
 
