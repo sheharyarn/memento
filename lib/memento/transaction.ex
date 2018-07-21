@@ -29,7 +29,11 @@ defmodule Memento.Transaction do
   `:mnesia.transaction/2`.
   """
   @spec execute(fun, integer) :: any
-  def execute(function, retries \\ :infinity)
+  def execute(function, retries \\ :infinity) do
+    :transaction
+    |> Memento.Mnesia.call([function, retries])
+    |> Memento.Mnesia.handle_result
+  end
 
 
 
@@ -44,7 +48,11 @@ defmodule Memento.Transaction do
   Also see `:mnesia_sync_transaction/2`.
   """
   @spec execute!(fun, integer) :: any
-  def execute!(function, retries \\ :infinity)
+  def execute!(function, retries \\ :infinity) do
+    :sync_transaction
+    |> Memento.Mnesia.call([function, retries])
+    |> Memento.Mnesia.handle_result
+  end
 
 
 end
