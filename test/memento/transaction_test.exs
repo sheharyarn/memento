@@ -7,6 +7,7 @@ defmodule Memento.Tests.Transaction do
   # they return back the data.
 
 
+
   describe "#execute" do
     test "re-raises mnesia rescues as original errors" do
       assert_raise(UndefinedFunctionError, ~r/is undefined/i, fn ->
@@ -19,11 +20,10 @@ defmodule Memento.Tests.Transaction do
 
     test "function is actually executed inside a transaction" do
       Transaction.execute fn ->
-        assert :mnesia.is_transaction
+        assert true == :mnesia.is_transaction
       end
     end
   end
-
 
 
 
@@ -39,7 +39,7 @@ defmodule Memento.Tests.Transaction do
 
     test "function is actually executed inside a transaction" do
       Transaction.execute! fn ->
-        assert :mnesia.is_transaction
+        assert {:atomic, true} == :mnesia.is_transaction
       end
     end
   end
