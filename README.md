@@ -25,6 +25,7 @@ end
     - [x] Create/Delete helpers
     - [x] clear_table
     - [x] table_info
+    - [ ] wait
     - [ ] Ecto-like DSL
     - [ ] Migration Support
  - [x] Memento.Query
@@ -32,11 +33,12 @@ end
     - [ ] match/select
     - [ ] read/write/delete
     - [ ] all_keys
+    - [ ] first
  - [ ] Memento.Transaction
     - [ ] Lock Helpers
- - [ ] Memento.Schema
-    - [ ] create/delete
-    - [ ] print (schema/1)
+ - [x] Memento.Schema
+    - [x] create/delete
+    - [x] print (schema/1)
  - [ ] Memento.Collection
     - [ ] Easy Helpers
     - [ ] Custom DSL
