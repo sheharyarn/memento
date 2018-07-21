@@ -20,6 +20,18 @@ defmodule Memento.Support do
 
     def start, do: Support.capture_log(fn -> Application.start(:mnesia) end)
     def stop,  do: Support.capture_log(fn -> Application.stop(:mnesia) end)
+
+
+    def transaction({method, args}) when is_atom(method) do
+      require Memento.Mnesia
+      transaction(fn ->
+        Memento.Mnesia.call(method, args)
+      end)
+    end
+
+    def transaction(fun) when is_function(fun) do
+      :mnesia.transaction(fun)
+    end
   end
 
 end

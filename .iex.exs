@@ -13,5 +13,10 @@ alias Memento.{
 
 
 # User Table
-table = Definitions.Tables.User
+t = table = Definitions.Tables.User
+Table.create(t)
+
+
+# Transaction Helper
+trx = &Support.Mnesia.transaction/1
 
