@@ -36,28 +36,32 @@ defmodule Memento.Mnesia do
 
 
 
+
   @doc "Normalize the result of an :mnesia call"
   @spec handle_result(any) :: result
-  def handle_result(:ok),                 do: :ok
-  def handle_result({:atomic, :ok}),      do: :ok
-  def handle_result({:error, reason}),    do: {:error, reason}
-  def handle_result({:aborted, reason}),  do: {:error, reason}
+  def handle_result(result) do
+    case result do
+      :ok ->
+        :ok
 
+      {:atomic, :ok} ->
+        :ok
 
+      {:atomic, term} ->
+        {:ok, term}
 
-  @doc "Suppress Console Logs while the given function runs"
-  @spec suppress_log(fun) :: any
-  def suppress_log(fun) do
-    backend = Logger.remove_backend(:console)
-    result = fun.()
+      {:error, reason} ->
+        {:error, reason}
 
-    case backend do
-      :ok         -> Logger.add_backend(:console)
-      {:error, _} -> nil
+      {:aborted, {:transaction_aborted, term}} ->
+        {:error, {:transaction_aborted, term}}
+
+      {:aborted, {exception, stacktrace}} ->
+        reraise Exception.normalize(:error, exception), stacktrace
+
+      {:aborted, reason} ->
+        {:error, reason}
     end
-
-    result
   end
-
 
 end

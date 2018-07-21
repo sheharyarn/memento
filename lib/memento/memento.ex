@@ -34,9 +34,7 @@ defmodule Memento do
   """
   @spec stop() :: Memento.Mnesia.result
   def stop do
-    Memento.Mnesia.suppress_log fn ->
-      Application.stop(:mnesia)
-    end
+    Application.stop(:mnesia)
   end
 
 
