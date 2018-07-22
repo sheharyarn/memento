@@ -18,6 +18,7 @@ t = table = Definitions.Tables.User
 Table.create(t)
 
 
-# Transaction Helper
+# Transaction Helpers
 trx = &Support.Mnesia.transaction/1
+mrx = &:mnesia.transaction/1
 

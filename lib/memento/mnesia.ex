@@ -53,12 +53,9 @@ defmodule Memento.Mnesia do
       {:error, reason} ->
         {:error, reason}
 
-      {:aborted, reason = {exception, stacktrace}} ->
-        if erlang_error?(exception, stacktrace) do
-          reraise Exception.normalize(:error, exception, stacktrace), stacktrace
-        else
-          {:error, reason}
-        end
+      {:aborted, reason = {exception, data}} ->
+        reraise_if_valid!(exception, data)
+        {:error, reason}
 
       {:aborted, reason} ->
         {:error, reason}
@@ -68,13 +65,29 @@ defmodule Memento.Mnesia do
 
 
 
+
   # Private Helpers
   # ---------------
 
-  # Check if the error is actually an erlang error
-  defp erlang_error?(exception, stacktrace) do
-    %ErlangError{original: exception} !=
-      ErlangError.normalize(exception, stacktrace)
+
+  # Check if the error is actually an exception, and reraise it
+  defp reraise_if_valid!(:throw, data), do: throw(data)
+  defp reraise_if_valid!(exception, stacktrace) do
+    error = Exception.normalize(:error, exception, stacktrace)
+
+    case error do
+      # Don't do anything if it's an 'original' ErlangError
+      %ErlangError{original: ^exception} ->
+        nil
+
+      # Raise if it's an actual exception
+      %{__exception__: true} ->
+        reraise(error, stacktrace)
+
+      # Do nothing if no conditions are met
+      _ ->
+        nil
+    end
   end
 
 

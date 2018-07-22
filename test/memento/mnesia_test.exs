@@ -41,12 +41,29 @@ defmodule Memento.Tests.Mnesia do
 
 
   describe "#handle_result" do
-    test "reraises erlang errors as exceptions" do
-      assert_raise(UndefinedFunctionError, ~r/is undefined/i, fn ->
-        (fn -> RandomModule.undefined_fun end)
-        |> :mnesia.transaction
-        |> Mnesia.handle_result
-      end)
+    test "reraises specific erlang errors as elixir exceptions" do
+      assert_raise(UndefinedFunctionError, ~r/is undefined/i, result_for(fn ->
+        RandomModule.undefined_fun
+      end))
+    end
+
+
+    test "reraises custom elixir errors" do
+      assert_raise(Memento.Error, ~r/hello/i, result_for(fn ->
+        raise Memento.Error, message: "hello"
+      end))
+    end
+
+
+    test "reraises on-the-fly runtime errors" do
+      assert_raise(RuntimeError, ~r/not compiled/i, result_for(fn ->
+        raise "this error module was not compiled"
+      end))
+    end
+
+
+    test "rethrows any throws" do
+      catch_throw result_for(fn -> throw :fail end).()
     end
 
 
@@ -70,5 +87,13 @@ defmodule Memento.Tests.Mnesia do
     end
   end
 
+
+
+  # Private Helper to test `handle_result` errors
+  defp result_for(fun) do
+    fn ->
+      Mnesia.handle_result(:mnesia.transaction(fun))
+    end
+  end
 
 end
