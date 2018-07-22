@@ -10,6 +10,7 @@ defmodule Memento.Query.Data do
 
 
 
+
   # Public API
   # ----------
 
@@ -36,6 +37,27 @@ defmodule Memento.Query.Data do
       |> Enum.zip(values)
 
     struct(table, values)
+  end
+
+
+
+
+  @doc """
+  Convert Memento Table struct into Mnesia data tuple.
+
+  Use this method when writing data to an Mnesia database. The
+  argument should be a struct of a previously defined Memento
+  table definition, and this will convert it into a tuple
+  representing an Mnesia record.
+  """
+  @spec dump(struct) :: tuple
+  def dump(data = %{__struct__: table}) do
+    values =
+      table.__info__()
+      |> Map.get(:attributes)
+      |> Enum.map(&Map.get(data, &1))
+
+    List.to_tuple([ table | values ])
   end
 
 
