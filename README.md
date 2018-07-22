@@ -34,7 +34,10 @@ end
     - [ ] read/write/delete
     - [ ] all_keys
     - [ ] first
- - [ ] Memento.Transaction
+ - [x] Memento.Transaction
+    - [x] Simple/Synchronous
+    - [x] inside?
+    - [x] abort
     - [ ] Lock Helpers
  - [x] Memento.Schema
     - [x] create/delete

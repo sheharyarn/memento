@@ -78,7 +78,7 @@ defmodule Memento.Schema do
   @spec info() :: :ok
   def info do
     :schema
-    |> Memento.Mnesia.call([])
+    |> Memento.Mnesia.call
     |> Memento.Mnesia.handle_result
   end
 
@@ -88,7 +88,7 @@ defmodule Memento.Schema do
   @doc """
   Prints schema information about the specified Table to the console.
   """
-  @spec info(Memento.Table) :: :ok
+  @spec info(Memento.Table.t) :: :ok
   def info(table) do
     :schema
     |> Memento.Mnesia.call([table])
