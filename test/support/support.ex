@@ -30,7 +30,7 @@ defmodule Memento.Support do
     end
 
     def transaction(fun) when is_function(fun) do
-      :mnesia.transaction(fun)
+      Memento.Transaction.execute(fun)
     end
   end
 

@@ -3,6 +3,7 @@ alias Memento.{
   Query,
   Schema,
   Mnesia,
+  Transaction,
 
   Error,
   MnesiaException,
