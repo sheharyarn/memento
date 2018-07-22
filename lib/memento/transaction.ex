@@ -1,5 +1,6 @@
 defmodule Memento.Transaction do
   require Memento.Mnesia
+  require Memento.Error
 
 
   @moduledoc """
@@ -67,6 +68,30 @@ defmodule Memento.Transaction do
   @spec inside?() :: boolean
   def inside? do
     Memento.Mnesia.call(:is_transaction)
+  end
+
+
+
+
+  @doc """
+  Aborts a Memento transaction.
+
+  Causes the transaction to return an error tuple with the passed
+  argument: `{:error, {:transaction_aborted, reason}}`. Outside
+  the context of a transaction, simply raises an error.
+
+  Default value for reason is `:no_reason_given`. Also see
+  `:mnesia.abort/1`.
+  """
+  @spec abort(term) :: no_return
+  def abort(reason \\ :no_reason_given) do
+    case inside?() do
+      true ->
+        :mnesia.abort({:transaction_aborted, reason})
+
+      false ->
+        Memento.Error.raise("Not inside a Memento Transaction")
+    end
   end
 
 
