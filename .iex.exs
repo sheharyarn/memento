@@ -12,9 +12,11 @@ alias Memento.{
   Support.Definitions,
 }
 
+alias Definitions.Tables.User, as: U
+
 
 # User Table
-t = table = Definitions.Tables.User
+t = table = U
 Table.create(t)
 
 
