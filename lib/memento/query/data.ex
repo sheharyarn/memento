@@ -6,6 +6,26 @@ defmodule Memento.Query.Data do
   This is responsible for automatically handling conversions
   between data in methods defined in the Query module, so you
   won't need to use this at all.
+
+
+  ## Usage
+
+  ```
+  # Given a Memento Table
+  defmodule MyApp.User do
+    use Memento.Table, attributes: [:id, :name]
+  end
+  ```
+
+  # You can convert its structs to Mnesia format:
+  Memento.Query.Data.dump(%MyApp.User{id: 1, name: "Sye"})
+  # => {MyApp.User, 1, "Sye"}
+
+
+  # Or convert it back to a struct
+  Memento.Query.Data.load({MyApp.User, 2, "Rick"})
+  # => %MyApp.User{id: 2, name: "Rick"}
+  ```
   """
 
 
