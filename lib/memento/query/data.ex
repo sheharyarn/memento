@@ -5,7 +5,9 @@ defmodule Memento.Query.Data do
   """
 
 
-  @doc "Cast Mnesia data into Memento Table struct"
+  @doc """
+  Automatically cast Mnesia data into Memento Table struct.
+  """
   @spec cast(tuple) :: Memento.Table.data
   def cast(data) when is_tuple(data) do
     [table | values] =
