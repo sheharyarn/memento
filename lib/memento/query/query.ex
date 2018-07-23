@@ -13,6 +13,18 @@ defmodule Memento.Query do
   """
 
 
+
+  # Type Definitions
+  # ----------------
+
+
+  @typedoc "Types of locks that can be acquired"
+  @type lock :: :read | :write | :sticky_write
+
+
+
+
+
   # Public API
   # ----------
 
