@@ -10,6 +10,11 @@ defmodule Memento.Support.Case do
     quote do
       alias Memento.Support
       alias Memento.Support.Definitions.Tables
+
+      import Support.Mnesia, only: [
+        transaction:  1,
+        transaction!: 1,
+      ]
     end
   end
 
