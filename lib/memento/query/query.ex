@@ -8,6 +8,49 @@ defmodule Memento.Query do
 
   @moduledoc """
   Module to read/write from Memento Tables.
+
+  This module provides the most important transactional operations
+  that can be executed on Memento Tables. Mnesia's "dirty" methods
+  are left out on purpose. In almost all circumstances, these
+  methods would be enough for interacting with Memento Tables, but
+  for very special situations, it is better to directly use the
+  API provided by the Erlang `:mnesia` module.
+
+
+  ## Transaction Only
+
+  All the methods exported by this module can only be executed
+  within the context of a `Memento.Transaction`. Outside the
+  transaction (synchronous or not), these methods will raise an
+  error, even though they are ignored in all other examples.
+
+  ```
+  # Will raise an error
+  Memento.Query.read(Blog.Post, :some_id)
+
+  # Will work fine
+  Memento.transaction fn ->
+    Memento.Query.read(Blog.Post, :some_id)
+  end
+  ```
+
+
+  ## Basic Queries
+
+  ```
+  read
+  first
+  write
+  all
+  ```
+
+
+  ## Advanced Queries
+
+  Special cases here are the `match/3` and `select/3` methods,
+  which use a superset of Erlang's
+  [`match_spec`](http://erlang.org/doc/apps/erts/match_spec.html)
+  to make working with them much easier.
   """
 
 
