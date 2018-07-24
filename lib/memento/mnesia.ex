@@ -7,14 +7,6 @@ defmodule Memento.Mnesia do
 
 
 
-  # Type Definitions
-  # ----------------
-
-  @typedoc "Normalized response of an Mnesia call"
-  @type result :: :ok | {:error, any}
-
-
-
 
   # Public API
   # ----------
@@ -38,7 +30,7 @@ defmodule Memento.Mnesia do
 
 
   @doc "Normalize the result of an :mnesia call"
-  @spec handle_result(any) :: result
+  @spec handle_result(any) :: any
   def handle_result(result) do
     case result do
       :ok ->

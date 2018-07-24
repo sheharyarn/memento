@@ -17,7 +17,7 @@ defmodule Memento.Table.Definition do
   Takes attribute keywords or list `[:a, :b, :c, ...]`
   and converts them into `{module, :$1, :$2, ...}`
   """
-  @spec build_base(Memento.Table.t, list) :: tuple
+  @spec build_base(Memento.Table.name, list) :: tuple
   def build_base(module, attributes) do
     attributes =
       attributes

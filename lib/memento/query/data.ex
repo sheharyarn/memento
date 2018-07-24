@@ -46,7 +46,7 @@ defmodule Memento.Query.Data do
   table's attributes and convert it into a struct of the Memento
   table you defined.
   """
-  @spec load(tuple) :: Memento.Table.data
+  @spec load(tuple) :: Memento.Table.record
   def load(data) when is_tuple(data) do
     [table | values] =
       Tuple.to_list(data)
@@ -70,7 +70,7 @@ defmodule Memento.Query.Data do
   table definition, and this will convert it into a tuple
   representing an Mnesia record.
   """
-  @spec dump(struct) :: tuple
+  @spec dump(Memento.Table.record) :: tuple
   def dump(data = %{__struct__: table}) do
     values =
       table.__info__()

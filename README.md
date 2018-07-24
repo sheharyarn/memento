@@ -34,6 +34,7 @@ end
     - [ ] read/write/delete
     - [ ] all_keys
     - [ ] first
+    - [ ] autoincrement
  - [x] Memento.Transaction
     - [x] Simple/Synchronous
     - [x] inside?

@@ -41,7 +41,7 @@ defmodule Memento.Query do
   with the same key, this returns only the first one. If you want to
   fetch all records with the given key, use `match/2` or `select/2`.
   """
-  @spec read(Table.t, any, lock) :: Table.data | nil
+  @spec read(Table.name, any, lock) :: Table.record | nil
   def read(table, id, lock \\ :read) do
     case Mnesia.call(:read, [table, id, lock]) do
       []           -> nil
@@ -50,7 +50,7 @@ defmodule Memento.Query do
   end
 
 
-  def write
+
   def all
   def first
   def match

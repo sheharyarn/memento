@@ -21,7 +21,7 @@ defmodule Memento do
   This starts Memento and `:mnesia` along with some sane application
   defaults. See `:mnesia.start/0` for more details.
   """
-  @spec start() :: Memento.Mnesia.result
+  @spec start() :: :ok | {:error, any}
   def start do
     Application.start(:mnesia)
   end
@@ -32,7 +32,7 @@ defmodule Memento do
   @doc """
   Stop the Memento Application.
   """
-  @spec stop() :: Memento.Mnesia.result
+  @spec stop() :: :ok | {:error, any}
   def stop do
     Application.stop(:mnesia)
   end

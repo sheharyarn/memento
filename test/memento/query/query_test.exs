@@ -26,6 +26,7 @@ defmodule Memento.Tests.Query do
       end
     end
 
+
     test "returns nil when no record is found" do
       Support.Mnesia.transaction fn ->
         refute Query.read(@table, 4)

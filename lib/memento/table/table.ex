@@ -68,10 +68,10 @@ defmodule Memento.Table do
 
 
   @typedoc "A Memento.Table module"
-  @type t :: module()
+  @type name :: module()
 
-  @typedoc "A Memento.Table data struct"
-  @type data :: map()
+  @typedoc "A Memento.Table record data struct"
+  @type record :: struct()
 
 
 
@@ -129,7 +129,7 @@ defmodule Memento.Table do
   all options specified in the definition except `:attributes`.  See
   `:mnesia.create_table/2` for all available options.
   """
-  @spec create(t, Keyword.t) :: Memento.Mnesia.result
+  @spec create(name, Keyword.t) :: :ok | {:error, any}
   def create(table, opts \\ []) do
     validate_table!(table)
 
@@ -152,7 +152,7 @@ defmodule Memento.Table do
 
   Returns `:ok` on success and `{:error, reason}` on failure.
   """
-  @spec delete(t) :: Memento.Mnesia.result
+  @spec delete(name) :: :ok | {:error, any}
   def delete(table) do
     validate_table!(table)
 
@@ -170,7 +170,7 @@ defmodule Memento.Table do
   for only that key. Will throw an exception if the key is invalid. See
   `:mnesia.table_info/2` for a full list of allowed keys.
   """
-  @spec info(t, atom) :: any
+  @spec info(name, atom) :: any
   def info(table, key \\ :all) do
     validate_table!(table)
 
@@ -184,7 +184,7 @@ defmodule Memento.Table do
 
   Returns `:ok` on success and `{:error, reason}` on failure.
   """
-  @spec clear(t) :: Memento.Mnesia.result
+  @spec clear(name) :: :ok | {:error, any}
   def clear(table) do
     validate_table!(table)
 

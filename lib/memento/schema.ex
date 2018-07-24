@@ -41,7 +41,7 @@ defmodule Memento.Schema do
 
   Also see `:mnesia.create_schema/1`.
   """
-  @spec create(list(node)) :: Memento.Mnesia.result
+  @spec create(list(node)) :: :ok | {:error, any}
   def create(nodes) do
     if path = Application.get_env(:mnesia, :dir) do
       :ok = File.mkdir_p!(path)
@@ -62,7 +62,7 @@ defmodule Memento.Schema do
   Use this with caution, as it makes persisting data obsolete. Also see
   `:mnesia.delete_schema/1`.
   """
-  @spec delete(list(node)) :: Memento.Mnesia.result
+  @spec delete(list(node)) :: :ok | {:error, any}
   def delete(nodes) do
     :delete_schema
     |> Memento.Mnesia.call([nodes])
@@ -88,7 +88,7 @@ defmodule Memento.Schema do
   @doc """
   Prints schema information about the specified Table to the console.
   """
-  @spec info(Memento.Table.t) :: :ok
+  @spec info(Memento.Table.name) :: :ok
   def info(table) do
     :schema
     |> Memento.Mnesia.call([table])
