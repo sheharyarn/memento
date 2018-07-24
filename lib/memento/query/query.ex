@@ -64,6 +64,40 @@ defmodule Memento.Query do
 
 
   @typedoc """
+  Option Keyword that can be passed to some methods.
+
+  These are all the possible options that can be set in the given
+  keyword list, although it mostly depends on the method which
+  options it actually uses.
+
+  ## Options
+
+  - `lock`: What kind of lock to acquire on the item in that
+  transaction. This is the most common option, that almost all
+  methods accept, and usually has some default value depending on
+  the method. See `t:lock` for more details.
+
+  - `limit`: The maximum number of items to return in a query.
+  This is used only read queries like `match/3` or `select/3`, and
+  is of the type `t:non_neg_integer`. Defaults to `nil`, resulting
+  in no limit and returning all records.
+
+  - `coerce`: Records in Mnesia are stored in the form of a `tuple`.
+  This converts them into simple Memento struct records of type
+  `t:Memento.Table.record`. This is also used in only some read
+  methods like `select/3` & `match/3`, and its value defaults to
+  `true`.
+
+  """
+  @type options :: [
+    lock: lock,
+    limit: non_neg_integer,
+    coerce: boolean,
+  ]
+
+
+
+  @typedoc """
   Types of locks that can be acquired.
 
   There are, in total, 3 types of locks that can be aqcuired, but
@@ -100,19 +134,6 @@ defmodule Memento.Query do
 
 
 
-  @typedoc """
-  Option Keyword that can be passed to some methods.
-
-  These are all the possible options that can be set in the given
-  keyword list, although it mostly depends on the method, which
-  options it actually uses.
-
-  ##
-  """
-  @type options :: [lock: lock, limit: non_neg_integer, coerce: boolean]
-
-
-
 
 
   # Public API
@@ -146,7 +167,7 @@ defmodule Memento.Query do
   # => nil
   ```
   """
-  @spec read(Table.name, any, Keyword.t(lock)) :: Table.record | nil
+  @spec read(Table.name, any, options) :: Table.record | nil
   def read(table, id, opts \\ []) do
     lock = Keyword.get(opts, :lock, :read)
     case Mnesia.call(:read, [table, id, lock]) do
@@ -182,13 +203,14 @@ defmodule Memento.Query do
   # => :ok
   ```
   """
-  @spec write(Table.record, Keyword.t(lock)) :: :ok
+  @spec write(Table.record, options) :: :ok
   def write(record = %{__struct__: table}, opts \\ []) do
     record = Query.Data.dump(record)
     lock   = Keyword.get(opts, :lock, :write)
 
     Mnesia.call(:write, [table, record, lock])
   end
+
 
 
 end
