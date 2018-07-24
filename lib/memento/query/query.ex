@@ -10,6 +10,8 @@ defmodule Memento.Query do
   Module to read/write from Memento Tables. All of the methods in
   this module need to be executed within the context of a Memento
   Transaction.
+
+  TODO: Write detailed examples
   """
 
 
@@ -18,7 +20,39 @@ defmodule Memento.Query do
   # ----------------
 
 
-  @typedoc "Types of locks that can be acquired"
+  @typedoc """
+  Types of locks that can be acquired.
+
+  There are, in total, 3 types of locks that can be aqcuired, but
+  some operations don't support all of them. The `write/2` method,
+  for example, can only accept `:write` or `:sticky_write` locks.
+
+  Conflicting lock requests are automatically queued if there is
+  no risk of deadlock. Otherwise, the transaction must be
+  terminated and executed again. Memento does this automatically
+  as long as the upper limit of `retries` is not reached in a
+  transaction.
+
+
+  ## Types
+
+  - `:write` locks are exclusive. That means, if one transaction
+  acquires a write lock, no other transaction can acquire any
+  kind of lock on the same item.
+
+  - `:read` locks can be shared, meaning if one transaction has a
+  read lock on an item, other transactions can also acquire a
+  read lock on the same item. However, no one else can acquire a
+  write lock on that item while the read lock is in effect.
+
+  - `:sticky_write` locks are used for optimizing write lock
+  acquisitions, by informing other nodes which node is locked. New
+  sticky lock requests from the same node are performed as local
+  operations.
+
+
+  For more details, see `:mnesia.lock/2`.
+  """
   @type lock :: :read | :write | :sticky_write
 
 
