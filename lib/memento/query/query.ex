@@ -219,9 +219,41 @@ defmodule Memento.Query do
   @doc """
   Returns all records in a table that match the specified pattern.
 
-  Default lock is :read
+  This method takes the name of a `Memento.Table` and a tuple pattern
+  representing the values of those attributes, and returns all
+  records that match it. It uses `:_` to represent attributes that
+  should be ignored. The tuple passed should be of the same length as
+  the number of attributes in that table, otherwise it will throw an
+  exception.
+
+  It's recommended to use the `select/3` method as it is more
+  user-friendly, can let you make complex selections.
+
+  Also accepts an optional argument `:lock` to acquire the kind of
+  lock specified in that transaction (defaults to `:read`). See
+  `t:lock` for more details. Also see `:mnesia.match_object/3`.
+
+  ## Examples
+
+  Suppose a `Movie` Table with these attributes: `id`, `title`, `year`,
+  and `director`. So the tuple passed in the match query should have
+  4 elements.
+
+  ```
+  # Get all movies from the Table
+  Memento.Query.match(Movie, {:_, :_, :_, :_})
+
+  # Get all movies named 'Rush'
+  Memento.Query.match(Movie, {:_, "Rush", :_, :_})
+
+  # Get all movies directed by Tarantino
+  Memento.Query.match(Movie, {:_, :_, :_, "Quentin Tarantino"})
+
+  # Get all movies directed by Spielberg, in the year 1993
+  Memento.Query.match(Movie, {:_, :_, 1993, "Steven Spielberg"})
+  ```
   """
-  @spec match(Table.name, tuple, options) :: list(Table.record)
+  @spec match(Table.name, tuple, options) :: list(Table.record) | no_return
   def match(table, pattern, opts \\ []) when is_tuple(pattern) do
     lock = Keyword.get(opts, :lock, :read)
 

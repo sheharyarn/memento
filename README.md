@@ -32,12 +32,11 @@ end
     - [ ] Integration with Memento.Table
     - [ ] match/select
     - [ ] read/write/delete
-    - [ ] all_keys
-    - [ ] first
+    - [ ] first/next/prev/all_keys
     - [ ] autoincrement
  - [x] Memento.Transaction
     - [x] Simple/Synchronous
-  - [ ] Bang versions
+    - [ ] Bang versions
     - [x] inside?
     - [x] abort
     - [ ] Lock Helpers
