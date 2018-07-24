@@ -102,6 +102,7 @@ defmodule Memento.Table do
         table_opts: @table_opts,
         query_base: @query_base,
         query_map: @query_map,
+        size: length(@table_attrs),
       }
 
       defstruct Memento.Table.Definition.struct_fields(@table_attrs)

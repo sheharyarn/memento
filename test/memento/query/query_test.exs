@@ -62,5 +62,69 @@ defmodule Memento.Tests.Query do
   end
 
 
+
+  describe "#match" do
+    @table Tables.Movie
+    @base {:_, :_, :_, :_}
+
+    setup do
+      movies = [
+        %@table{id: 1, title: "Reservoir Dogs",   year: 1992, director: "Quentin Tarantino"},
+        %@table{id: 2, title: "Rush",             year: 1991, director: "Lili Zanuck"},
+        %@table{id: 3, title: "Jurassic Park",    year: 1993, director: "Steven Spielberg"},
+        %@table{id: 4, title: "Kill Bill",        year: 2003, director: "Quentin Tarantino"},
+        %@table{id: 5, title: "Pulp Fiction",     year: 1994, director: "Quentin Tarantino"},
+        %@table{id: 6, title: "Rush",             year: 2013, director: "Ron Howard"},
+        %@table{id: 7, title: "Jaws",             year: 1975, director: "Steven Spielberg"},
+        %@table{id: 8, title: "Schindler's List", year: 1993, director: "Steven Spielberg"},
+      ]
+
+      Memento.Table.create(@table)
+      Support.Mnesia.transaction fn ->
+        Enum.map(movies, &Query.write/1)
+      end
+
+      :ok
+    end
+
+
+    test "raises error when the no. of items in the tuple don't match" do
+      assert_raise(Memento.Error, ~r/not equal to .* attributes/i, fn ->
+        Support.Mnesia.transaction fn ->
+          Query.match(@table, {:_, :_})
+        end
+      end)
+    end
+
+
+    test "returns all records for 'ignore all' pattern" do
+      Support.Mnesia.transaction fn ->
+        movies = Query.match(@table, @base)
+
+        assert length(movies) == 8
+        Enum.each(movies, &(assert %@table{} = &1))
+      end
+    end
+
+
+    test "returns all records that match a specific attribute" do
+      Support.Mnesia.transaction fn ->
+        assert [%{title: "Jaws", year: 1975}] =
+          Query.match(@table, {:_, :_, 1975, :_})
+
+        assert [%{title: "Rush"}, %{title: "Rush"}] =
+          Query.match(@table, {:_, "Rush", :_, :_})
+      end
+    end
+
+
+    test "returns all records that match multiple attributes" do
+      Support.Mnesia.transaction fn ->
+        assert [%{title: "Jurassic Park"}, %{title: "Schindler's List"}] =
+          Query.match(@table, {:_, :_, 1993, "Steven Spielberg"})
+      end
+    end
+  end
+
 end
 

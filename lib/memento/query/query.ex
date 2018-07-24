@@ -1,5 +1,6 @@
 defmodule Memento.Query do
   require Memento.Mnesia
+  require Memento.Error
 
   alias Memento.Query
   alias Memento.Table
@@ -255,6 +256,7 @@ defmodule Memento.Query do
   """
   @spec match(Table.name, tuple, options) :: list(Table.record) | no_return
   def match(table, pattern, opts \\ []) when is_tuple(pattern) do
+    validate_match_pattern!(table, pattern)
     lock = Keyword.get(opts, :lock, :read)
 
     # Convert {x, y, z} -> {Table, x, y, z}
@@ -273,5 +275,25 @@ defmodule Memento.Query do
   # def select(table, match_spec, lock: :read, limit: nil, coerce: false)
 
   # def test_matchspec
+
+
+
+
+
+  # Private Helpers
+  # ---------------
+
+
+  # Raises error if tuple size and no. of attributes is not equal
+  defp validate_match_pattern!(table, pattern) do
+    same_size? =
+      (tuple_size(pattern) == table.__info__.size)
+
+    unless same_size? do
+      Memento.Error.raise(
+        "Match Pattern length is not equal to the no. of attributes"
+      )
+    end
+  end
 
 end
