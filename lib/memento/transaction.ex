@@ -20,6 +20,16 @@ defmodule Memento.Transaction do
 
 
 
+  # Type Definitions
+  # ----------------
+
+  @typedoc "Maximum no. of retries for a transaction"
+  @type retries :: :infinity | non_neg_integer
+
+
+
+
+
   # Public API
   # ----------
 
@@ -31,7 +41,7 @@ defmodule Memento.Transaction do
   `{:ok, result}` or `{:error, reason}`. Also see
   `:mnesia.transaction/2`.
   """
-  @spec execute(fun, integer) :: {:ok, any} | {:error, any}
+  @spec execute(fun, retries) :: {:ok, any} | {:error, any}
   def execute(function, retries \\ :infinity) do
     :transaction
     |> Memento.Mnesia.call([function, retries])
@@ -52,7 +62,7 @@ defmodule Memento.Transaction do
   Returns either `{:ok, result}` or `{:error, reason}`. Also see
   `:mnesia.sync_transaction/2`.
   """
-  @spec execute_sync(fun, integer) :: {:ok, any} | {:error, any}
+  @spec execute_sync(fun, retries) :: {:ok, any} | {:error, any}
   def execute_sync(function, retries \\ :infinity) do
     :sync_transaction
     |> Memento.Mnesia.call([function, retries])

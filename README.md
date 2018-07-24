@@ -37,6 +37,7 @@ end
     - [ ] autoincrement
  - [x] Memento.Transaction
     - [x] Simple/Synchronous
+  - [ ] Bang versions
     - [x] inside?
     - [x] abort
     - [ ] Lock Helpers
