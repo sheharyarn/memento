@@ -142,4 +142,31 @@ defmodule Memento.Query do
 
 
 
+
+  @doc """
+  Writes a Memento record to its Mnesia table.
+
+  Returns `:ok` on success, or aborts the transaction on failure.
+  This operatiion acquires a lock of the kind specified, which can
+  be either `:write` or `:sticky_write` (defaults to `:write`).
+  See `t:lock` and `:mnesia.write/3` for more details.
+
+  The `key` is the important part. For now, this method does not
+  automatically generate new `keys`, so this has to be done on the
+  client side.
+
+  TODO: Implement some sort of `autogenerate` for write.
+
+  ## Examples
+
+  TODO: Add examples
+  """
+  @spec write(Table.record, Keyword.t(lock)) :: :ok
+  def write(record = %{__struct__: table}, opts \\ []) do
+    record = Query.Data.dump(record)
+    lock   = Keyword.get(opts, :lock, :write)
+
+    Mnesia.call(:write, [table, record, lock])
+  end
+
 end
