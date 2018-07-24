@@ -116,6 +116,20 @@ defmodule Memento.Query do
   when the table type is `:bag`. Since a bag can have many records
   with the same key, this returns only the first one. If you want to
   fetch all records with the given key, use `match/3` or `select/2`.
+
+
+  ## Example
+
+  ```
+  Memento.Query.read(Blog.Post, 1)
+  # => %Blog.Post{id: 1, ... }
+
+  Memento.Query.read(Blog.Post, 2, lock: :write)
+  # => %Blog.Post{id: 2, ... }
+
+  Memento.Query.read(Blog.Post, :unknown_id)
+  # => nil
+  ```
   """
   @spec read(Table.name, any, Keyword.t(lock)) :: Table.record | nil
   def read(table, id, opts \\ []) do
