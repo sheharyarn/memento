@@ -84,10 +84,10 @@ defmodule Memento.Query do
 
   - `coerce`: Records in Mnesia are stored in the form of a `tuple`.
   This converts them into simple Memento struct records of type
-  `t:Memento.Table.record`. This is also used in only some read
-  methods like `select/3` & `match/3`, and its value defaults to
-  `true`.
-
+  `t:Memento.Table.record`. This is equivalent to calling
+  `Query.Data.load/1` on the returned records. This option is only
+  available to some read methods like `select/3` & `match/3`, and its
+  value defaults to `true`.
   """
   @type options :: [
     lock: lock,
@@ -212,5 +212,34 @@ defmodule Memento.Query do
   end
 
 
+
+  # def all(table, opts \\ [])
+  # def first
+
+  @doc """
+  Returns all records in a table that match the specified pattern.
+
+  Default lock is :read
+  """
+  @spec match(Table.name, tuple, options) :: list(Table.record)
+  def match(table, pattern, opts \\ []) when is_tuple(pattern) do
+    lock = Keyword.get(opts, :lock, :read)
+
+    # Convert {x, y, z} -> {Table, x, y, z}
+    pattern =
+      List.to_tuple([ table | Tuple.to_list(pattern) ])
+
+    :match_object
+    |> Mnesia.call([table, pattern, lock])
+    |> Enum.map(&Query.Data.load/1)
+  end
+
+  # # Result is automatically formatted
+  # def where(table, pattern, lock: :read, limit: nil, coerce: true)
+
+  # # Result is not casted
+  # def select(table, match_spec, lock: :read, limit: nil, coerce: false)
+
+  # def test_matchspec
 
 end
