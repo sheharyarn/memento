@@ -17,6 +17,8 @@ defmodule Memento.Query do
   API provided by the Erlang `:mnesia` module.
 
 
+  TODO: mention non-nil keys
+
   ## Transaction Only
 
   All the methods exported by this module can only be executed
@@ -98,6 +100,19 @@ defmodule Memento.Query do
 
 
 
+  @typedoc """
+  Option Keyword that can be passed to some methods.
+
+  These are all the possible options that can be set in the given
+  keyword list, although it mostly depends on the method, which
+  options it actually uses.
+
+  ##
+  """
+  @type options :: [lock: lock, limit: non_neg_integer, coerce: boolean]
+
+
+
 
 
   # Public API
@@ -159,7 +174,13 @@ defmodule Memento.Query do
 
   ## Examples
 
-  TODO: Add examples
+  ```
+  Memento.Query.write(%Blog.Post{id: 4, title: "something", ... })
+  # => :ok
+
+  Memento.Query.write(%Blog.Author{username: "sye", ... })
+  # => :ok
+  ```
   """
   @spec write(Table.record, Keyword.t(lock)) :: :ok
   def write(record = %{__struct__: table}, opts \\ []) do
@@ -168,5 +189,6 @@ defmodule Memento.Query do
 
     Mnesia.call(:write, [table, record, lock])
   end
+
 
 end

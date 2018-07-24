@@ -36,5 +36,29 @@ defmodule Memento.Tests.Query do
     end
   end
 
+
+
+  describe "#write" do
+    @table Tables.User
+    setup(do: Memento.Table.create(@table))
+
+    test "writes the record to mnesia" do
+      Support.Mnesia.transaction fn ->
+        assert :ok = Query.write(%@table{id: :some_id, name: :some_name})
+        assert [{@table, :some_id, :some_name}] = :mnesia.read(@table, :some_id)
+      end
+    end
+
+    test "overwrites a previous record with same key" do
+      Support.Mnesia.transaction fn ->
+        :ok = Query.write(%@table{id: :key, name: :old_value})
+        :ok = Query.write(%@table{id: :key, name: :new_value})
+
+        assert [{@table, :key, :new_value}] = :mnesia.read(@table, :key)
+      end
+    end
+  end
+
+
 end
 
