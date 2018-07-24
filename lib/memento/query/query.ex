@@ -7,12 +7,10 @@ defmodule Memento.Query do
 
 
   @moduledoc """
-  Module to read/write from Memento Tables. All of the methods in
-  this module need to be executed within the context of a Memento
-  Transaction.
-
-  TODO: Write detailed examples
+  Module to read/write from Memento Tables.
   """
+
+
 
 
 
@@ -67,16 +65,18 @@ defmodule Memento.Query do
   Finds the Memento record for the given id in the specified table.
 
   If no record is found, `nil` is returned. You can also pass an
-  optional 3rd argument `lock`, which acquires a lock of that type.
-  Defaults to `:read`. See `t:lock` for more details.
+  optional keyword list as the 3rd argument. The only option currently
+  supported is `:lock`, which acquires a lock of specified type on the
+  operation (defaults to `:read`). See `t:lock` for more details.
 
   This method works a bit differently from the original `:mnesia.read/3`
   when the table type is `:bag`. Since a bag can have many records
   with the same key, this returns only the first one. If you want to
-  fetch all records with the given key, use `match/2` or `select/2`.
+  fetch all records with the given key, use `match/3` or `select/2`.
   """
-  @spec read(Table.name, any, lock) :: Table.record | nil
-  def read(table, id, lock \\ :read) do
+  @spec read(Table.name, any, Keyword.t(lock)) :: Table.record | nil
+  def read(table, id, opts \\ []) do
+    lock = Keyword.get(opts, :lock, :read)
     case Mnesia.call(:read, [table, id, lock]) do
       []           -> nil
       [record | _] -> Query.Data.load(record)
@@ -84,10 +84,5 @@ defmodule Memento.Query do
   end
 
 
-
-  def all
-  def first
-  def match
-  def select
 
 end
