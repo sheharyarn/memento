@@ -68,23 +68,8 @@ defmodule Memento.Tests.Query do
     @base {:_, :_, :_, :_}
 
     setup do
-      movies = [
-        %@table{id: 1, title: "Reservoir Dogs",   year: 1992, director: "Quentin Tarantino"},
-        %@table{id: 2, title: "Rush",             year: 1991, director: "Lili Zanuck"},
-        %@table{id: 3, title: "Jurassic Park",    year: 1993, director: "Steven Spielberg"},
-        %@table{id: 4, title: "Kill Bill",        year: 2003, director: "Quentin Tarantino"},
-        %@table{id: 5, title: "Pulp Fiction",     year: 1994, director: "Quentin Tarantino"},
-        %@table{id: 6, title: "Rush",             year: 2013, director: "Ron Howard"},
-        %@table{id: 7, title: "Jaws",             year: 1975, director: "Steven Spielberg"},
-        %@table{id: 8, title: "Schindler's List", year: 1993, director: "Steven Spielberg"},
-      ]
-
       Memento.Table.create(@table)
-      Support.Mnesia.transaction fn ->
-        Enum.map(movies, &Query.write/1)
-      end
-
-      :ok
+      @table.seed
     end
 
 
@@ -122,6 +107,26 @@ defmodule Memento.Tests.Query do
       Support.Mnesia.transaction fn ->
         assert [%{title: "Jurassic Park"}, %{title: "Schindler's List"}] =
           Query.match(@table, {:_, :_, 1993, "Steven Spielberg"})
+      end
+    end
+  end
+
+
+
+  describe "#all" do
+    @table Tables.Movie
+
+    setup do
+      Memento.Table.create(@table)
+      @table.seed
+    end
+
+    test "returns all records for a table" do
+      Support.Mnesia.transaction fn ->
+        movies = Query.all(@table)
+
+        assert length(movies) == 8
+        Enum.each(movies, &(assert %@table{} = &1))
       end
     end
   end

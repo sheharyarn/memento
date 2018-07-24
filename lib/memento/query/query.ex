@@ -214,8 +214,33 @@ defmodule Memento.Query do
 
 
 
-  # def all(table, opts \\ [])
-  # def first
+
+  @doc """
+  Returns all records of a Table.
+
+  This is equivalent to calling `match/3` with the catch-all pattern.
+  This also accepts an optional `lock` option to acquire that kind of
+  lock in the transaction (defaults to `:read`). See `t:lock` for more
+  details about lock types.
+
+  ```
+  # Both are equivalent
+  Memento.Query.all(Movie)
+  Memento.Query.match(Movie, {:_, :_, :_, :_})
+  ```
+  """
+  @spec all(Table.name, options) :: list(Table.record)
+  def all(table, opts \\ []) do
+    pattern = table.__info__.query_base
+    lock = Keyword.get(opts, :lock, :read)
+
+    :match_object
+    |> Mnesia.call([table, pattern, lock])
+    |> Enum.map(&Query.Data.load/1)
+  end
+
+
+
 
   @doc """
   Returns all records in a table that match the specified pattern.
@@ -244,14 +269,19 @@ defmodule Memento.Query do
   # Get all movies from the Table
   Memento.Query.match(Movie, {:_, :_, :_, :_})
 
-  # Get all movies named 'Rush'
-  Memento.Query.match(Movie, {:_, "Rush", :_, :_})
+  # Get all movies named 'Rush', with a write lock on the item
+  Memento.Query.match(Movie, {:_, "Rush", :_, :_}, lock: :write)
 
   # Get all movies directed by Tarantino
   Memento.Query.match(Movie, {:_, :_, :_, "Quentin Tarantino"})
 
   # Get all movies directed by Spielberg, in the year 1993
   Memento.Query.match(Movie, {:_, :_, 1993, "Steven Spielberg"})
+
+  # Will raise exceptions
+  Memento.Query.match(Movie, {:_, :_})
+  Memento.Query.match(Movie, {:_, :_, :_})
+  Memento.Query.match(Movie, {:_, :_, :_, :_, :_})
   ```
   """
   @spec match(Table.name, tuple, options) :: list(Table.record) | no_return

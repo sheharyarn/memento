@@ -33,6 +33,7 @@ end
     - [ ] match/select
     - [ ] read/write/delete
     - [ ] first/next/prev/all_keys
+    - [ ] test matchspec
     - [ ] autoincrement
  - [x] Memento.Transaction
     - [x] Simple/Synchronous
