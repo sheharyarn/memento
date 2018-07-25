@@ -236,7 +236,7 @@ defmodule Memento.Query do
 
     :match_object
     |> Mnesia.call([table, pattern, lock])
-    |> Enum.map(&Query.Data.load/1)
+    |> coerce_records
   end
 
 
@@ -295,7 +295,7 @@ defmodule Memento.Query do
 
     :match_object
     |> Mnesia.call([table, pattern, lock])
-    |> Enum.map(&Query.Data.load/1)
+    |> coerce_records
   end
 
 
@@ -319,6 +319,7 @@ defmodule Memento.Query do
   """
   @spec select_raw(Table.name, term, options) :: list(Table.record | tuple)
   def select_raw(table, match_spec, opts \\ []) do
+    # Default options
     lock   = Keyword.get(opts, :lock, :read)
     limit  = Keyword.get(opts, :limit, nil)
     coerce = Keyword.get(opts, :coerce, true)
@@ -331,12 +332,12 @@ defmodule Memento.Query do
       end
 
     # Execute select method with the no. of args
-    results = Mnesia.call(:select, args)
+    result = Mnesia.call(:select, args)
 
     # Coerce result conversion if `coerce: true`
     case coerce do
-      true  -> Enum.map(results, &Query.Data.load/1)
-      false -> results
+      true  -> coerce_records(result)
+      false -> result
     end
   end
 
@@ -354,6 +355,18 @@ defmodule Memento.Query do
 
   # Private Helpers
   # ---------------
+
+
+  # Coerce results when is simple list
+  defp coerce_records(records) when is_list(records) do
+    Enum.map(records, &Query.Data.load/1)
+  end
+
+  # Coerce results when is tuple
+  defp coerce_records({records, _term}) when is_list(records) do
+    # TODO: Use this {coerce_records(records), term}
+    coerce_records(records)
+  end
 
 
   # Raises error if tuple size and no. of attributes is not equal

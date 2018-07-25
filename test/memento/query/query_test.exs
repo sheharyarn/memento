@@ -131,5 +131,62 @@ defmodule Memento.Tests.Query do
     end
   end
 
+
+
+  describe "#select_raw" do
+    @table Tables.Movie
+    @match_all [{ @table.__info__.query_base, [], [:"$_"] }]
+
+    setup do
+      Memento.Table.create(@table)
+      @table.seed
+    end
+
+
+    test "Converts to structs when coerce is true" do
+      Support.Mnesia.transaction fn ->
+        records = Query.select_raw(@table, @match_all, coerce: true)
+
+        assert is_list(records)
+        assert [%@table{} | _rest] = records
+      end
+    end
+
+
+    test "Returns original tuple records when coerce is false" do
+      Support.Mnesia.transaction fn ->
+        results = Query.select_raw(@table, @match_all, coerce: false)
+        head = hd(results)
+
+        assert is_list(results)
+        assert {@table, _, _, _, _} = head
+      end
+    end
+
+
+    test "Returns tuple with cont term when limit is non-nil and coerce is false" do
+      Support.Mnesia.transaction fn ->
+        results = Query.select_raw(@table, @match_all, limit: 5, coerce: false)
+
+        assert {records, cont} = results
+        assert is_list(records)
+        assert length(records) == 5
+        assert {:mnesia_select, _, _, _, _, _, _, _, _, _} = cont
+        assert {@table, _, _, _, _} = hd(records)
+      end
+    end
+
+
+    test "Returns just the records when limit is non-nil and coerce is true" do
+      Support.Mnesia.transaction fn ->
+        records = Query.select_raw(@table, @match_all, limit: 5, coerce: true)
+
+        assert is_list(records)
+        assert length(records) == 5
+        assert [%@table{} | _rest] = records
+      end
+    end
+  end
+
 end
 
