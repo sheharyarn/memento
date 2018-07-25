@@ -12,12 +12,16 @@ alias Memento.{
   Support.Definitions,
 }
 
-alias Definitions.Tables.User, as: U
 
+# Table Aliases
+alias Definitions.Tables.User,  as: U
+alias Definitions.Tables.Movie, as: M
 
-# User Table
-t = table = U
-Table.create(t)
+# Create/Seed Tables
+Table.create(U)
+Table.create(M)
+U.seed
+M.seed
 
 
 # Transaction Helpers

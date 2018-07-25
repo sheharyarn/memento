@@ -3,7 +3,17 @@ defmodule Memento.Support.Definitions do
     @moduledoc "Helper table definitions"
 
     defmodule User do
+      alias __MODULE__
       use Memento.Table, attributes: [:id, :name]
+
+
+      def seed do
+        Memento.Support.Mnesia.transaction(fn ->
+          1..10
+          |> Enum.map(&%User{id: &1, name: "User #{&1}"})
+          |> Enum.each(&Memento.Query.write/1)
+        end)
+      end
     end
 
 
