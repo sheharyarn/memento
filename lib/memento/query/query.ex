@@ -48,7 +48,7 @@ defmodule Memento.Query do
   ```
 
 
-  ## Advanced Queries
+  ## Advanced Queries and MatchSpec
 
   Special cases here are the `match/3` and `select/3` methods,
   which use a superset of Erlang's
@@ -291,11 +291,53 @@ defmodule Memento.Query do
 
     # Convert {x, y, z} -> {Table, x, y, z}
     pattern =
-      List.to_tuple([ table | Tuple.to_list(pattern) ])
+      Tuple.insert_at(pattern, 0, table)
 
     :match_object
     |> Mnesia.call([table, pattern, lock])
     |> Enum.map(&Query.Data.load/1)
+  end
+
+
+
+
+  @doc """
+  Returns all records in the given table according to the full Erlang
+  `match_spec`.
+
+  This method accepts a pure Erlang `match_spec` term as described in the
+  [Advanced Queries](#module-advanced-queries-and-matchspec) section above.
+  The arguments are directly passed on to the `:mnesia.select/4` method
+  without translating queries.
+
+  This method also accepts these options. To find more about them, see
+  `t:options`.
+
+  - `lock` - Defaults to `:read`
+  - `limit` - Defaults to `nil`
+  - `coerce` - Defaults to `true`
+  """
+  @spec select_raw(Table.name, term, options) :: list(Table.record | tuple)
+  def select_raw(table, match_spec, opts \\ []) do
+    lock   = Keyword.get(opts, :lock, :read)
+    limit  = Keyword.get(opts, :limit, nil)
+    coerce = Keyword.get(opts, :coerce, true)
+
+    # Use select/4 if there is limit, otherwise use select/3
+    args =
+      case limit do
+        nil   -> [table, match_spec, lock]
+        limit -> [table, match_spec, limit, lock]
+      end
+
+    # Execute select method with the no. of args
+    results = Mnesia.call(:select, args)
+
+    # Coerce result conversion if `coerce: true`
+    case coerce do
+      true  -> Enum.map(results, &Query.Data.load/1)
+      false -> results
+    end
   end
 
   # # Result is automatically formatted
