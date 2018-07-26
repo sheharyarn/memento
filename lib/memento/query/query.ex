@@ -350,7 +350,7 @@ defmodule Memento.Query do
   specify an exact value to be matched against that field, and `:"$n"`
   variables (`:"$1"`, `:"$2"`, ...) are used so they can be referenced
   in the guard. You can get a catch-all value for match_head by calling
-  `YourTable.__info__().base_query`.
+  `YourTable.__info__().query_base.
 
   The second element in the tuple is a list of `guard` terms, where each
   guard is basically a tuple representing a condition of the form
@@ -360,6 +360,82 @@ defmodule Memento.Query do
   fields, `:"$n"` to return a specific field or `:"$$"` for all fields
   specified as variables in the `match_head`.
 
+
+  ## Examples
+
+  Suppose a `Movie` Table with these attributes: `id`, `title`, `year`,
+  and `director`. So the tuple passed in the match query should have
+  4 elements.
+
+  Return all records:
+
+  ```
+  match_head = Movie.__info__.query_base
+  result = [:"$_"]
+  guards = []
+
+  Memento.Query.select_raw(Movie, [{match_head, guards, result}])
+  # => [%Movie{...}, ...]
+  ```
+
+  Get all movies with the title "Rush":
+
+  ```
+  # 1. Using match_head pattern
+  match_head = {Movie, :"$1", "Rush", :"$2", :"$3"}
+  result = [:"$_"]
+  guards = []
+
+  Memento.Query.select_raw(Movie, [{match_head, guards, result}])
+  # => [%Movie{title: "Rush", ...}, ...]
+
+
+  # 2. Using Guards
+  match_head = {Movie, :"$1", :"$2", :"$3", :"$4"}
+  result = [:"$_"]
+  guards = [{:==, :"$2", "Rush"}]
+
+  Memento.Query.select_raw(Movie, [{match_head, guards, result}])
+  # => [%Movie{title: "Rush", ...}, ...]
+  ```
+
+  Get all movies title names, that were directed by Tarantino before the year 2000:
+
+  ```
+  # Using guards only here, but you can mix and match.
+  # You can also use a nested `{:andalso, guard1, guard2}` tuple
+  # here instead.
+  #
+  # We used the result value `[:"$2"]` so it only returns the
+  # second (i.e. title) field. Because of this, we're also not
+  # coercing the results.
+
+  match_head = {Movie, :"$1", :"$2", :"$3", :"$4"}
+  result = [:"$2"]
+  guards = [{:<, :"$3", 2000}, {:==, :"$4", "Quentin Tarantino"}]
+
+  Memento.Query.select_raw(Movie, [{match_head, guards, result}], coerce: false)
+  # => ["Reservoir Dogs", "Pulp Fiction", ...]
+  ```
+
+  Get all movies directed by Tarantino or Spielberg, after the year 2010:
+
+  ```
+  match_head = {Movie, :"$1", :"$2", :"$3", :"$4"}
+  result = [:"$_"]
+  guards = [
+    {:andalso,
+      {:>, :"$3", 2010},
+      {:orelse,
+        {:==, :"$4", "Quentin Tarantino"},
+        {:==, :"$4", "Steven Spielberg"},
+      }
+    }
+  ]
+
+  Memento.Query.select_raw(Movie, [{match_head, guards, result}], coerce: true)
+  # => [%Movie{...}, ...]
+  ```
 
   ## Notes
 
