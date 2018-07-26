@@ -305,17 +305,76 @@ defmodule Memento.Query do
   Returns all records in the given table according to the full Erlang
   `match_spec`.
 
-  This method accepts a pure Erlang `match_spec` term as described in the
-  [Advanced Queries](#module-advanced-queries-and-matchspec) section above.
+  This method accepts a pure Erlang `match_spec` term as described below,
+  which can be used to write some very complex queries, but that also
+  makes it very hard to use for beginners, and overly complex for everyday
+  queries. It is highly recommended that you use the `select/3` method
+  which makes it much easier to write complex queries that work just as
+  well in 99% of the cases, by making some assumptions.
+
   The arguments are directly passed on to the `:mnesia.select/4` method
-  without translating queries.
+  without translating queries, as they are done in `select/3`.
+
+
+  ## Options
 
   This method also accepts these options. To find more about them, see
   `t:options`.
 
-  - `lock` - Defaults to `:read`
-  - `limit` - Defaults to `nil`
-  - `coerce` - Defaults to `true`
+  - `lock` - The kind of lock that should be acquired on the selection
+  as part of the transation (defaults to `:read`).
+  - `limit` - The maximum number of items to return (defaults to `nil`,
+  meaning return all).
+  - `coerce` - Force conversion of mnesia tuple results into Memento
+  table records (defaults to `true`).
+
+
+  ## Match Spec
+
+  An Erlang "Match Specification" or `match_spec` is a term describing
+  a small program that tries to match something. This is most popularly
+  used in both `:ets` and `:mnesia`. Quite simply, the grammar can be
+  defined as:
+
+  - `match_spec` = `[match_function, ...]` (List of match functions)
+  - `match_function` = `{match_head, [guard, ...], [result]}`
+  - `match_head` = `tuple` (A tuple representing attributes to match)
+  - `guard` = A tuple representing conditions for selection
+  - `result` = Atom describing the fields to return as the result
+
+  The `match_spec` is a list of `match_functions` (usually one is more
+  than enough). Each `match_function` consists of a three-element
+  tuple. The first element is the `match_head` which describes the
+  attributes to match. The first value of the tuple is the name of the
+  table, while the rest are for the attributes. Exact terms are used to
+  specify an exact value to be matched against that field, and `:"$n"`
+  variables (`:"$1"`, `:"$2"`, ...) are used so they can be referenced
+  in the guard. You can get a catch-all value for match_head by calling
+  `YourTable.__info__().base_query`.
+
+  The second element in the tuple is a list of `guard` terms, where each
+  guard is basically a tuple representing a condition of the form
+  `{operation, arg1, arg2}` which can be simple `{:==, :"$2", literal}`
+  tuples or nested values like `{:andalso, guard1, guard2}`. Finally,
+  `result` represents the fields to return. Use `:"$_"` to return all
+  fields, `:"$n"` to return a specific field or `:"$$"` for all fields
+  specified as variables in the `match_head`.
+
+
+  ## Notes
+
+  - It's important to note that for customized results (not equal to
+  `:"$_"`), you should specify `coerce: false`, so it doesn't raise errors.
+
+  - Unlike the `select/3` method, the `operation` values the `guard` tuples
+  take in this method, are Erlang atoms, not Elixir ones. For example,
+  instead of `:and` & `:or`, they will be `:andalso` & `:orelse`. Similarly,
+  you will have to use `:"/="` instead of `:!=` and `:"=<"` instead of `:<=`.
+
+  See the [`Match Specification`](http://erlang.org/doc/apps/erts/match_spec.html)
+  docs, [`:mnesia.select/2`](http://erlang.org/doc/man/mnesia.html#select-2)
+  and [`:ets.select/2`](http://erlang.org/doc/man/ets.html#select-2) for
+  more details and examples.
   """
   @spec select_raw(Table.name, term, options) :: list(Table.record | tuple)
   def select_raw(table, match_spec, opts \\ []) do

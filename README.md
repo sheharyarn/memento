@@ -29,12 +29,14 @@ end
     - [ ] Ecto-like DSL
     - [ ] Migration Support
  - [x] Memento.Query
-    - [ ] Integration with Memento.Table
+    - [x] Integration with Memento.Table
     - [ ] match/select
     - [ ] read/write/delete
     - [ ] first/next/prev/all_keys
     - [ ] test matchspec
+    - [ ] continue/1 for select continuations
     - [ ] autoincrement
+    - [ ] Helper use macro
  - [x] Memento.Transaction
     - [x] Simple/Synchronous
     - [ ] Bang versions
