@@ -60,5 +60,12 @@ defmodule Memento.Support do
       Memento.Transaction.execute(fun)
     end
 
+
+    def select_raw(table, match_spec, opts \\ []) do
+      transaction fn ->
+        Memento.Query.select_raw(table, match_spec, opts)
+      end
+    end
+
   end
 end

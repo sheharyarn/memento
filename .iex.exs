@@ -25,6 +25,7 @@ M.seed
 
 
 # Transaction Helpers
+raw = &Support.Mnesia.select_raw/3
 trx = &Support.Mnesia.transaction/1
 mrx = &:mnesia.transaction/1
 
