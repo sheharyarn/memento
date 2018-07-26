@@ -86,7 +86,7 @@ defmodule Memento.Tests.Query do
       Support.Mnesia.transaction fn ->
         movies = Query.match(@table, @base)
 
-        assert length(movies) == 8
+        assert length(movies) == 12
         Enum.each(movies, &(assert %@table{} = &1))
       end
     end
@@ -125,7 +125,7 @@ defmodule Memento.Tests.Query do
       Support.Mnesia.transaction fn ->
         movies = Query.all(@table)
 
-        assert length(movies) == 8
+        assert length(movies) == 12
         Enum.each(movies, &(assert %@table{} = &1))
       end
     end
