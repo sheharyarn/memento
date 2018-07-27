@@ -1,9 +1,11 @@
 defmodule Memento.Mnesia do
   alias Memento.MnesiaException
 
-  @moduledoc """
-  Helper wrapper module to delegate calls to Erlang's `:mnesia`
-  """
+  @moduledoc false
+
+  # Helper module to delegate calls to Erlang's `:mnesia`
+  # via a macro, handle the result including re-raising
+  # any errors that have been caught.
 
 
 
