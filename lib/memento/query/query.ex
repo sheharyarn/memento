@@ -73,22 +73,22 @@ defmodule Memento.Query do
 
   ## Options
 
-  - `lock`: What kind of lock to acquire on the item in that
+  - `lock` - What kind of lock to acquire on the item in that
   transaction. This is the most common option, that almost all
   methods accept, and usually has some default value depending on
   the method. See `t:lock/0` for more details.
 
-  - `limit`: The maximum number of items to return in a query.
+  - `limit` - The maximum number of items to return in a query.
   This is used only read queries like `match/3` or `select/3`, and
   is of the type `t:non_neg_integer/0`. Defaults to `nil`, resulting
   in no limit and returning all records.
 
-  - `coerce`: Records in Mnesia are stored in the form of a `tuple`.
+  - `coerce` - Records in Mnesia are stored in the form of a Tuple.
   This converts them into simple Memento struct records of type
   `t:Memento.Table.record/0`. This is equivalent to calling
-  `Query.Data.load/1` on the returned records. This option is only
-  available to some read methods like `select/3` & `match/3`, and its
-  value defaults to `true`.
+  `Memento.Query.Data.load/1` on the returned records. This option is
+  only available to some read methods like `select/3` & `match/3`,
+  and its value defaults to `true`.
   """
   @type options :: [
     lock: lock,

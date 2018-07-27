@@ -1,12 +1,12 @@
 defmodule Memento.Table.Definition do
-  @moduledoc """
-  Helper module to build Memento Tables with the `use` macro
-  """
+  @moduledoc false
+
+  # Helper module to build Memento Tables with the `use` macro.
+  # This module is used to define Memento Tables at compile
+  # time, so this not be used directly (unless you absolutely
+  # know what you're doing).
 
 
-
-  # Public API
-  # ----------
 
 
   @doc """
