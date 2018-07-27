@@ -43,7 +43,7 @@ defmodule Memento.Mixfile do
   defp deps do
     [
       {:amnesia, "~> 0.2.0"},
-      {:ex_doc,  "~> 0.18.0", only: :dev},
+      {:ex_doc,  "~> 0.18.0", only: :docs},
     ]
   end
 
@@ -51,6 +51,7 @@ defmodule Memento.Mixfile do
   # Compilation Paths
   defp elixirc_paths(:dev),  do: elixirc_paths(:test)
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:docs), do: ["lib"]
   defp elixirc_paths(_),     do: ["lib"]
 
 
