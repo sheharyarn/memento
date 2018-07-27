@@ -433,7 +433,7 @@ defmodule Memento.Query do
   See the [`Match Specification`](http://erlang.org/doc/apps/erts/match_spec.html)
   docs, `:mnesia.select/2` and `:ets.select/2` more details and examples.
   """
-  @spec select_raw(Table.name, term, options) :: list(Table.record | tuple)
+  @spec select_raw(Table.name, term, options) :: list(Table.record) | list(term)
   def select_raw(table, match_spec, opts \\ []) do
     # Default options
     lock   = Keyword.get(opts, :lock, :read)
@@ -455,6 +455,26 @@ defmodule Memento.Query do
       true  -> coerce_records(result)
       false -> result
     end
+  end
+
+
+
+
+  @doc """
+  Delete a Record in the given table for the specified key.
+
+  This method takes a Memento.Table name and a key, and deletes all
+  records with that key (There can be more than one for table type
+  of `bag`). Options default to `[lock: :write]`.
+
+  If you want to delete a record, by passing the record itself as
+  the argument, see `delete_record/3`.
+  """
+  @spec delete(Table.name, term) :: :ok
+  def delete(table, key, opts \\ []) do
+    lock = Keyword.get(opts, :lock, :write)
+
+    Mnesia.call(:delete, [table, key, lock])
   end
 
   # # Result is automatically formatted
