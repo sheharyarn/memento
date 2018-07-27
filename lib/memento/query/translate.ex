@@ -1,13 +1,9 @@
 defmodule Memento.Query.Translate do
-  @moduledoc """
-  Helper module to convert Memento queries into Erlang
-  match_spec
-  """
+  @moduledoc false
 
+  # Helper module to convert Query.select patterns into
+  # Erlang match_spec.
 
-
-  # Public API
-  # ----------
 
 
   @doc """
@@ -27,7 +23,7 @@ defmodule Memento.Query.Translate do
 
   def translate(map, {operation, arg1, arg2}) do
     {
-      translate_operation(operation),
+      rewrite_guard(operation),
       translate(map, arg1),
       translate(map, arg2)
     }
@@ -39,15 +35,17 @@ defmodule Memento.Query.Translate do
 
 
 
-
-  # Private Helpers
-  # ---------------
-
+  # Private
+  # -------
 
   # Translates Operations into those defined by the
   # Erlang match spec
-  defp translate_operation(:or),  do: :orelse
-  defp translate_operation(:and), do: :andalso
-  defp translate_operation(term), do: term
+  defp rewrite_guard(:or),    do: :orelse
+  defp rewrite_guard(:and),   do: :andalso
+  defp rewrite_guard(:<=),    do: :"=<"
+  defp rewrite_guard(:!=),    do: :"/="
+  defp rewrite_guard(:===),   do: :"=:="
+  defp rewrite_guard(:!==),   do: :"=/="
+  defp rewrite_guard(term),   do: term
 
 end
