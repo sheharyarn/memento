@@ -76,16 +76,16 @@ defmodule Memento.Query do
   - `lock`: What kind of lock to acquire on the item in that
   transaction. This is the most common option, that almost all
   methods accept, and usually has some default value depending on
-  the method. See `t:lock` for more details.
+  the method. See `t:lock/0` for more details.
 
   - `limit`: The maximum number of items to return in a query.
   This is used only read queries like `match/3` or `select/3`, and
-  is of the type `t:non_neg_integer`. Defaults to `nil`, resulting
+  is of the type `t:non_neg_integer/0`. Defaults to `nil`, resulting
   in no limit and returning all records.
 
   - `coerce`: Records in Mnesia are stored in the form of a `tuple`.
   This converts them into simple Memento struct records of type
-  `t:Memento.Table.record`. This is equivalent to calling
+  `t:Memento.Table.record/0`. This is equivalent to calling
   `Query.Data.load/1` on the returned records. This option is only
   available to some read methods like `select/3` & `match/3`, and its
   value defaults to `true`.
@@ -147,7 +147,7 @@ defmodule Memento.Query do
   If no record is found, `nil` is returned. You can also pass an
   optional keyword list as the 3rd argument. The only option currently
   supported is `:lock`, which acquires a lock of specified type on the
-  operation (defaults to `:read`). See `t:lock` for more details.
+  operation (defaults to `:read`). See `t:lock/0` for more details.
 
   This method works a bit differently from the original `:mnesia.read/3`
   when the table type is `:bag`. Since a bag can have many records
@@ -186,7 +186,7 @@ defmodule Memento.Query do
   Returns `:ok` on success, or aborts the transaction on failure.
   This operatiion acquires a lock of the kind specified, which can
   be either `:write` or `:sticky_write` (defaults to `:write`).
-  See `t:lock` and `:mnesia.write/3` for more details.
+  See `t:lock/0` and `:mnesia.write/3` for more details.
 
   The `key` is the important part. For now, this method does not
   automatically generate new `keys`, so this has to be done on the
@@ -220,8 +220,8 @@ defmodule Memento.Query do
 
   This is equivalent to calling `match/3` with the catch-all pattern.
   This also accepts an optional `lock` option to acquire that kind of
-  lock in the transaction (defaults to `:read`). See `t:lock` for more
-  details about lock types.
+  lock in the transaction (defaults to `:read`). See `t:lock/0` for
+  more details about lock types.
 
   ```
   # Both are equivalent
@@ -257,7 +257,7 @@ defmodule Memento.Query do
 
   Also accepts an optional argument `:lock` to acquire the kind of
   lock specified in that transaction (defaults to `:read`). See
-  `t:lock` for more details. Also see `:mnesia.match_object/3`.
+  `t:lock/0` for more details. Also see `:mnesia.match_object/3`.
 
   ## Examples
 
@@ -318,15 +318,11 @@ defmodule Memento.Query do
 
   ## Options
 
-  This method also accepts these options. To find more about them, see
-  `t:options`.
+  See `t:options/0` for details about these options:
 
-  - `lock` - The kind of lock that should be acquired on the selection
-  as part of the transation (defaults to `:read`).
-  - `limit` - The maximum number of items to return (defaults to `nil`,
-  meaning return all).
-  - `coerce` - Force conversion of mnesia tuple results into Memento
-  table records (defaults to `true`).
+  - `lock` (defaults to `:read`)
+  - `limit` (defaults to `nil`, meaning return all)
+  - `coerce` (defaults to `true`)
 
 
   ## Match Spec
@@ -342,15 +338,11 @@ defmodule Memento.Query do
   - `guard` = A tuple representing conditions for selection
   - `result` = Atom describing the fields to return as the result
 
-  The `match_spec` is a list of `match_functions` (usually one is more
-  than enough). Each `match_function` consists of a three-element
-  tuple. The first element is the `match_head` which describes the
-  attributes to match. The first value of the tuple is the name of the
-  table, while the rest are for the attributes. Exact terms are used to
-  specify an exact value to be matched against that field, and `:"$n"`
-  variables (`:"$1"`, `:"$2"`, ...) are used so they can be referenced
-  in the guard. You can get a catch-all value for match_head by calling
-  `YourTable.__info__().query_base.
+  Here, the `match_head` describes the attributes to match (like in
+  `match/3`. You can use literals to specify an exact value to be
+  matched against or `:"$n"` variables (`:$1`, `:$2`, ...)  that can be
+  used so they can be referenced in the guards. You can get a default
+  value by calling `YourTable.__info__().query_base`.
 
   The second element in the tuple is a list of `guard` terms, where each
   guard is basically a tuple representing a condition of the form
@@ -381,19 +373,10 @@ defmodule Memento.Query do
   Get all movies with the title "Rush":
 
   ```
-  # 1. Using match_head pattern
+  # We're using the match_head pattern here, but you can also use guards
   match_head = {Movie, :"$1", "Rush", :"$2", :"$3"}
   result = [:"$_"]
   guards = []
-
-  Memento.Query.select_raw(Movie, [{match_head, guards, result}])
-  # => [%Movie{title: "Rush", ...}, ...]
-
-
-  # 2. Using Guards
-  match_head = {Movie, :"$1", :"$2", :"$3", :"$4"}
-  result = [:"$_"]
-  guards = [{:==, :"$2", "Rush"}]
 
   Memento.Query.select_raw(Movie, [{match_head, guards, result}])
   # => [%Movie{title: "Rush", ...}, ...]
@@ -402,7 +385,7 @@ defmodule Memento.Query do
   Get all movies title names, that were directed by Tarantino before the year 2000:
 
   ```
-  # Using guards only here, but you can mix and match.
+  # Using guards only here, but you can mix and match with head.
   # You can also use a nested `{:andalso, guard1, guard2}` tuple
   # here instead.
   #
@@ -443,14 +426,12 @@ defmodule Memento.Query do
   `:"$_"`), you should specify `coerce: false`, so it doesn't raise errors.
 
   - Unlike the `select/3` method, the `operation` values the `guard` tuples
-  take in this method, are Erlang atoms, not Elixir ones. For example,
+  take in this method are Erlang atoms, not Elixir ones. For example,
   instead of `:and` & `:or`, they will be `:andalso` & `:orelse`. Similarly,
   you will have to use `:"/="` instead of `:!=` and `:"=<"` instead of `:<=`.
 
   See the [`Match Specification`](http://erlang.org/doc/apps/erts/match_spec.html)
-  docs, [`:mnesia.select/2`](http://erlang.org/doc/man/mnesia.html#select-2)
-  and [`:ets.select/2`](http://erlang.org/doc/man/ets.html#select-2) for
-  more details and examples.
+  docs, `:mnesia.select/2` and `:ets.select/2` more details and examples.
   """
   @spec select_raw(Table.name, term, options) :: list(Table.record | tuple)
   def select_raw(table, match_spec, opts \\ []) do

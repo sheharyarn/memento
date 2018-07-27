@@ -3,7 +3,7 @@ defmodule Memento.Schema do
 
 
   @moduledoc """
-  Module to interact with the schema database.
+  Module to interact with the database schema.
 
   For persisting data, Mnesia databases need to be created on disk. This
   module provides an interface to create the database on the disk of the
