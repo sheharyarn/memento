@@ -356,8 +356,8 @@ defmodule Memento.Query do
   ## Examples
 
   Suppose a `Movie` Table with these attributes: `id`, `title`, `year`,
-  and `director`. So the tuple passed in the match query should have
-  4 elements.
+  and `director`. So the tuple passed as the match_head should have
+  5 elements.
 
   Return all records:
 
@@ -463,19 +463,41 @@ defmodule Memento.Query do
   @doc """
   Delete a Record in the given table for the specified key.
 
-  This method takes a Memento.Table name and a key, and deletes all
+  This method takes a `Memento.Table` name and a key, and deletes all
   records with that key (There can be more than one for table type
   of `bag`). Options default to `[lock: :write]`.
 
   If you want to delete a record, by passing the record itself as
-  the argument, see `delete_record/3`.
+  the argument, see `delete_record/2`.
   """
-  @spec delete(Table.name, term) :: :ok
+  @spec delete(Table.name, term, options) :: :ok
   def delete(table, key, opts \\ []) do
     lock = Keyword.get(opts, :lock, :write)
 
     Mnesia.call(:delete, [table, key, lock])
   end
+
+
+
+
+  @doc """
+  Delete the given Memento record object.
+
+  This method accepts a `t:Memento.Table.record/0` object and deletes
+  that from its table. A complete record object needs to be specified
+  for this to work. Options default to `[lock: :write]`.
+
+  This method is especially useful in Tables of type `bag` where
+  multiple records can have the same key. Also see `delete/3`.
+  """
+  @spec delete_record(Table.record, options) :: :ok
+  def delete_record(record = %{__struct__: table}, opts \\ []) do
+    record = Query.Data.dump(record)
+    lock = Keyword.get(opts, :lock, :write)
+
+    Mnesia.call(:delete_object, [table, record, lock])
+  end
+
 
   # # Result is automatically formatted
   # def where(table, pattern, lock: :read, limit: nil, coerce: true)
