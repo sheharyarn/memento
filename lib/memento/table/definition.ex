@@ -53,14 +53,12 @@ defmodule Memento.Table.Definition do
   Builds the list of fields to be passed to `defstruct`
   in the Table definition at compile-time.
 
-  # Disabled extra :__meta__ value for now.
-  # Prepends an extra `:__meta__` field with the default
-  # value of `Memento.Table`.
+  Prepends an extra `:__meta__` field with the default
+  value of `Memento.Table`.
   """
   @spec build_map(list) :: list
   def struct_fields(attributes) do
-    # [{:__meta__, Memento.Table} | attributes]
-    attributes
+    [{:__meta__, Memento.Table} | attributes]
   end
 
 
