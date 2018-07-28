@@ -133,6 +133,28 @@ defmodule Memento.Tests.Query do
 
 
 
+  describe "#delete" do
+    @table Tables.Email
+
+    setup do
+      Memento.Table.create(@table)
+      @table.seed
+    end
+
+    @key 2
+    test "deletes all records for given key" do
+      all = fn -> :mnesia.match_object({@table, @key, :_}) end
+
+      Support.Mnesia.transaction fn ->
+        assert length(all.()) == 3
+        assert :ok = Query.delete(@table, @key)
+        assert length(all.()) == 0
+      end
+    end
+  end
+
+
+
   describe "#select_raw" do
     @table Tables.Movie
     @match_all [{ @table.__info__.query_base, [], [:"$_"] }]
