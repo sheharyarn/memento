@@ -339,7 +339,7 @@ defmodule Memento.Query do
   - `result` = Atom describing the fields to return as the result
 
   Here, the `match_head` describes the attributes to match (like in
-  `match/3`. You can use literals to specify an exact value to be
+  `match/3`). You can use literals to specify an exact value to be
   matched against or `:"$n"` variables (`:$1`, `:$2`, ...)  that can be
   used so they can be referenced in the guards. You can get a default
   value by calling `YourTable.__info__().query_base`.
@@ -469,6 +469,14 @@ defmodule Memento.Query do
 
   If you want to delete a record, by passing the record itself as
   the argument, see `delete_record/2`.
+
+
+  ## Examples
+
+  ```
+  # Delete a Blog Post record with the id `10` (primary key)
+  Memento.Query.delete(Blog.Post, 10)
+  ```
   """
   @spec delete(Table.name, term, options) :: :ok
   def delete(table, key, opts \\ []) do
@@ -489,6 +497,22 @@ defmodule Memento.Query do
 
   This method is especially useful in Tables of type `bag` where
   multiple records can have the same key. Also see `delete/3`.
+
+
+  ## Examples
+
+  Consider an `Email` table of type `bag`, with two attributes;
+  `user_id` and `email`, where `user_id` is the primary key. The Table
+  contains all email addresses for a given user.
+
+  ```
+  # Calling `delete` will delete all emails for a `user_id`:
+  Memento.Query.delete(Email, user_id)
+
+  # To delete a specific record, you have to pass the entire object:
+  email_record = %Email{user_id: 5, email: "a.specific@email.addr"}
+  Memento.Query.delete_record(email_record)
+  ```
   """
   @spec delete_record(Table.record, options) :: :ok
   def delete_record(record = %{__struct__: table}, opts \\ []) do
