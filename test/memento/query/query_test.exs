@@ -135,13 +135,13 @@ defmodule Memento.Tests.Query do
 
   describe "#delete" do
     @table Tables.Email
+    @key 2
 
     setup do
       Memento.Table.create(@table)
       @table.seed
     end
 
-    @key 2
     test "deletes all records for given key" do
       all = fn -> :mnesia.match_object({@table, @key, :_}) end
 
@@ -149,6 +149,29 @@ defmodule Memento.Tests.Query do
         assert length(all.()) == 3
         assert :ok = Query.delete(@table, @key)
         assert length(all.()) == 0
+      end
+    end
+  end
+
+
+
+  describe "#delete_record" do
+    @table Tables.Email
+    @key 2
+
+    setup do
+      Memento.Table.create(@table)
+      @table.seed
+    end
+
+    test "deletes a specific record" do
+      all = fn -> :mnesia.match_object({@table, @key, :_}) end
+      record = %@table{user_id: 2, email: "user.2@example.com"}
+
+      Support.Mnesia.transaction fn ->
+        assert length(all.()) == 3
+        assert :ok = Query.delete_record(record)
+        assert length(all.()) == 2
       end
     end
   end
