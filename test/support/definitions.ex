@@ -17,6 +17,29 @@ defmodule Memento.Support.Definitions do
     end
 
 
+    defmodule Email do
+      alias __MODULE__
+      use Memento.Table,
+        type: :bag,
+        attributes: [:user_id, :email]
+
+      def seed do
+        emails = [
+          %Email{user_id: 1, email: "user.1@gmail.com"},
+          %Email{user_id: 1, email: "user.1@outlook.com"},
+          %Email{user_id: 2, email: "user.2@outlook.com"},
+          %Email{user_id: 2, email: "user.2@gmail.com"},
+          %Email{user_id: 2, email: "user.2@example.com"},
+          %Email{user_id: 3, email: "user.3@gmail.com"},
+        ]
+
+        Memento.Support.Mnesia.transaction(fn ->
+          Enum.each(emails, &Memento.Query.write/1)
+        end)
+      end
+    end
+
+
     defmodule Movie do
       alias __MODULE__
       use Memento.Table,

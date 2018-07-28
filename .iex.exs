@@ -15,12 +15,17 @@ alias Memento.{
 
 # Table Aliases
 alias Definitions.Tables.User,  as: U
+alias Definitions.Tables.Email, as: E
 alias Definitions.Tables.Movie, as: M
 
-# Create/Seed Tables
+# Create Tables
 Table.create(U)
+Table.create(E)
 Table.create(M)
+
+# Seed with some values
 U.seed
+E.seed
 M.seed
 
 
