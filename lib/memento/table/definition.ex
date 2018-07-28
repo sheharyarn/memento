@@ -78,9 +78,4 @@ defmodule Memento.Table.Definition do
     }
   end
 
-  # TODO: Delete this when Amnesia is removed
-  defp build_reducer({attr, nil}, {map, position}) do
-    build_reducer(attr, {map, position})
-  end
-
 end

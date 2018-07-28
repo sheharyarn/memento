@@ -31,7 +31,7 @@ end
  - [x] Memento.Query
     - [x] Integration with Memento.Table
     - [ ] match/select
-    - [ ] read/write/delete
+    - [x] read/write/delete
     - [ ] first/next/prev/all_keys
     - [ ] test matchspec
     - [ ] continue/1 for select continuations
