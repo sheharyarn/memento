@@ -178,6 +178,73 @@ defmodule Memento.Tests.Query do
 
 
 
+  describe "#select" do
+    @table Tables.Movie
+
+    setup do
+      Memento.Table.create(@table)
+      @table.seed
+    end
+
+
+    test "returns all records for empty guard" do
+      Support.Mnesia.transaction fn ->
+        movies = Query.select(@table, [])
+
+        assert length(movies) == 12
+        Enum.each(movies, &(assert %@table{} = &1))
+      end
+    end
+
+
+    test "returns all records that match a specific attribute" do
+      Support.Mnesia.transaction fn ->
+        assert [%{title: "Jaws", year: 1975}] =
+          Query.select(@table, {:==, :year, 1975})
+
+        assert [%{title: "Rush"}, %{title: "Rush"}] =
+          Query.select(@table, {:==, :title, "Rush"})
+      end
+    end
+
+
+    test "returns all records that match multiple attributes" do
+      {:ok, movies} =
+        Support.Mnesia.transaction fn ->
+          Query.select(@table, [
+            {:==, :year, 1993},
+            {:==, :director, "Steven Spielberg"},
+          ])
+        end
+
+      assert [%{title: "Jurassic Park"}, %{title: "Schindler's List"}] = movies
+    end
+
+
+    test "works with complex nested guards" do
+      guards =
+        {:and,
+          {:>=, :year, 2010},
+          {:or,
+            {:==, :director, "Quentin Tarantino"},
+            {:==, :director, "Steven Spielberg"},
+          }
+        }
+
+      {:ok, movies} =
+        Support.Mnesia.transaction fn ->
+          Query.select(@table, guards)
+        end
+
+      Enum.each(movies, fn m ->
+        assert m.year > 2010
+        assert m.director in ["Quentin Tarantino", "Steven Spielberg"]
+      end)
+    end
+  end
+
+
+
   describe "#select_raw" do
     @table Tables.Movie
     @match_all [{ @table.__info__.query_base, [], [:"$_"] }]
