@@ -13,7 +13,7 @@ defmodule Memento.Query.Spec do
   end
 
   def build(guard, query_map) when is_tuple(guard) do
-    build(query_map, [guard])
+    build([guard], query_map)
   end
 
 

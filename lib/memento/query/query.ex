@@ -302,6 +302,22 @@ defmodule Memento.Query do
 
 
   @doc """
+  Return all records matching the given query.
+  """
+  @spec select(Table.name, list(tuple) | tuple, options) :: list(Table.record)
+  def select(table, guards, opts \\ []) do
+    attr_map   = table.__info__.query_map
+    match_head = table.__info__.query_base
+    guards     = Memento.Query.Spec.build(guards, attr_map)
+    result     = [:"$_"]
+
+    select_raw(table, [{ match_head, guards, result }], opts)
+  end
+
+
+
+
+  @doc """
   Returns all records in the given table according to the full Erlang
   `match_spec`.
 
