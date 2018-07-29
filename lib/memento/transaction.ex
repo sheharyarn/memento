@@ -5,16 +5,39 @@ defmodule Memento.Transaction do
 
   @moduledoc """
   Memento's wrapper around Mnesia transactions. This module exports
-  methods `execute/2` and `execute_sync/2`, which accept a function
-  to be executed an and optional argument to set the maximum no. of
-  retries until the transaction succeeds.
+  methods `execute/2` and `execute_sync/2`, and their bang versions,
+  which accept a function to be executed and an optional argument to
+  set the maximum no. of retries until the transaction succeeds.
 
-  Both methods can be directly called on the base `Memento` module
-  as `Memento.transaction/2` and `Memento.transaction_sync/2`.
+  `execute/1` and `execute!/1` can be directly called from the base
+  `Memento` module as helper `Memento.transaction/1` and
+  `Memento.transaction!/1` methods, but if you want to specify a
+  custom timeout value or use the synchronous version, you should use
+  the methods in this module.
 
-  # TODO: Add delegate in root module
-  #
-  # TODO: Add examples
+
+  ## Examples
+
+  ```
+  # Read a User record
+  {:ok, user} =
+    Memento.transaction fn ->
+      Memento.Query.read(User, id)
+    end
+
+  # Get all Users, raising errors on aborts
+  users =
+    Memento.transaction! fn ->
+      Memento.Query.all(User)
+    end
+
+  # Update a User record on all nodes synchronously,
+  # with a maximum of 5 retries
+  operation = fn ->
+    Memento.Query.write(%User{id: 3, name: "New Value"})
+  end
+  Memento.Transaction.execute_sync(operation, 5)
+  ```
   """
 
 
@@ -90,8 +113,9 @@ defmodule Memento.Transaction do
   argument: `{:error, {:transaction_aborted, reason}}`. Outside
   the context of a transaction, simply raises an error.
 
-  Default value for reason is `:no_reason_given`. Also see
-  `:mnesia.abort/1`.
+  In the bang versions of the transactions, it raises a
+  `Memento.TransactionAborted` error instead of returning the
+  error tuple. Default value for reason is `:no_reason_given`.
   """
   @spec abort(term) :: no_return
   def abort(reason \\ :no_reason_given) do

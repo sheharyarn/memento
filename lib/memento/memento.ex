@@ -65,4 +65,10 @@ defmodule Memento do
   end
 
 
+
+  # Delegates
+
+  defdelegate transaction(fun),   to: Memento.Transaction,  as: :execute
+  defdelegate transaction!(fun),  to: Memento.Transaction,  as: :execute!
+
 end

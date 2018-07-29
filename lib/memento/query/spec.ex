@@ -19,9 +19,9 @@ defmodule Memento.Query.Spec do
 
 
 
-
   # Private
   # -------
+
 
   # Translates Operations into those defined by the
   # Erlang match spec
