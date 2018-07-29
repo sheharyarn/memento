@@ -303,15 +303,83 @@ defmodule Memento.Query do
 
   @doc """
   Return all records matching the given query.
+
+  This method takes a table name, and a simplified version of the Erlang
+  MatchSpec consisting of one or more `guards`. Each guard is of the
+  form `{function, argument_1, argument_2}`, where the arguments can be
+  the Table fields, literals or other nested guard functions.
+
+
+  ## Guard Spec
+
+  Simple Operator Functions:
+
+  - `:==` - Equality
+  - `:===` - Strict Equality (For Numbers)
+  - `:!=` - Inequality
+  - `:!==` - Strict Inequality (For Numbers)
+  - `:<` - Less than
+  - `:<=` - Less than or equal to
+  - `:>` - Greater than
+  - `:>=` - Greater than or equal to
+
+  Guard Functions that take nested arguments:
+
+  - `:or`
+  - `:and`
+  - `:xor`
+
+
+  ## Options
+
+  This method also takes some optional arguments mentioned below. See
+  `t:options/0` for more details.
+
+  - `lock` (defaults to `:read`)
+  - `limit` (defaults to `nil`, meaning return all)
+  - `coerce` (defaults to `true`)
+
+
+  ## Examples
+
+  Suppose a `Movie` Table with these attributes: `id`, `title`, `year`,
+  and `director`.
+
+  ```
+  # Get all Movies
+  Memento.Query.select(Movie, [])
+
+  # Get all Movies named "Rush"
+  Memento.Query.select(Movie, {:==, :title, "Rush"})
+
+  # Get all Movies directed by Tarantino before the year 2000
+  # Note: We could use a nested `and` function here as well
+  guards = [
+    {:==, :director, "Quentin Tarantino"},
+    {:<=, :year, 2000},
+  ]
+  Memento.Query.select(Movie, guards)
+
+  # Get all movies directed by Tarantino or Spielberg, after the year 2010:
+  guards =
+    {:and
+      {:>, :year, 2010},
+      {:or,
+        {:==, :director, "Quentin Tarantino"},
+        {:==, :director, "Steven Spielberg"},
+      }
+    }
+  Memento.Query.select(Movie, guards)
+  ```
   """
+  @result [:"$_"]
   @spec select(Table.name, list(tuple) | tuple, options) :: list(Table.record)
   def select(table, guards, opts \\ []) do
     attr_map   = table.__info__.query_map
     match_head = table.__info__.query_base
     guards     = Memento.Query.Spec.build(guards, attr_map)
-    result     = [:"$_"]
 
-    select_raw(table, [{ match_head, guards, result }], opts)
+    select_raw(table, [{ match_head, guards, @result }], opts)
   end
 
 
@@ -537,15 +605,6 @@ defmodule Memento.Query do
 
     Mnesia.call(:delete_object, [table, record, lock])
   end
-
-
-  # # Result is automatically formatted
-  # def where(table, pattern, lock: :read, limit: nil, coerce: true)
-
-  # # Result is not casted
-  # def select(table, match_spec, lock: :read, limit: nil, coerce: false)
-
-  # def test_matchspec
 
 
 
