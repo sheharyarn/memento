@@ -30,7 +30,7 @@ end
     - [ ] Migration Support
  - [x] Memento.Query
     - [x] Integration with Memento.Table
-    - [ ] match/select
+    - [x] match/select
     - [x] read/write/delete
     - [ ] first/next/prev/all_keys
     - [ ] test matchspec

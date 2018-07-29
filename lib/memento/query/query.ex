@@ -18,14 +18,13 @@ defmodule Memento.Query do
   API provided by the Erlang `:mnesia` module.
 
 
-  TODO: mention non-nil keys
-
   ## Transaction Only
 
   All the methods exported by this module can only be executed
   within the context of a `Memento.Transaction`. Outside the
   transaction (synchronous or not), these methods will raise an
-  error, even though they are ignored in all other examples.
+  error, even though they will be ignored in all examples moving
+  forward.
 
   ```
   # Will raise an error
@@ -38,22 +37,55 @@ defmodule Memento.Query do
   ```
 
 
-  ## Basic Queries
+  ## Basic Operations
 
   ```
-  read
-  first
-  write
-  all
+  # Get all records in a Table
+  Memento.Query.all(User)
+
+  # Get a specific record by its primary key
+  Memento.Query.read(User, id)
+
+  # Write a record
+  Memento.Query.write(%User{id: 3, name: "Some User"})
+
+  # Delete a record by primary key
+  Memento.Query.delete(User, id)
+
+  # Delete a record by passing the full object
+  Memento.Query.delete_record(%User{id: 4, name: "Another User"})
   ```
 
 
-  ## Advanced Queries and MatchSpec
+  ## Complex Queries
 
-  Special cases here are the `match/3` and `select/3` methods,
-  which use a superset of Erlang's
-  [`match_spec`](http://erlang.org/doc/apps/erts/match_spec.html)
-  to make working with them much easier.
+  Memento provides 3 ways of querying records based on some passed
+  conditions:
+
+  - `match/3`
+  - `select/3`
+  - `select_raw/3`
+
+  Each method uses a different way of querying, records which is
+  explained in detail for each of them in their method docs. But
+  the recommended method of performing queries is using the
+  `select/3` method which makes working with Erlang MatchSpec a
+  lot easier.
+
+  ```
+  # Get all Movies
+  Memento.Query.select(Movie, [])
+
+  # Get all Movies named "Rush"
+  Memento.Query.select(Movie, {:==, :title, "Rush"})
+
+  # Get all Movies directed by Tarantino before the year 2000
+  guards = [
+    {:==, :director, "Quentin Tarantino"},
+    {:<, :year, 2000},
+  ]
+  Memento.Query.select(Movie, guards)
+  ```
   """
 
 
@@ -193,6 +225,8 @@ defmodule Memento.Query do
   client side.
 
   TODO: Implement some sort of `autogenerate` for write.
+
+  TODO: mention non-nil keys
 
   ## Examples
 
@@ -356,14 +390,14 @@ defmodule Memento.Query do
   # Note: We could use a nested `and` function here as well
   guards = [
     {:==, :director, "Quentin Tarantino"},
-    {:<=, :year, 2000},
+    {:<, :year, 2000},
   ]
   Memento.Query.select(Movie, guards)
 
-  # Get all movies directed by Tarantino or Spielberg, after the year 2010:
+  # Get all movies directed by Tarantino or Spielberg, in 2010 or later:
   guards =
     {:and
-      {:>, :year, 2010},
+      {:>=, :year, 2010},
       {:or,
         {:==, :director, "Quentin Tarantino"},
         {:==, :director, "Steven Spielberg"},
