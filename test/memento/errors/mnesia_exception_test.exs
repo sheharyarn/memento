@@ -5,7 +5,7 @@ defmodule Memento.Tests.Error.MnesiaException do
   require MnesiaException
 
 
-  describe "#throw" do
+  describe "#raise" do
     @error :hello
     @message ":hello"
 
