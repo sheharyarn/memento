@@ -1,6 +1,7 @@
 defmodule Memento.Transaction do
   require Memento.Mnesia
   require Memento.Error
+  require Memento.TransactionAborted
 
 
   @moduledoc """
@@ -10,10 +11,10 @@ defmodule Memento.Transaction do
   set the maximum no. of retries until the transaction succeeds.
 
   `execute/1` and `execute!/1` can be directly called from the base
-  `Memento` module as helper `Memento.transaction/1` and
+  `Memento` module as the alias `Memento.transaction/1` and
   `Memento.transaction!/1` methods, but if you want to specify a
-  custom timeout value or use the synchronous version, you should use
-  the methods in this module.
+  custom `retries` value or use the synchronous version, you should
+  use the methods in this module.
 
 
   ## Examples
@@ -75,6 +76,19 @@ defmodule Memento.Transaction do
 
 
   @doc """
+  Same as `execute/2` but returns the result or raises an error.
+  """
+  @spec execute!(fun, retries) :: any | no_return
+  def execute!(fun, retries \\ :infinity) do
+    fun
+    |> execute(retries)
+    |> handle_result
+  end
+
+
+
+
+  @doc """
   Execute the transaction in synchronization with all nodes.
 
   This method waits until the data has been committed and logged to
@@ -90,6 +104,19 @@ defmodule Memento.Transaction do
     :sync_transaction
     |> Memento.Mnesia.call([function, retries])
     |> Memento.Mnesia.handle_result
+  end
+
+
+
+
+  @doc """
+  Same as `execute_sync/2` but returns the result or raises an error.
+  """
+  @spec execute_sync!(fun, retries) :: any | no_return
+  def execute_sync!(fun, retries \\ :infinity) do
+    fun
+    |> execute(retries)
+    |> handle_result
   end
 
 
@@ -125,6 +152,33 @@ defmodule Memento.Transaction do
 
       false ->
         Memento.Error.raise("Not inside a Memento Transaction")
+    end
+  end
+
+
+
+
+
+  # Private Helpers
+  # ---------------
+
+
+  # Handle Transaction Results. The 'result' should already
+  # be 'handled' by the `Memento.Mnesia` module before this
+  # is called.
+  defp handle_result(result) do
+    case result do
+      {:ok, term} ->
+        term
+
+      {:error, {:transaction_aborted, reason}} ->
+        Memento.TransactionAborted.raise(reason)
+
+      {:error, reason} ->
+        Memento.Error.raise "Transaction Failed with: #{inspect(reason)}"
+
+      term ->
+        term
     end
   end
 

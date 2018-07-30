@@ -39,7 +39,7 @@ end
     - [ ] Helper use macro
  - [x] Memento.Transaction
     - [x] Simple/Synchronous
-    - [ ] Bang versions
+    - [x] Bang versions
     - [x] inside?
     - [x] abort
     - [ ] Lock Helpers

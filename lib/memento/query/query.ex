@@ -66,10 +66,10 @@ defmodule Memento.Query do
   - `select/3`
   - `select_raw/3`
 
-  Each method uses a different way of querying, records which is
+  Each method uses a different way of querying records, which is
   explained in detail for each of them in their method docs. But
   the recommended method of performing queries is using the
-  `select/3` method which makes working with Erlang MatchSpec a
+  `select/3` method, which makes working with Erlang MatchSpec a
   lot easier.
 
   ```
@@ -184,7 +184,7 @@ defmodule Memento.Query do
   This method works a bit differently from the original `:mnesia.read/3`
   when the table type is `:bag`. Since a bag can have many records
   with the same key, this returns only the first one. If you want to
-  fetch all records with the given key, use `match/3` or `select/2`.
+  fetch all records with the given key, use `match/3` or `select/3`.
 
 
   ## Example
