@@ -26,6 +26,16 @@ defmodule Memento.Tests.Transaction do
 
 
 
+  describe "#execute!" do
+    @term :hello
+    test "directly returns the last result" do
+      trx = Transaction.execute!(fn -> @term end)
+      assert trx == @term
+    end
+  end
+
+
+
   describe "#execute_sync" do
     @term "some result"
     test "the output is returned with :ok outside the transaction" do
@@ -37,6 +47,16 @@ defmodule Memento.Tests.Transaction do
       assert_raise(UndefinedFunctionError, ~r/is undefined/i, fn ->
         Transaction.execute_sync(fn -> RandomModule.undefined_fun end)
       end)
+    end
+  end
+
+
+
+  describe "#execute_sync!" do
+    @term :hello
+    test "directly returns the last result" do
+      trx = Transaction.execute_sync!(fn -> @term end)
+      assert trx == @term
     end
   end
 
@@ -68,6 +88,16 @@ defmodule Memento.Tests.Transaction do
     test "returns :error with reason when called inside a transaction" do
       assert {:error, {:transaction_aborted, @reason}} =
         Transaction.execute(fn -> Transaction.abort(@reason) end)
+    end
+
+
+    @reason "some_other_reason"
+    test "raises error when called inside a bang version of a transaction" do
+      expected_reason = ~r/transaction aborted .* #{inspect(@reason)}/i
+
+      assert_raise(Memento.TransactionAborted, expected_reason, fn ->
+        Transaction.execute!(fn -> Transaction.abort(@reason) end)
+      end)
     end
   end
 
