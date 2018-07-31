@@ -1,17 +1,36 @@
 <!-- Heading: Start -->
 <h1 align="center">
-  [<img alt="Memento" src='media/logo.png' width='500px'/>][docs]
+  <a href="https://hexdocs.pm/memento">
+    <img alt="Memento" src='media/logo.png' width='500px'/>
+  </a>
 </h1>
 
-<span align="center">
-  [![Build Status][shield-travis]][travis-ci]
-  [![Coverage Status][shield-inch]][docs]
-  [![Version][shield-version]][hexpm]
-  [![License][shield-license]][hexpm]
-</span>
+<p align="center">
+  <!-- Build Status -->
+  <a href="https://travis-ci.org/sheharyarn/memento">
+    <img alt="Build Status" src="https://img.shields.io/travis/sheharyarn/memento/master.svg" />
+  </a>
 
-> Mnesia. Memento. [Get it?][imdb-memento]
+  <!-- Coverage -->
+  <a href="https://hexdocs.pm/memento">
+    <img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=master" />
+  </a>
 
+  <!-- Version -->
+  <a href="https://hex.pm/packages/memento">
+    <img alt="Version" src="https://img.shields.io/hexpm/v/memento.svg" />
+  </a>
+
+  <!-- License -->
+  <a href="./LICENSE">
+    <img alt="License" src="https://img.shields.io/hexpm/l/memento.svg" />
+  </a>
+</p>
+
+<p align="center">
+  <b>Powerful yet Easy-to-Use Mnesia Interface for Elixir</b></br>
+  <sub>Mnesia. Memento. <a href="https://www.imdb.com/title/tt0209144/">Get it?</a><sub>
+</p>
 <!-- Heading: End -->
 
 
@@ -68,26 +87,23 @@ end
 MIT
 
 
-  [imdb-memento]: https://www.imdb.com/title/tt0209144/
 
 
   [logo]:             media/logo.png
-  [shield-version]:   https://img.shields.io/hexpm/v/que.svg
-  [shield-license]:   https://img.shields.io/hexpm/l/que.svg
-  [shield-downloads]: https://img.shields.io/hexpm/dt/que.svg
-  [shield-travis]:    https://img.shields.io/travis/sheharyarn/que/master.svg
-  [shield-inch]:      https://inch-ci.org/github/sheharyarn/que.svg?branch=master
+  [shield-version]:   https://img.shields.io/hexpm/v/memento.svg
+  [shield-license]:   https://img.shields.io/hexpm/l/memento.svg
+  [shield-downloads]: https://img.shields.io/hexpm/dt/memento.svg
+  [shield-travis]:    https://img.shields.io/travis/sheharyarn/memento/master.svg
+  [shield-inch]:      https://inch-ci.org/github/sheharyarn/memento.svg?branch=master
 
-  [travis-ci]:        https://travis-ci.org/sheharyarn/que
-  [inch-ci]:          https://inch-ci.org/github/sheharyarn/que
+  [travis-ci]:        https://travis-ci.org/sheharyarn/memento
+  [inch-ci]:          https://inch-ci.org/github/sheharyarn/memento
 
-  [license]:          https://opensource.org/licenses/MIT
+  [license]:          ./LICENSE
   [mnesia]:           http://erlang.org/doc/man/mnesia.html
-  [hexpm]:            https://hex.pm/packages/que
+  [hexpm]:            https://hex.pm/packages/memento
+  [imdb-memento]:     https://www.imdb.com/title/tt0209144/
 
-  [docs]:             https://hexdocs.pm/que
-  [docs-worker]:      https://hexdocs.pm/que/Que.Worker.html
-  [docs-mix]:         https://hexdocs.pm/que/Mix.Tasks.Que.Setup.html
-  [docs-setup-prod]:  https://hexdocs.pm/que/Que.Persistence.Mnesia.html#setup!/0
+  [docs]:             https://hexdocs.pm/memento
 
-  [github-fork]:      https://github.com/sheharyarn/que/fork
+  [github-fork]:      https://github.com/sheharyarn/memento/fork
