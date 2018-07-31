@@ -77,6 +77,23 @@ defmodule Memento.Table do
 
 
 
+  # Callbacks
+  # ---------
+
+
+  @doc """
+  Returns Table definition information.
+
+  Every defined `Memento.Table` via the `use` macro, will export this
+  method, returning information about its attributes, structure, options
+  and other details.
+  """
+  @callback __info__() :: map()
+
+
+
+
+
   # Use Macro
   # ---------
 
