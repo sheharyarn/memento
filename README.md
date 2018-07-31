@@ -1,7 +1,18 @@
-Memento
-=======
+<!-- Heading: Start -->
+<h1 align="center">
+  [<img alt="Memento" src='media/logo.png' width='500px'/>][docs]
+</h1>
 
-> Nothing cool here yet, check back later
+<p align="center">
+  [![Build Status][shield-travis]][travis-ci]
+  [![Coverage Status][shield-inch]][docs]
+  [![Version][shield-version]][hexpm]
+  [![License][shield-license]][hexpm]
+</p>
+
+> Mnesia. Memento. [Get it?][imdb-memento]
+
+<!-- Heading: End -->
 
 
 ## Installation
@@ -49,9 +60,12 @@ end
  - [ ] Memento.Collection
     - [ ] Easy Helpers
     - [ ] Custom DSL
+  - [ ] Mix Tasks
 
 
 ## License
 
 MIT
 
+
+[imdb-memento]: https://www.imdb.com/title/tt0209144/
