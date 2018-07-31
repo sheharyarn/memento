@@ -6,10 +6,18 @@
 </h1>
 
 <p align="center">
-  <a href="https://travis-ci.org/sheharyarn/memento"><img alt="Build Status" src="https://img.shields.io/travis/sheharyarn/memento/master.svg" /></a>
-  <a href="https://hexdocs.pm/memento"><img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=master" /></a>
-  <a href="https://hex.pm/packages/memento"><img alt="Version" src="https://img.shields.io/hexpm/v/memento.svg" /></a>
-  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/hexpm/l/memento.svg" /></a>
+  <a href="https://travis-ci.org/sheharyarn/memento">
+    <img alt="Build Status" src="https://img.shields.io/travis/sheharyarn/memento/master.svg" />
+  </a>
+  <a href="https://hexdocs.pm/memento">
+    <img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=master" />
+  </a>
+  <a href="https://hex.pm/packages/memento">
+    <img alt="Version" src="https://img.shields.io/hexpm/v/memento.svg" />
+  </a>
+  <a href="./LICENSE">
+    <img alt="License" src="https://img.shields.io/hexpm/l/memento.svg" />
+  </a>
 </p>
 
 <p align="center">
@@ -23,23 +31,24 @@
 
 
 
-Memento is an extremely easy-to-use and powerful wrapper in Elixir that makes is very easy and intuitive to work with
-[Mnesia][mnesia], the Erlang Distributed Realtime Database. The original Mnesia API in Erlang is convoluted, unorganized
-and combined with the complex `MatchSpec` and `QLC` query language, is hard to work with in Elixir, especially for
-beginners that don't know much about Erlang. Memento attempts to define a simple API to work with tables, removing the
-majority of complexity associated with it.
-
-
- - **Easy to Use:** Provides a simple & intuitive API for working with Mnesia.
+ - **Easy to Use:** Provides a simple & intuitive API for working with [Mnesia][mnesia].
  - **Real-time:** Has extremely fast real-time data searches, even across many nodes.
- - **Powerful Queries:** Provides a powerful Query interface on top of Erlang's MatchSpec and QLC, that is much easier to use.
- - **Persistence & Replication:** Schema can be coherently kept on disc & in memory, and can be replicated at several nodes.
- - **Atomic Transactions:** A series of Table-manipulation operations can be grouped in to a single atomic transaction.
+ - **Powerful Queries:** on top of Erlang's MatchSpec and QLC, that are much easier to use.
+ - **Detailed Documentation:** and examples for all methods on [Hexdocs.pm][docs].
+ - **Persistent:** Schema can be coherently kept on disc & in memory.
+ - **Distributed:** Data can easily be replicated on several nodes.
+ - **Atomicity:** A series of operations can be grouped in to a single atomic transaction.
  - **Focused:** Encourages good patterns by omitting dirty calls to the database.
  - **Mnesia Compatible:** You can still use Mnesia methods for Schemas and Tables created by Memento.
- - **No Dependencies:** Doesn't have any external dependencies; Only uses the built-in Mnesia module.
+ - **No Dependencies:** Zero external dependencies; only uses the built-in Mnesia module.
  - **MIT Licensed**: Free for personal and commercial use.
 
+
+**Memento** is an extremely easy-to-use and powerful wrapper in Elixir that makes is very easy and intuitive to work with
+[Mnesia][mnesia], the Erlang Distributed Realtime Database. The original Mnesia API in Erlang is convoluted, unorganized
+and combined with the complex `MatchSpec` and `QLC` query language, is hard to work with in Elixir, especially for
+beginners. Memento attempts to define a simple API to work with tables, removing the majority of complexity associated
+with it.
 
 <br/>
 
