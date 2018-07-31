@@ -1,13 +1,37 @@
 language: elixir
-elixir:
-  - 1.4.0
-  - 1.5.0
-  - 1.6.0
-  - 1.7.0
-otp_release:
-  - 19.0
-  - 20.0
-  - 21.0
+
+# Build Matrix
+matrix:
+  include:
+
+    # Elixir 1.4 with OTP 18 & 19
+    - elixir: 1.4.0
+      otp_release: 18.0
+    - elixir: 1.4.0
+      otp_release: 19.0
+
+    # Elixir 1.5 with OTP 18, 19 & 20
+    - elixir: 1.5.0
+      otp_release: 18.0
+    - elixir: 1.5.0
+      otp_release: 19.0
+    - elixir: 1.5.0
+      otp_release: 20.0
+
+    # Elixir 1.6 with OTP 19, 20 & 21
+    - elixir: 1.6.0
+      otp_release: 19.0
+    - elixir: 1.6.0
+      otp_release: 20.0
+    - elixir: 1.6.0
+      otp_release: 21.0
+
+    # Elixir 1.7 with OTP 20 & 21
+    - elixir: 1.7.0
+      otp_release: 20.0
+    - elixir: 1.7.0
+      otp_release: 21.0
+
 sudo: false
 script:
   - mix test
