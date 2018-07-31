@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <b>Simple yet Powerful Elixir interface to the Erlang Mnesia Database</b></br>
+  <b>Simple but Powerful Elixir interface to the Erlang Mnesia Database</b></br>
   <sub>Mnesia. Memento. <a href="https://www.imdb.com/title/tt0209144/">Get it?</a><sub>
 </p>
 
@@ -30,18 +30,20 @@
 
 
 
+ - **Easy to Use:** Provides a simple & intuitive API for working with [Mnesia][mnesia]
+ - **Real-time:** Has extremely fast real-time data searches, even across many nodes
+ - **Powerful Queries:** on top of Erlang's MatchSpec and QLC, that are much easier to use
+ - **Detailed Documentation:** and examples for all methods on [Hexdocs.pm][docs]
+ - **Persistent:** Schema can be coherently kept on disc & in memory
+ - **Distributed:** Data can easily be replicated on several nodes
+ - **Atomic:** A series of operations can be grouped in to a single atomic transaction
+ - **Focused:** Encourages good patterns by omitting dirty calls to the database
+ - **Mnesia Compatible:** You can still use Mnesia methods for Schemas and Tables created by Memento
+ - **No Dependencies:** Zero external dependencies; only uses the built-in Mnesia module
+ - **MIT Licensed**: Free for personal and commercial use
 
- - **Easy to Use:** Provides a simple & intuitive API for working with [Mnesia][mnesia].
- - **Real-time:** Has extremely fast real-time data searches, even across many nodes.
- - **Powerful Queries:** on top of Erlang's MatchSpec and QLC, that are much easier to use.
- - **Detailed Documentation:** and examples for all methods on [Hexdocs.pm][docs].
- - **Persistent:** Schema can be coherently kept on disc & in memory.
- - **Distributed:** Data can easily be replicated on several nodes.
- - **Atomicity:** A series of operations can be grouped in to a single atomic transaction.
- - **Focused:** Encourages good patterns by omitting dirty calls to the database.
- - **Mnesia Compatible:** You can still use Mnesia methods for Schemas and Tables created by Memento.
- - **No Dependencies:** Zero external dependencies; only uses the built-in Mnesia module.
- - **MIT Licensed**: Free for personal and commercial use.
+<br/>
+
 
 
 **Memento** is an extremely easy-to-use and powerful wrapper in Elixir that makes is very easy and intuitive to work with
@@ -73,9 +75,24 @@ def application do
 end
 ```
 
-_It is highly recommended that you only add `:memento` and not `:mnesia` along with it._ This will ensure that that OTP calls
-to Mnesia go through the Supervisor spec specified in Memento.
+_It's preferable to only add `:memento` and not `:mnesia` along with it._ This will ensure that that OTP calls to Mnesia
+go through the Supervisor spec specified in Memento.
 
+<br/>
+
+
+
+
+## Configuration
+
+It is highly recommended that a custom path to the Mnesia database location is specified, even on the local `:dev`
+environment (You can add `.mnesia` to your `.gitignore`):
+
+```elixir
+# config/config.exs
+config :mnesia,
+  dir: '.mnesia/#{Mix.env}/#{node()}'        # Notice the single quotes
+```
 
 <br/>
 
