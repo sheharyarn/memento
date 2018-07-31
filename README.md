@@ -3,12 +3,12 @@
   [<img alt="Memento" src='media/logo.png' width='500px'/>][docs]
 </h1>
 
-<p align="center">
+<span align="center">
   [![Build Status][shield-travis]][travis-ci]
   [![Coverage Status][shield-inch]][docs]
   [![Version][shield-version]][hexpm]
   [![License][shield-license]][hexpm]
-</p>
+</span>
 
 > Mnesia. Memento. [Get it?][imdb-memento]
 
@@ -68,4 +68,26 @@ end
 MIT
 
 
-[imdb-memento]: https://www.imdb.com/title/tt0209144/
+  [imdb-memento]: https://www.imdb.com/title/tt0209144/
+
+
+  [logo]:             media/logo.png
+  [shield-version]:   https://img.shields.io/hexpm/v/que.svg
+  [shield-license]:   https://img.shields.io/hexpm/l/que.svg
+  [shield-downloads]: https://img.shields.io/hexpm/dt/que.svg
+  [shield-travis]:    https://img.shields.io/travis/sheharyarn/que/master.svg
+  [shield-inch]:      https://inch-ci.org/github/sheharyarn/que.svg?branch=master
+
+  [travis-ci]:        https://travis-ci.org/sheharyarn/que
+  [inch-ci]:          https://inch-ci.org/github/sheharyarn/que
+
+  [license]:          https://opensource.org/licenses/MIT
+  [mnesia]:           http://erlang.org/doc/man/mnesia.html
+  [hexpm]:            https://hex.pm/packages/que
+
+  [docs]:             https://hexdocs.pm/que
+  [docs-worker]:      https://hexdocs.pm/que/Que.Worker.html
+  [docs-mix]:         https://hexdocs.pm/que/Mix.Tasks.Que.Setup.html
+  [docs-setup-prod]:  https://hexdocs.pm/que/Que.Persistence.Mnesia.html#setup!/0
+
+  [github-fork]:      https://github.com/sheharyarn/que/fork
