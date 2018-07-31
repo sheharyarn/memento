@@ -1,6 +1,4 @@
 <!-- Heading: Start -->
-<br/>
-
 <h1 align="center">
   <a href="https://hexdocs.pm/memento">
     <img alt="Memento" src='media/logo.png' width='400px'/>
@@ -8,16 +6,9 @@
 </h1>
 
 <p align="center">
-  <!-- Build Status -->
   <a href="https://travis-ci.org/sheharyarn/memento"><img alt="Build Status" src="https://img.shields.io/travis/sheharyarn/memento/master.svg" /></a>
-
-  <!-- Coverage -->
   <a href="https://hexdocs.pm/memento"><img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=master" /></a>
-
-  <!-- Version -->
   <a href="https://hex.pm/packages/memento"><img alt="Version" src="https://img.shields.io/hexpm/v/memento.svg" /></a>
-
-  <!-- License -->
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/hexpm/l/memento.svg" /></a>
 </p>
 
