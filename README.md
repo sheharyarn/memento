@@ -125,6 +125,27 @@ to Mnesia go through the Supervisor spec specified in Memento.
 
 
 
+## Contributing
+
+ - [Fork][github-fork], Enhance, Send PR
+ - Lock issues with any bugs or feature requests
+ - Implement something from Roadmap
+ - Spread the word :heart:
+
+<br>
+
+
+
+
+## License
+
+This package is available as open source under the terms of the [MIT License][license].
+
+<br>
+
+
+
+
 
   [logo]:             media/logo.png
   [shield-version]:   https://img.shields.io/hexpm/v/memento.svg
