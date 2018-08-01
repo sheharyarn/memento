@@ -46,7 +46,7 @@
 
 
 
-**Memento** is an extremely easy-to-use and powerful wrapper in Elixir that makes is very easy and intuitive to work with
+**Memento** is an extremely easy-to-use and powerful wrapper in Elixir that makes is intuitive to work with
 [Mnesia][mnesia], the Erlang Distributed Realtime Database. The original Mnesia API in Erlang is convoluted, unorganized
 and combined with the complex `MatchSpec` and `QLC` query language, is hard to work with in Elixir, especially for
 beginners. Memento attempts to define a simple API to work with tables, removing the majority of complexity associated
@@ -101,9 +101,6 @@ config :mnesia,
 
 ## Usage
 
-
-### Schemas
-
 You start by defining a specific Module as a Memento Table by specifying its attributes, type and other options. A simple
 definition looks like this:
 
@@ -120,8 +117,7 @@ defmodule Blog.Post do
   use Memento.Table,
     attributes: [:id, :title, :content, :status, :author_id],
     index: [:status, :author_id],
-    type: :ordered_set,
-    autoincrement: true
+    type: :ordered_set
 
 
   # You can also define other methods
@@ -138,16 +134,19 @@ Memento.Table.create(Blog.Post)
 
 See the [`Memento.Table`][docs-table] documentation for detailed examples and more information about all the options.
 
+<br/>
 
 
-### CRUD Operations & Queries
 
-Once a Table has been created, you can insert new records, read them, update them or delete them. An API for all of
+
+## CRUD Operations & Queries
+
+Once a Table has been created, you can perform read/write/delete operations on their records. An API for all of
 these operations is exposed in the [`Memento.Query`][docs-query] module, but these methods can't be called directly.
 Instead, they must always be called inside a [`Memento.Transaction`][docs-transaction]:
 
 ```elixir
-authors = Memento.transaction! fn ->
+Memento.transaction! fn ->
   Memento.Query.all(Blog.Author)
 end
 
@@ -181,20 +180,27 @@ Memento.Query.delete_record(%Author{id: 4, name: "Another Author"})
 
 
 For more complex read operations, Memento exposes a [`select/3`][docs-query-select] method that lets you chain
-conditions using a simplified version of the Erlang MatchSpec:
+conditions using a simplified version of the Erlang MatchSpec. This what some queries would look like for a
+`Movie` table:
 
-```elixir
-# Get all Movies named "Rush"
-Memento.Query.select(Movie, {:==, :title, "Rush"})
+ - Get all Movies named "Rush"
+
+    ```elixir
+    Memento.Query.select(Movie, {:==, :title, "Rush"})
+    ```
 
 
-# Get all Movies directed by Tarantino before the year 2000
-guards = [
-  {:==, :director, "Quentin Tarantino"},
-  {:<, :year, 2000},
-]
-Memento.Query.select(Movie, guards)
-```
+ - Get all Movies directed by Tarantino before the year 2000
+
+    ```elixir
+    guards = [
+      {:==, :director, "Quentin Tarantino"},
+      {:<, :year, 2000},
+    ]
+    Memento.Query.select(Movie, guards)
+    ```
+
+See [`Query.select/3`][docs-query-select] for more information about the guard operators and detailed examples.
 
 <br/>
 
@@ -280,6 +286,7 @@ This package is available as open source under the terms of the [MIT License][li
   [mnesia]:               http://erlang.org/doc/man/mnesia.html
   [hexpm]:                https://hex.pm/packages/memento
   [imdb-memento]:         https://www.imdb.com/title/tt0209144/
+  [que]:                  https://github.com/sheharyarn/que
 
   [docs]:                 https://hexdocs.pm/memento
   [docs-transaction]:     https://hexdocs.pm/memento/Memento.Transaction.html
