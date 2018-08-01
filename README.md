@@ -1,7 +1,7 @@
 <!-- Heading: Start -->
 <h1 align="center">
   <a href="https://hexdocs.pm/memento">
-    <img alt="Memento" src='media/logo.png' width='400px'/>
+    <img alt="Memento" src='media/logo.png' width='450px'/>
   </a>
 </h1>
 
@@ -30,26 +30,26 @@
 
 
 
- - **Easy to Use:** Provides a simple & intuitive API for working with [Mnesia][mnesia]
- - **Real-time:** Has extremely fast real-time data searches, even across many nodes
- - **Powerful Queries:** on top of Erlang's MatchSpec and QLC, that are much easier to use
- - **Detailed Documentation:** and examples for all methods on [Hexdocs.pm][docs]
- - **Persistent:** Schema can be coherently kept on disc & in memory
- - **Distributed:** Data can easily be replicated on several nodes
- - **Atomic:** A series of operations can be grouped in to a single atomic transaction
- - **Focused:** Encourages good patterns by omitting dirty calls to the database
- - **Mnesia Compatible:** You can still use Mnesia methods for Schemas and Tables created by Memento
- - **No Dependencies:** Zero external dependencies; only uses the built-in Mnesia module
- - **MIT Licensed**: Free for personal and commercial use
+ - 😀 **Easy to Use:** Provides a simple & intuitive API for working with [Mnesia][mnesia]
+ - ⚡️ **Real-time:** Has extremely fast real-time data searches, even across many nodes
+ - 💪 **Powerful Queries:** on top of Erlang's MatchSpec and QLC, that are much easier to use
+ - 📓 **Detailed Documentation:** and examples for all methods on [HexDocs][docs]
+ - 💾 **Persistent:** Schema can be coherently kept on disc & in memory
+ - 🌐 **Distributed:** Data can easily be replicated on several nodes
+ - 🌀 **Atomic:** A series of operations can be grouped in to a single atomic transaction
+ - 🔍 **Focused:** Encourages good patterns by omitting dirty calls to the database
+ - 🔧 **Mnesia Compatible:** You can still use Mnesia methods for Schemas and Tables created by Memento
+ - ❄️  **No Dependencies:** Zero external dependencies; only uses the built-in Mnesia module
+ - ⛅️ **MIT Licensed**: Free for personal and commercial use
 
 <br/>
 
 
 
-**Memento** is an extremely easy-to-use and powerful wrapper in Elixir that makes is intuitive to work with
+**Memento** is an extremely easy-to-use and powerful wrapper in Elixir that makes it intuitive to work with
 [Mnesia][mnesia], the Erlang Distributed Realtime Database. The original Mnesia API in Erlang is convoluted, unorganized
 and combined with the complex `MatchSpec` and `QLC` query language, is hard to work with in Elixir, especially for
-beginners. Memento attempts to define a simple API to work with tables, removing the majority of complexity associated
+beginners. Memento attempts to define a simple API to work with schemas, removing the majority of complexity associated
 with it.
 
 <br/>
@@ -59,7 +59,7 @@ with it.
 
 ## Installation
 
-Add `memento` to your list of dependencies in your Mix file:
+Add `:memento` to your list of dependencies in your Mix file:
 
 ```elixir
 def deps do
@@ -101,8 +101,8 @@ config :mnesia,
 
 ## Usage
 
-You start by defining a specific Module as a Memento Table by specifying its attributes, type and other options. At
-two attributes are needed, where the first one is the primary-key of the table. A simple definition looks like this:
+You start by defining a Module as a Memento Table by specifying its attributes, type and other options. At least two
+attributes are required, where the first one is the `primary-key` of the table. A simple definition looks like this:
 
 ```elixir
 defmodule Blog.Author do
@@ -157,7 +157,7 @@ end
 # ]
 ```
 
-For the sake of succinctness, transactions are ignored in most of the examples below, but they are still required.
+_For the sake of succinctness, transactions are ignored in most of the examples below, but they are still required._
 Here's a quick overview of all the basic operations:
 
 
@@ -170,31 +170,29 @@ Memento.Query.read(Post, id)
 Memento.Query.read(Author, username)
 
 # Write a record
-record = %Author{username: :sarah, name: "Sarah Molton"}
-Memento.Query.write(record)
+Memento.Query.write(%Author{username: :sarah, name: "Sarah Molton"})
 
 # Delete a record by primary key
 Memento.Query.delete(Post, id)
 Memento.Query.delete(Author, username)
 
 # Delete a record by passing the full object
-record = %Author{ ... }
-Memento.Query.delete_record(record)
+Memento.Query.delete_record(%Author{username: :pshore, name: "Paul Shore"})
 ```
 
 
 For more complex read operations, Memento exposes a [`select/3`][docs-query-select] method that lets you chain
-conditions using a simplified version of the Erlang MatchSpec. This what some queries would look like for a
+conditions using a simplified version of the Erlang MatchSpec. This is what some queries would look like for a
 `Movie` table:
 
- - Get all Movies named "Rush"
+ - Get all movies named "Rush":
 
     ```elixir
     Memento.Query.select(Movie, {:==, :title, "Rush"})
     ```
 
 
- - Get all Movies directed by Tarantino before the year 2000
+ - Get all movies directed by Tarantino before the year 2000:
 
     ```elixir
     guards = [
