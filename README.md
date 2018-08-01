@@ -99,6 +99,49 @@ config :mnesia,
 
 
 
+## Usage
+
+
+### Schemas
+
+You start by defining a specific Module as a Memento Table by specifying its attributes, type and other options. A simple
+definition looks like this:
+
+```elixir
+defmodule Blog.Author do
+  use Memento.Table, attributes: [:id, :name]
+end
+```
+
+A slightly more complex definition that uses more options, could look like this:
+
+```elixir
+defmodule Blog.Post do
+  use Memento.Table,
+    attributes: [:id, :title, :content, :status, :author_id],
+    index: [:status, :author_id],
+    type: :ordered_set,
+    autoincrement: true
+
+
+  # You can also define other methods
+  # or helper functions in the module
+end
+```
+
+Once you have defined your schemas, you need to create them before you can interact with them:
+
+```elixir
+Memento.Table.create(Blog.Author)
+Memento.Table.create(Blog.Post)
+```
+
+See the [`Memento.Table`][docs-table] documentation for detailed examples and more information about all the options.
+<br/>
+
+
+
+
 ## Roadmap
 
  - [x] Memento
@@ -164,21 +207,25 @@ This package is available as open source under the terms of the [MIT License][li
 
 
 
-  [logo]:             media/logo.png
-  [shield-version]:   https://img.shields.io/hexpm/v/memento.svg
-  [shield-license]:   https://img.shields.io/hexpm/l/memento.svg
-  [shield-downloads]: https://img.shields.io/hexpm/dt/memento.svg
-  [shield-travis]:    https://img.shields.io/travis/sheharyarn/memento/master.svg
-  [shield-inch]:      https://inch-ci.org/github/sheharyarn/memento.svg?branch=master
+  [logo]:                 media/logo.png
+  [shield-version]:       https://img.shields.io/hexpm/v/memento.svg
+  [shield-license]:       https://img.shields.io/hexpm/l/memento.svg
+  [shield-downloads]:     https://img.shields.io/hexpm/dt/memento.svg
+  [shield-travis]:        https://img.shields.io/travis/sheharyarn/memento/master.svg
+  [shield-inch]:          https://inch-ci.org/github/sheharyarn/memento.svg?branch=master
 
-  [travis-ci]:        https://travis-ci.org/sheharyarn/memento
-  [inch-ci]:          https://inch-ci.org/github/sheharyarn/memento
+  [travis-ci]:            https://travis-ci.org/sheharyarn/memento
+  [inch-ci]:              https://inch-ci.org/github/sheharyarn/memento
 
-  [license]:          ./LICENSE
-  [mnesia]:           http://erlang.org/doc/man/mnesia.html
-  [hexpm]:            https://hex.pm/packages/memento
-  [imdb-memento]:     https://www.imdb.com/title/tt0209144/
+  [license]:              ./LICENSE
+  [mnesia]:               http://erlang.org/doc/man/mnesia.html
+  [hexpm]:                https://hex.pm/packages/memento
+  [imdb-memento]:         https://www.imdb.com/title/tt0209144/
 
-  [docs]:             https://hexdocs.pm/memento
+  [docs]:                 https://hexdocs.pm/memento
+  [docs-transaction]:     https://hexdocs.pm/memento/Memento.Transaction.html
+  [docs-table]:           https://hexdocs.pm/memento/Memento.Table.html
+  [docs-query]:           https://hexdocs.pm/memento/Memento.Query.html
+  [docs-query-select]:    https://hexdocs.pm/memento/Memento.Query.html#select/3
 
-  [github-fork]:      https://github.com/sheharyarn/memento/fork
+  [github-fork]:          https://github.com/sheharyarn/memento/fork
