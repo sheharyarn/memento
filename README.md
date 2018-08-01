@@ -254,6 +254,48 @@ See [`Query.select/3`][docs-query-select] for more information about the guard o
 
 
 
+## FAQ
+
+
+#### 1. Why Memento/Mnesia?
+
+In most applications, some kind of data storage mechanism is needed, but this usually means relying on some sort
+of external dependency or program. Memento should be used in situations when it might not always make sense in an
+Application to do this (e.g. the data is ephemeral, the project needs to be kept light-weight, you need a simple
+data store that persists across application restarts, data-code decoupling is not important etc.).
+
+
+#### 2. When shouldn't I use Memento/Mnesia?
+
+Like mentioned in the previous point, Memento/Mnesia has specific use-cases and it might not always make sense to
+use it. This is usually when you don't want to couple your code and database, and want to allow independent or
+external accesses to transformation of your data. In such circumstances, you should always prefer using some other
+datastore (like Redis, Postgres, etc.).
+
+
+#### 3. Isn't there already an 'Amnesia' library?
+
+I've been a long-time user of the [`Amnesia`][amnesia] package, but with the recent releases of Elixir (1.5 & above),
+the library has started to show its age. Amnesia's dependence on the the `exquisite` package has caused a lot of
+compilation problems, and it's complex macro-intensive structure hasn't made it easy to fix them either. The library
+itself doesn't even compile in Elixir 1.7+ so I finally decided to write my own after I desperately needed to update
+my Mnesia-based projects.
+
+Memento is meant to be an extremely lightweight wrapper for Mnesia, providing a very easy set of helpers and forcing
+good decisions by avoiding the "dirty" methods.
+
+
+#### 4. Are there any other projects that are using Memento?
+
+Memento is a new package so there aren't many Open Source examples available. [Que][que] is another library
+that uses Memento for background job processing and storing the state of these Jobs. If your project uses
+Memento, feel free to send in a pull-request so it can be mentioned here.
+
+<br/>
+
+
+
+
 ## Contributing
 
  - [Fork][github-fork], Enhance, Send PR
