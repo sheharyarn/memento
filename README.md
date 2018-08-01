@@ -101,12 +101,12 @@ config :mnesia,
 
 ## Usage
 
-You start by defining a specific Module as a Memento Table by specifying its attributes, type and other options. A simple
-definition looks like this:
+You start by defining a specific Module as a Memento Table by specifying its attributes, type and other options. At
+two attributes are needed, where the first one is the primary-key of the table. A simple definition looks like this:
 
 ```elixir
 defmodule Blog.Author do
-  use Memento.Table, attributes: [:id, :name]
+  use Memento.Table, attributes: [:username, :fullname]
 end
 ```
 
@@ -115,8 +115,8 @@ A slightly more complex definition that uses more options, could look like this:
 ```elixir
 defmodule Blog.Post do
   use Memento.Table,
-    attributes: [:id, :title, :content, :status, :author_id],
-    index: [:status, :author_id],
+    attributes: [:id, :title, :content, :status, :author],
+    index: [:status, :author],
     type: :ordered_set
 
 
@@ -151,9 +151,9 @@ Memento.transaction! fn ->
 end
 
 # => [
-#  %Blog.Author{id: 1, name: "Alice"},
-#  %Blog.Author{id: 2, name: "Bob"},
-#  %Blog.Author{id: 3, name: "Eve"},
+#  %Blog.Author{username: :sye,     fullname: "Sheharyar Naseer"},
+#  %Blog.Author{username: :jeanne,  fullname: "Jeanne Bolding"},
+#  %Blog.Author{username: :pshore,  fullname: "Paul Shore"},
 # ]
 ```
 
@@ -163,19 +163,23 @@ Here's a quick overview of all the basic operations:
 
 ```elixir
 # Get all records in a Table
-Memento.Query.all(Author)
+Memento.Query.all(Post)
 
 # Get a specific record by its primary key
-Memento.Query.read(Author, id)
+Memento.Query.read(Post, id)
+Memento.Query.read(Author, username)
 
 # Write a record
-Memento.Query.write(%Author{id: 3, name: "Some Author"})
+record = %Author{username: :sarah, name: "Sarah Molton"}
+Memento.Query.write(record)
 
 # Delete a record by primary key
-Memento.Query.delete(Author, id)
+Memento.Query.delete(Post, id)
+Memento.Query.delete(Author, username)
 
 # Delete a record by passing the full object
-Memento.Query.delete_record(%Author{id: 4, name: "Another Author"})
+record = %Author{ ... }
+Memento.Query.delete_record(record)
 ```
 
 
@@ -287,6 +291,7 @@ This package is available as open source under the terms of the [MIT License][li
   [hexpm]:                https://hex.pm/packages/memento
   [imdb-memento]:         https://www.imdb.com/title/tt0209144/
   [que]:                  https://github.com/sheharyarn/que
+  [amnesia]:              https://github.com/meh/amnesia
 
   [docs]:                 https://hexdocs.pm/memento
   [docs-transaction]:     https://hexdocs.pm/memento/Memento.Transaction.html
