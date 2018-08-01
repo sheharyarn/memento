@@ -137,6 +137,65 @@ Memento.Table.create(Blog.Post)
 ```
 
 See the [`Memento.Table`][docs-table] documentation for detailed examples and more information about all the options.
+
+
+
+### CRUD Operations & Queries
+
+Once a Table has been created, you can insert new records, read them, update them or delete them. An API for all of
+these operations is exposed in the [`Memento.Query`][docs-query] module, but these methods can't be called directly.
+Instead, they must always be called inside a [`Memento.Transaction`][docs-transaction]:
+
+```elixir
+authors = Memento.transaction! fn ->
+  Memento.Query.all(Blog.Author)
+end
+
+# => [
+#  %Blog.Author{id: 1, name: "Alice"},
+#  %Blog.Author{id: 2, name: "Bob"},
+#  %Blog.Author{id: 3, name: "Eve"},
+# ]
+```
+
+For the sake of succinctness, transactions are ignored in most of the examples below, but they are still required.
+Here's a quick overview of all the basic operations:
+
+
+```elixir
+# Get all records in a Table
+Memento.Query.all(Author)
+
+# Get a specific record by its primary key
+Memento.Query.read(Author, id)
+
+# Write a record
+Memento.Query.write(%Author{id: 3, name: "Some Author"})
+
+# Delete a record by primary key
+Memento.Query.delete(Author, id)
+
+# Delete a record by passing the full object
+Memento.Query.delete_record(%Author{id: 4, name: "Another Author"})
+```
+
+
+For more complex read operations, Memento exposes a [`select/3`][docs-query-select] method that lets you chain
+conditions using a simplified version of the Erlang MatchSpec:
+
+```elixir
+# Get all Movies named "Rush"
+Memento.Query.select(Movie, {:==, :title, "Rush"})
+
+
+# Get all Movies directed by Tarantino before the year 2000
+guards = [
+  {:==, :director, "Quentin Tarantino"},
+  {:<, :year, 2000},
+]
+Memento.Query.select(Movie, guards)
+```
+
 <br/>
 
 
