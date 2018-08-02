@@ -10,19 +10,24 @@ defmodule Memento.Query.Data do
 
   ## Usage
 
+  Given a Memento Table:
+
   ```
-  # Given a Memento Table
   defmodule MyApp.User do
     use Memento.Table, attributes: [:id, :name]
   end
   ```
 
-  # You can convert its structs to Mnesia format:
+  You can convert its structs to Mnesia format:
+
+  ```
   Memento.Query.Data.dump(%MyApp.User{id: 1, name: "Sye"})
   # => {MyApp.User, 1, "Sye"}
+  ```
 
+  Or convert it back to a struct:
 
-  # Or convert it back to a struct
+  ```
   Memento.Query.Data.load({MyApp.User, 2, "Rick"})
   # => %MyApp.User{id: 2, name: "Rick"}
   ```
