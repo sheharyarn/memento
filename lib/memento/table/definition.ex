@@ -10,6 +10,18 @@ defmodule Memento.Table.Definition do
 
 
 
+  # Type Definitions
+  # ----------------
+
+
+  @typedoc "Normalized options of a Table"
+  @type options :: %{memento: Keyword.t, mnesia: Keyword.t}
+
+
+
+
+
+
   # Helper API
   # ----------
 
@@ -74,7 +86,7 @@ defmodule Memento.Table.Definition do
   a Table.
   """
   @key_drops [:attributes, :autoincrement]
-  @spec build_options(Keyword.t) :: %{memento: Keyword.t, mnesia: Keyword.t}
+  @spec build_options(Keyword.t) :: options
   def build_options(opts) do
     # Mnesia Options
     mnesia_opts = Keyword.drop(opts, @key_drops)
@@ -90,6 +102,7 @@ defmodule Memento.Table.Definition do
       memento: memento_opts,
     }
   end
+
 
 
 
