@@ -85,16 +85,11 @@ defmodule Memento.Table.Definition do
   Builds the Memento and Mnesia options for generating
   a Table.
   """
-  @key_drops [:attributes, :autoincrement]
+  @memento_opts [:autoincrement]
   @spec build_options(Keyword.t) :: options
   def build_options(opts) do
-    # Mnesia Options
-    mnesia_opts = Keyword.drop(opts, @key_drops)
-
-    # Memento Options
-    memento_opts = [
-      autoincrement: Keyword.get(opts, :autoincrement, false)
-    ]
+    mnesia_opts  = Keyword.drop(opts, [:attributes | @memento_opts])
+    memento_opts = Keyword.take(opts, @memento_opts)
 
     # Return consolidated
     %{

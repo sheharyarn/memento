@@ -15,12 +15,14 @@ defmodule Memento.Tests.Table.Definition do
   end
 
 
+
   describe "#build_map" do
     @expected %{id: :"$1", name: :"$2", email: :"$3"}
     test "returns a map with attributes as keys and match spec variables as values" do
       assert @expected == Definition.build_map(@attrs)
     end
   end
+
 
 
   describe "#struct_fields" do
@@ -31,6 +33,7 @@ defmodule Memento.Tests.Table.Definition do
   end
 
 
+
   describe "#build_options" do
     @opts [attributes: @attrs, type: :ordered_set, autoincrement: true]
     test "separates memento and mnesia options" do
@@ -38,8 +41,8 @@ defmodule Memento.Tests.Table.Definition do
 
       assert mnesia[:type] == :ordered_set
       assert memento[:autoincrement] == true
-
     end
+
 
     @opts [attributes: @attrs, index: [:id], type: :bag]
     test "removes attributes key" do
@@ -49,13 +52,31 @@ defmodule Memento.Tests.Table.Definition do
       assert opts[:index] == [:id]
       refute opts[:attributes]
     end
+  end
 
-    @opts [attributes: @attrs, index: [:id], type: :set]
-    test "auto-sets memento[:autoincrement] to false when not specified" do
-      %{memento: opts} = Definition.build_options(@opts)
 
-      assert opts[:autoincrement] == false
+
+  describe "#merge_options" do
+    @existing %{
+      mnesia: [type: :ordered_set, index: [:id]],
+      memento: [autoincrement: true],
+    }
+    @new [type: :set, autoincrement: false]
+
+
+    test "does nothing for empty options" do
+      assert @existing == Definition.merge_options(@existing, [])
+    end
+
+
+    test "overrides old options when specified" do
+      assert %{memento: memento, mnesia: mnesia} = Definition.merge_options(@existing, @new)
+
+      assert Keyword.get(memento, :autoincrement) == false
+      assert Keyword.get(mnesia,  :type) == :set
+      assert Keyword.get(mnesia,  :index) == [:id]
     end
   end
+
 
 end
