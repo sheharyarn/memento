@@ -1,4 +1,6 @@
 defmodule Memento.Table.Definition do
+  require Memento.Error
+
   @moduledoc false
 
   # Helper module to build Memento Tables with the `use` macro.
@@ -49,6 +51,7 @@ defmodule Memento.Table.Definition do
 
 
 
+
   @doc """
   Builds a map with attributes and their corresponding
   keys, to later help with quickly replacing attributes
@@ -67,6 +70,7 @@ defmodule Memento.Table.Definition do
 
 
 
+
   @doc """
   Builds the list of fields to be passed to `defstruct`
   in the Table definition at compile-time.
@@ -78,6 +82,7 @@ defmodule Memento.Table.Definition do
   def struct_fields(attributes) do
     [{:__meta__, Memento.Table} | attributes]
   end
+
 
 
 
@@ -100,6 +105,7 @@ defmodule Memento.Table.Definition do
 
 
 
+
   @doc "Merges new options in to existing option map"
   @spec merge_options(options, Keyword.t) :: options
   def merge_options(table_opts, opts) do
@@ -113,6 +119,58 @@ defmodule Memento.Table.Definition do
     }
   end
 
+
+
+
+  @doc "Validate Table options"
+  @allowed_types [:set, :ordered_set, :bag]
+  @spec validate_options!(Keyword.t) :: :ok | no_return
+  def validate_options!(opts) do
+    error = cond do
+      !Keyword.keyword?(opts) ->
+        "Invalid options specified"
+
+      true ->
+        attrs = Keyword.get(opts, :attributes)
+        type  = Keyword.get(opts, :type, :set)
+        index = Keyword.get(opts, :index, [])
+        auto  = Keyword.get(opts, :autoincrement, false)
+
+        cond do
+          # No Attributes Specified
+          attrs == nil ->
+            "Table attributes not specified"
+
+          # Attributes isn't a list
+          !is_list(attrs) ->
+            "Invalid attributes specified"
+
+          # Attributes aren't atoms
+          !Enum.all?(attrs, &is_atom/1) ->
+            "Invalid attributes specified"
+
+          # Index isn't a list
+          !is_list(index) ->
+            "Invalid index list specified"
+
+          # Indices aren't atoms
+          !Enum.all?(index, &is_atom/1) ->
+            "Invalid index list specified"
+
+          # Table type is not one of allowed
+          !Enum.member?(@allowed_types, type) ->
+            "Invalid table type specified"
+
+          true ->
+            nil
+      end
+    end
+
+    case error do
+      nil   -> :ok
+      error -> Memento.Error.raise(error)
+    end
+  end
 
 
 
