@@ -105,6 +105,20 @@ defmodule Memento.Table.Definition do
 
 
 
+  @doc "Merges new options in to existing option map"
+  @spec merge_options(options, Keyword.t) :: options
+  def merge_options(table_opts, opts) do
+    %{mnesia: old_mnesia, memento: old_memento} = table_opts
+    %{mnesia: new_mnesia, memento: new_memento} = build_options(opts)
+
+    # Consolidate and Return
+    %{
+      mnesia:  Keyword.merge(old_mnesia, new_mnesia),
+      memento: Keyword.merge(old_memento, new_memento),
+    }
+  end
+
+
 
 
 
