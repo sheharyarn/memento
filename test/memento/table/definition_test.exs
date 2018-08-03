@@ -30,4 +30,32 @@ defmodule Memento.Tests.Table.Definition do
     end
   end
 
+
+  describe "#build_options" do
+    @opts [attributes: @attrs, type: :ordered_set, autoincrement: true]
+    test "separates memento and mnesia options" do
+      %{memento: memento, mnesia: mnesia} = Definition.build_options(@opts)
+
+      assert mnesia[:type] == :ordered_set
+      assert memento[:autoincrement] == true
+
+    end
+
+    @opts [attributes: @attrs, index: [:id], type: :bag]
+    test "removes attributes key" do
+      %{mnesia: opts} = Definition.build_options(@opts)
+
+      assert opts[:type]  == :bag
+      assert opts[:index] == [:id]
+      refute opts[:attributes]
+    end
+
+    @opts [attributes: @attrs, index: [:id], type: :set]
+    test "auto-sets memento[:autoincrement] to false when not specified" do
+      %{memento: opts} = Definition.build_options(@opts)
+
+      assert opts[:autoincrement] == false
+    end
+  end
+
 end
