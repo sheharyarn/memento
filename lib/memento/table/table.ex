@@ -1,6 +1,9 @@
 defmodule Memento.Table do
+  alias Memento.Table.Definition
+
   require Memento.Mnesia
   require Memento.Error
+
 
 
   @moduledoc """
@@ -100,29 +103,29 @@ defmodule Memento.Table do
 
   @doc false
   defmacro __using__(opts) do
-    validate_options!(opts)
+    Definition.validate_options!(opts)
 
     quote do
       opts = unquote(opts)
 
       @table_attrs Keyword.get(opts, :attributes)
       @table_type  Keyword.get(opts, :type, :set)
-      @table_opts  Keyword.drop(opts, [:attributes])
+      @table_opts  Definition.build_options(opts)
 
-      @query_map  Memento.Table.Definition.build_map(@table_attrs)
-      @query_base Memento.Table.Definition.build_base(__MODULE__, @table_attrs)
+      @query_map   Definition.build_map(@table_attrs)
+      @query_base  Definition.build_base(__MODULE__, @table_attrs)
 
       @info %{
-        meta: Memento.Table,
-        attributes: @table_attrs,
-        table_type: @table_type,
-        table_opts: @table_opts,
-        query_base: @query_base,
-        query_map: @query_map,
-        size: length(@table_attrs),
+        meta:         Memento.Table,
+        type:         @table_type,
+        attributes:   @table_attrs,
+        options:      @table_opts,
+        query_base:   @query_base,
+        query_map:    @query_map,
+        size:         length(@table_attrs),
       }
 
-      defstruct Memento.Table.Definition.struct_fields(@table_attrs)
+      defstruct Definition.struct_fields(@table_attrs)
       def __info__, do: @info
     end
   end
@@ -151,16 +154,29 @@ defmodule Memento.Table do
   def create(table, opts \\ []) do
     validate_table!(table)
 
+    # Build new Options
     info = table.__info__()
-    main = [attributes: info.attributes]
-    opts =
-      info.table_opts
-      |> Keyword.merge(opts)
-      |> Keyword.merge(main)
+    opts = Definition.merge_options(info.options, opts)
 
-    :create_table
-    |> Memento.Mnesia.call([table, opts])
-    |> Memento.Mnesia.handle_result
+    # Validate Options
+    type = info.type
+    auto = Keyword.get(opts.memento, :autoincrement, false)
+
+
+    cond do
+      # Return error if autoincrement is used without ordered_set
+      auto && (type != :ordered_set) ->
+        {:error, {:autoincrement, "can only be used with :ordered_set"}}
+
+      # Else create the Table
+      true ->
+        main = [attributes: info.attributes]
+        mnesia_opts = Keyword.merge(opts.mnesia, main)
+
+        :create_table
+        |> Memento.Mnesia.call([table, mnesia_opts])
+        |> Memento.Mnesia.handle_result
+    end
   end
 
 
@@ -221,51 +237,6 @@ defmodule Memento.Table do
   # ---------------
 
 
-  @allowed_types [:set, :ordered_set, :bag]
-
-
-  # Validate options given to __using__
-  defp validate_options!(opts) do
-    error = cond do
-      !Keyword.keyword?(opts) ->
-        "Invalid options specified"
-
-      true ->
-        attrs = Keyword.get(opts, :attributes)
-        type  = Keyword.get(opts, :type, :set)
-        index = Keyword.get(opts, :index, [])
-
-        cond do
-          attrs == nil ->
-            "Table attributes not specified"
-
-          !is_list(attrs) ->
-            "Invalid attributes specified"
-
-          !Enum.all?(attrs, &is_atom/1) ->
-            "Invalid attributes specified"
-
-          !is_list(index) ->
-            "Invalid index list specified"
-
-          !Enum.all?(index, &is_atom/1) ->
-            "Invalid index list specified"
-
-          !Enum.member?(@allowed_types, type) ->
-            "Invalid table type specified"
-
-          true ->
-            nil
-      end
-    end
-
-    case error do
-      nil   -> :ok
-      error -> Memento.Error.raise(error)
-    end
-  end
-
-
   # Validate if a module is a Memento Table
   defp validate_table!(module) do
     Memento.Table = module.__info__.meta
@@ -274,6 +245,7 @@ defmodule Memento.Table do
     _ ->
       Memento.Error.raise("#{inspect(module)} is not a Memento Table")
   end
+
 
 end
 

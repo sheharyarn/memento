@@ -81,6 +81,24 @@ defmodule Memento.Tests.Table do
     end
 
 
+    test "returns :error if autoincrement is used without :ordered_set (options)" do
+      assert {:error, {:autoincrement, message}} = Memento.Table.create(@table, autoincrement: true)
+      assert message =~ ~r/can only be used with.*ordered.set/i
+    end
+
+
+    test "returns :error if autoincrement is used without :ordered_set (definition)" do
+      defmodule MetaApp.AutoincrementBag do
+        use Memento.Table,
+          attributes: [:id, :name],
+          autoincrement: true
+      end
+
+      assert {:error, {:autoincrement, message}} = Memento.Table.create(MetaApp.AutoincrementBag)
+      assert message =~ ~r/can only be used with.*ordered.set/i
+    end
+
+
     test "raises error if module is not a memento table" do
       assert_raise(Memento.Error, ~r/not a memento table/i, fn ->
         Memento.Table.create(RandomModule)
