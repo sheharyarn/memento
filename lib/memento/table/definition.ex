@@ -9,6 +9,12 @@ defmodule Memento.Table.Definition do
 
 
 
+
+  # Helper API
+  # ----------
+
+
+
   @doc """
   Builds the base of the `match_spec`, to be later used
   in `select` calls. Should ideally be called once
@@ -60,6 +66,31 @@ defmodule Memento.Table.Definition do
   def struct_fields(attributes) do
     [{:__meta__, Memento.Table} | attributes]
   end
+
+
+
+  @doc """
+  Builds the Memento and Mnesia options for generating
+  a Table.
+  """
+  @key_drops [:attributes, :autoincrement]
+  @spec build_options(Keyword.t) :: %{memento: Keyword.t, mnesia: Keyword.t}
+  def build_options(opts) do
+    # Mnesia Options
+    mnesia_opts = Keyword.drop(opts, @key_drops)
+
+    # Memento Options
+    memento_opts = [
+      autoincrement: Keyword.get(opts, :autoincrement, false)
+    ]
+
+    # Return consolidated
+    %{
+      mnesia: mnesia_opts,
+      memento: memento_opts,
+    }
+  end
+
 
 
 
