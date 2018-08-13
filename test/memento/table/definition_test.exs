@@ -79,4 +79,27 @@ defmodule Memento.Tests.Table.Definition do
   end
 
 
+
+  describe "#validate_table!" do
+    test "raises error for non memento table modules/terms" do
+      assert_raise(Memento.Error, ~r/is not a memento table/i, fn ->
+        Definition.validate_table!(SomeRandomModule)
+      end)
+
+      assert_raise(Memento.Error, ~r/is not a memento table/i, fn ->
+        Definition.validate_table!(1234)
+      end)
+    end
+
+
+    test "returns :ok for memento valid tables" do
+      defmodule Meta.Simple do
+        use Memento.Table, attributes: [:id, :username]
+      end
+
+      assert :ok = Definition.validate_table!(Meta.Simple)
+    end
+  end
+
+
 end
