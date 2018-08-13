@@ -175,6 +175,19 @@ defmodule Memento.Table.Definition do
 
 
 
+  @doc "Raise error if a given module is not a valid Memento Table"
+  @spec validate_table!(module) :: :ok | no_return
+  def validate_table!(module) do
+    Memento.Table = module.__info__.meta
+    :ok
+  rescue
+    _ ->
+      Memento.Error.raise("#{inspect(module)} is not a Memento Table")
+  end
+
+
+
+
 
   # Private Helpers
   # ---------------

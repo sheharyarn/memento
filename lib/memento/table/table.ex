@@ -1,8 +1,6 @@
 defmodule Memento.Table do
   alias Memento.Table.Definition
-
   require Memento.Mnesia
-  require Memento.Error
 
 
 
@@ -152,7 +150,7 @@ defmodule Memento.Table do
   """
   @spec create(name, Keyword.t) :: :ok | {:error, any}
   def create(table, opts \\ []) do
-    validate_table!(table)
+    Definition.validate_table!(table)
 
     # Build new Options
     info = table.__info__()
@@ -188,7 +186,7 @@ defmodule Memento.Table do
   """
   @spec delete(name) :: :ok | {:error, any}
   def delete(table) do
-    validate_table!(table)
+    Definition.validate_table!(table)
 
     :delete_table
     |> Memento.Mnesia.call([table])
@@ -206,7 +204,7 @@ defmodule Memento.Table do
   """
   @spec info(name, atom) :: any
   def info(table, key \\ :all) do
-    validate_table!(table)
+    Definition.validate_table!(table)
 
     Memento.Mnesia.call(:table_info, [table, key])
   end
@@ -220,30 +218,11 @@ defmodule Memento.Table do
   """
   @spec clear(name) :: :ok | {:error, any}
   def clear(table) do
-    validate_table!(table)
+    Definition.validate_table!(table)
 
     :clear_table
     |> Memento.Mnesia.call([table])
     |> Memento.Mnesia.handle_result
-  end
-
-
-
-
-
-
-
-  # Private Helpers
-  # ---------------
-
-
-  # Validate if a module is a Memento Table
-  defp validate_table!(module) do
-    Memento.Table = module.__info__.meta
-    :ok
-  rescue
-    _ ->
-      Memento.Error.raise("#{inspect(module)} is not a Memento Table")
   end
 
 
