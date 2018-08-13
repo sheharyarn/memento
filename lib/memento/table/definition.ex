@@ -175,6 +175,16 @@ defmodule Memento.Table.Definition do
 
 
 
+  @doc "Check if Table supports autoincrement"
+  @spec has_autoincrement?(Memento.Table.name) :: boolean
+  def has_autoincrement?(table) do
+    opts = table.__info__().options.memento
+    Keyword.get(opts, :autoincrement, false)
+  end
+
+
+
+
   @doc "Raise error if a given module is not a valid Memento Table"
   @spec validate_table!(module) :: :ok | no_return
   def validate_table!(module) do

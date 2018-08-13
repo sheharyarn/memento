@@ -3,6 +3,12 @@ defmodule Memento.Tests.Table.Definition do
   alias Memento.Table.Definition
 
 
+  # NOTE:
+  # Put tests for `Definition.validate_options!` directly in
+  # the test suite for `Memento.Table`, not here.
+
+
+
   @table Meta.User
   @attrs [:id, :name, :email]
 
@@ -92,12 +98,36 @@ defmodule Memento.Tests.Table.Definition do
     end
 
 
-    test "returns :ok for memento valid tables" do
+    test "returns :ok for valid memento tables" do
       defmodule Meta.Simple do
         use Memento.Table, attributes: [:id, :username]
       end
 
       assert :ok = Definition.validate_table!(Meta.Simple)
+    end
+  end
+
+
+
+  describe "#has_autoincrement?" do
+    test "returns true for Memento Tables that have autoincrement" do
+      defmodule Meta.AutoIncrementUser do
+        use Memento.Table,
+          attributes: [:id, :full_name],
+          type: :ordered_set,
+          autoincrement: true
+      end
+
+      assert Definition.has_autoincrement?(Meta.AutoIncrementUser)
+    end
+
+
+    test "returns false for Memento Tables that don't have autoincrement" do
+      defmodule Meta.NoAutoIncrementUser do
+        use Memento.Table, attributes: [:id, :full_name]
+      end
+
+      refute Definition.has_autoincrement?(Meta.NoAutoIncrementUser)
     end
   end
 
