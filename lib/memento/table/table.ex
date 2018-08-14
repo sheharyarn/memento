@@ -120,6 +120,7 @@ defmodule Memento.Table do
         options:      @table_opts,
         query_base:   @query_base,
         query_map:    @query_map,
+        primary_key:  hd(@table_attrs),
         size:         length(@table_attrs),
       }
 
