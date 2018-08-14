@@ -205,4 +205,35 @@ defmodule Memento.Tests.Table do
   end
 
 
+
+
+  describe "#callback:__info__" do
+    @table Tables.User
+
+
+    test "it returns important meta information about the table" do
+      assert info = @table.__info__()
+
+      assert info.meta == Memento.Table
+      assert info.primary_key == :id
+      assert info.query_map
+      assert info.query_base
+
+      assert is_atom(info.type)
+      assert is_list(info.attributes)
+      assert is_map(info.options)
+      assert is_integer(info.size)
+    end
+
+
+    test "it contains both Mnesia and Memento Options" do
+      assert options = @table.__info__().options
+
+      assert is_map(options)
+      assert Keyword.keyword?(options.mnesia)
+      assert Keyword.keyword?(options.memento)
+    end
+  end
+
+
 end
