@@ -43,6 +43,15 @@ defmodule Memento.Tests.Query do
     setup(do: Memento.Table.create(@table))
 
 
+    test "raises error when primary key is nil" do
+      assert_raise(Memento.Error, ~r/cannot have a nil primary key/i, fn ->
+        Support.Mnesia.transaction fn ->
+          Query.write(%@table{name: :some_value})
+        end
+      end)
+    end
+
+
     test "writes the record to mnesia" do
       Support.Mnesia.transaction fn ->
         assert :ok = Query.write(%@table{id: :some_id, name: :some_name})
@@ -57,6 +66,63 @@ defmodule Memento.Tests.Query do
         :ok = Query.write(%@table{id: :key, name: :new_value})
 
         assert [{@table, :key, :new_value}] = :mnesia.read(@table, :key)
+      end
+    end
+  end
+
+
+
+  describe "#write (with autoincrement enabled)" do
+    @table Tables.Movie
+    setup(do: Memento.Table.create(@table))
+
+
+    test "it writes as usual if a key is specified" do
+      Support.Mnesia.transaction! fn ->
+        record = %@table{id: 100, title: "Watchmen", director: "Zack Snyder", year: 2009}
+        assert :ok = Query.write(record)
+      end
+    end
+
+
+    test "it assigns key '1' if no existing records exist and key is nil" do
+      Support.Mnesia.transaction! fn ->
+        assert []  = Query.all(@table)
+        assert :ok = Query.write(%@table{title: "Watchmen"})
+        assert [%{id: 1}] = Query.all(@table)
+      end
+    end
+
+
+    test "it automatically assigns the next key when key is nil" do
+      Support.Mnesia.transaction! fn ->
+        assert []  = Query.all(@table)
+
+        assert :ok = Query.write(%@table{title: "Watchmen", id: 10})
+        assert :ok = Query.write(%@table{title: "Deadpool"})
+        assert :ok = Query.write(%@table{title: "Avengers"})
+        assert :ok = Query.write(%@table{title: "Ragnarok"})
+
+        assert %{id: 10, title: "Watchmen"} = Query.read(10)
+        assert %{id: 11, title: "Deadpool"} = Query.read(11)
+        assert %{id: 12, title: "Avengers"} = Query.read(12)
+        assert %{id: 13, title: "Ragnarok"} = Query.read(13)
+      end
+    end
+
+
+    test "it assigns the next numeric key even if the last key used is not an integer" do
+      Support.Mnesia.transaction! fn ->
+        assert []  = Query.all(@table)
+
+        assert :ok = Query.write(%@table{title: "Watchmen", id: 10})
+        assert :ok = Query.write(%@table{title: "Deadpool", id: :xyz})
+        assert :ok = Query.write(%@table{title: "Ragnarok", id: "hello"})
+        assert :ok = Query.write(%@table{title: "Punisher", id: -100})
+        assert :ok = Query.write(%@table{title: "Avengers"})
+
+        assert %{id: 10, title: "Watchmen"} = Query.read(10)
+        assert %{id: 11, title: "Avengers"} = Query.read(11)
       end
     end
   end

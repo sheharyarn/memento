@@ -44,6 +44,7 @@ defmodule Memento.Support.Definitions do
       alias __MODULE__
       use Memento.Table,
         type: :ordered_set,
+        autoincrement: true,
         attributes: [:id, :title, :year, :director]
 
 

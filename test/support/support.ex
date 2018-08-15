@@ -24,20 +24,8 @@ defmodule Memento.Support do
     def stop,  do: Support.capture_log(fn -> Application.stop(:mnesia) end)
 
 
-    def transaction!(term) do
-      case transaction(term) do
-        :ok ->
-          nil
-
-        {:ok, something} ->
-          something
-
-        {:error, reason} ->
-          raise "Failed with: #{inspect(reason)}"
-
-        term ->
-          raise "Failed with: #{inspect(term)}"
-      end
+    def transaction!(fun) do
+      Memento.Transaction.execute!(fun)
     end
 
 
