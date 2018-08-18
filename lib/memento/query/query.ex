@@ -221,13 +221,18 @@ defmodule Memento.Query do
   be either `:write` or `:sticky_write` (defaults to `:write`).
   See `t:lock/0` and `:mnesia.write/3` for more details.
 
-  The `key` is the important part. For now, this method does not
-  automatically generate new `keys`, so this has to be done on the
-  client side.
 
-  TODO: Implement some sort of `autogenerate` for write.
+  ## Autoincrement and `nil` primary keys
 
-  TODO: mention non-nil keys
+  This method will raise an error if the primary key of the passed
+  Memento record is `nil` and the table does not have autoincrement
+  enabled. If it is enabled, this will find the last numeric key
+  used and increment it.
+
+  To enable autoincrement, the table needs to be of the type
+  `ordered_set` and `autoincrement: true` has to be specified in
+  the table definition. (See `Memento.Table` for more details).
+
 
   ## Examples
 
@@ -239,7 +244,7 @@ defmodule Memento.Query do
   # => :ok
   ```
   """
-  @spec write(Table.record, options) :: :ok
+  @spec write(Table.record, options) :: :ok | no_return
   def write(record = %{__struct__: table}, opts \\ []) do
     record = prepare_record_for_write!(table, record)
     record = Query.Data.dump(record)
@@ -695,7 +700,9 @@ defmodule Memento.Query do
       # If primary key is not specified and there is no autoincrement
       # enabled either, raise an error
       is_nil(primary) ->
-        Memento.Error.raise("Memento records cannot have a nil primary key unless autoincrement is enabled")
+        Memento.Error.raise(
+          "Memento records cannot have a nil primary key unless autoincrement is enabled"
+        )
     end
   end
 
@@ -707,7 +714,9 @@ defmodule Memento.Query do
   #
   # NOTE:
   # See if this implementation is efficient and does not create
-  # any kinds of race conditions.
+  # any kinds of race conditions. Maybe also use some kind of
+  # counter, so a key that was used for a previously deleted
+  # record is not used again (like SQL)?
   @default_value 0
   @increment_by  1
   defp autoincrement_key_for(table) do
