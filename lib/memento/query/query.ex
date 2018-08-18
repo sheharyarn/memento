@@ -3,8 +3,9 @@ defmodule Memento.Query do
   require Memento.Error
 
   alias Memento.Query
-  alias Memento.Table
   alias Memento.Mnesia
+  alias Memento.Table
+  alias Memento.Table.Definition
 
 
   @moduledoc """
@@ -240,6 +241,7 @@ defmodule Memento.Query do
   """
   @spec write(Table.record, options) :: :ok
   def write(record = %{__struct__: table}, opts \\ []) do
+    record = prepare_record_for_write!(table, record)
     record = Query.Data.dump(record)
     lock   = Keyword.get(opts, :lock, :write)
 
@@ -648,12 +650,11 @@ defmodule Memento.Query do
   # ---------------
 
 
-  # Coerce results when is simple list
+  # Coerce results when is simple list or tuple
   defp coerce_records(records) when is_list(records) do
     Enum.map(records, &Query.Data.load/1)
   end
 
-  # Coerce results when is tuple
   defp coerce_records({records, _term}) when is_list(records) do
     # TODO: Use this {coerce_records(records), term}
     coerce_records(records)
@@ -670,6 +671,51 @@ defmodule Memento.Query do
         "Match Pattern length is not equal to the no. of attributes"
       )
     end
+  end
+
+
+  # Ensures that a record has a primary key present if autoincrement
+  # has been enabled, before it can be written
+  defp prepare_record_for_write!(table, record) do
+    info     = table.__info__()
+    autoinc? = Definition.has_autoincrement?(table)
+    primary  = Map.get(record, info.primary_key)
+
+    cond do
+      # If primary key is specified, don't do anything to the record
+      not is_nil(primary) ->
+        record
+
+      # If primary key is not specified but autoincrement is enabled,
+      # get the last numeric key and increment its value
+      is_nil(primary) && autoinc? ->
+        next_key = autoincrement_key_for(table)
+        Map.put(record, info.primary_key, next_key)
+
+      # If primary key is not specified and there is no autoincrement
+      # enabled either, raise an error
+      is_nil(primary) ->
+        Memento.Error.raise("Memento records cannot have a nil primary key unless autoincrement is enabled")
+    end
+  end
+
+
+  # Get the next numeric key (for ordered sets w/ autoincrement)
+  #
+  # It gets a list of all_keys for a table, selects the numeric
+  # ones, find the maximum value and adds one to it.
+  #
+  # NOTE:
+  # See if this implementation is efficient and does not create
+  # any kinds of race conditions.
+  @default_value 0
+  @increment_by  1
+  defp autoincrement_key_for(table) do
+    :all_keys
+    |> Mnesia.call([table])
+    |> Enum.filter(&is_number/1)
+    |> Enum.max(fn -> @default_value end)
+    |> Kernel.+(@increment_by)
   end
 
 end

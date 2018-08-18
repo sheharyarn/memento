@@ -103,10 +103,10 @@ defmodule Memento.Tests.Query do
         assert :ok = Query.write(%@table{title: "Avengers"})
         assert :ok = Query.write(%@table{title: "Ragnarok"})
 
-        assert %{id: 10, title: "Watchmen"} = Query.read(10)
-        assert %{id: 11, title: "Deadpool"} = Query.read(11)
-        assert %{id: 12, title: "Avengers"} = Query.read(12)
-        assert %{id: 13, title: "Ragnarok"} = Query.read(13)
+        assert %{id: 10, title: "Watchmen"} = Query.read(@table, 10)
+        assert %{id: 11, title: "Deadpool"} = Query.read(@table, 11)
+        assert %{id: 12, title: "Avengers"} = Query.read(@table, 12)
+        assert %{id: 13, title: "Ragnarok"} = Query.read(@table, 13)
       end
     end
 
@@ -121,8 +121,8 @@ defmodule Memento.Tests.Query do
         assert :ok = Query.write(%@table{title: "Punisher", id: -100})
         assert :ok = Query.write(%@table{title: "Avengers"})
 
-        assert %{id: 10, title: "Watchmen"} = Query.read(10)
-        assert %{id: 11, title: "Avengers"} = Query.read(11)
+        assert %{id: 10, title: "Watchmen"} = Query.read(@table, 10)
+        assert %{id: 11, title: "Avengers"} = Query.read(@table, 11)
       end
     end
   end
