@@ -7,6 +7,7 @@ defmodule Memento.Table do
   @moduledoc """
   Defines a Memento Table schema for Mnesia
 
+
   ## Usage
 
   You can define an Mnesia Table by calling `use Memento.Table` with a few
@@ -26,6 +27,7 @@ defmodule Memento.Table do
   Memento.Table.create(Blog.Post)
   ```
 
+
   ## Options
 
   The table definition and the `create/2` function both accept a keyword list
@@ -42,6 +44,11 @@ defmodule Memento.Table do
 
   - `index` - List of fields to index.
 
+  - `autoincrement` - If the table is of the type `:ordered_set`, setting this
+    `true` will automatically assign numeric values to non-nil primary keys
+    when writing records (using `Memento.Query.write/2`). Will return an error
+    if the table is not of the type `:ordered_set`.
+
   The only required option is `attributes`. See `:mnesia.create_table/2` for
   a full list of options. See the following example that uses more options:
 
@@ -51,7 +58,8 @@ defmodule Memento.Table do
     use Memento.Table,
       attributes: [:id, :title, :content, :status, :author_id],
       index: [:status, :author_id],
-      type: :ordered_set
+      type: :ordered_set,
+      autoincrement: true
 
 
     # You can also define other methods
