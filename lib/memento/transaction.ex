@@ -151,7 +151,7 @@ defmodule Memento.Transaction do
         :mnesia.abort({:transaction_aborted, reason})
 
       false ->
-        Memento.Error.raise("Not inside a Memento Transaction")
+        Memento.Error.raise_from_code(:no_transaction)
     end
   end
 

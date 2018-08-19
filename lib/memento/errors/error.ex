@@ -1,6 +1,7 @@
 defmodule Memento.Error do
-  alias Memento.DoesNotExistError
+  alias Memento.NoTransactionError
   alias Memento.AlreadyExistsError
+  alias Memento.DoesNotExistError
   alias Memento.MnesiaException
 
 
@@ -13,8 +14,8 @@ defmodule Memento.Error do
 
 
 
-  # Raise Macros
-  # ------------
+  # Macros to Raise Errors
+  # ----------------------
 
 
   # Raise a Memento.Error
@@ -27,7 +28,7 @@ defmodule Memento.Error do
 
   # Finds the appropriate Memento error from an Mnesia exit
   # Falls back to a default 'MnesiaException'
-  defmacro raise_from(data) do
+  defmacro raise_from_code(data) do
     quote(bind_quoted: [data: data]) do
       raise Memento.Error.normalize(data)
     end
@@ -48,6 +49,9 @@ defmodule Memento.Error do
 
   defp do_normalize(reason) do
     case reason do
+      :no_transaction ->
+        %NoTransactionError{message: "Not inside a Memento Transaction"}
+
       {:no_exists, resource} ->
         %DoesNotExistError{message: "#{inspect(resource)} does not exist or is not alive"}
 

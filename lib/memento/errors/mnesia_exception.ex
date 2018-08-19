@@ -1,25 +1,18 @@
 defmodule Memento.MnesiaException do
   alias __MODULE__
 
-  @moduledoc false
-  @newline "\n   "
+  # Don't raise this error manually, instead call `Memento.Error.normalize`
+  # or `Memento.Error.raise_from` to raise these errors.
 
   defexception [:message, :data]
 
-
-
-  # Re-raise Mnesia exits as Exceptions
-  defmacro raise(data) do
-    quote(bind_quoted: [data: data]) do
-      raise MnesiaException.build(data)
-    end
-  end
+  @moduledoc false
+  @newline "\n   "
 
 
 
   # Build the Exception struct
   def build(error) do
-    error = fetch(error)
     message =
       "Mnesia operation failed" <> @newline <>
       info(error) <> @newline <>
@@ -30,13 +23,6 @@ defmodule Memento.MnesiaException do
       message: message,
     }
   end
-
-
-
-  # Parse the data returned from an Mnesia Exit Exception
-  defp fetch({:aborted, data}), do: data
-  defp fetch({:error, data}),   do: data
-  defp fetch(data),             do: data
 
 
   # Fetch Mnesia's description of the error

@@ -78,7 +78,7 @@ defmodule Memento.Tests.Transaction do
 
   describe "#abort" do
     test "raises error when called outside transactions" do
-      assert_raise(Memento.Error, ~r/not inside .* transaction/i, fn ->
+      assert_raise(Memento.NoTransactionError, ~r/not inside .* transaction/i, fn ->
         Transaction.abort
       end)
     end

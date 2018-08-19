@@ -2,14 +2,22 @@
 ## --------------------
 
 
-simple_errors = [
-  Memento.DoesNotExistError,
-  Memento.AlreadyExistsError,
-]
+# NOTE TO SELF:
+# Please don't try to be over-efficient and edgy by dynamically
+# defining these exceptions from a list of Module names. It looks
+# really fucking bad.
 
-Enum.each(simple_errors, fn error ->
-  defmodule error do
-    defexception [:message]
-  end
-end)
+
+
+defmodule Memento.NoTransactionError do
+  defexception [:message]
+end
+
+defmodule Memento.AlreadyExistsError do
+  defexception [:message]
+end
+
+defmodule Memento.DoesNotExistError do
+  defexception [:message]
+end
 

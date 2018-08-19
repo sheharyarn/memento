@@ -5,19 +5,19 @@ defmodule Memento.Tests.Error.MnesiaException do
   require MnesiaException
 
 
-  describe "#raise" do
+  describe "#build" do
     @error :hello
     @message ":hello"
 
     test "prints standard error message" do
       assert_raise(MnesiaException, ~r/mnesia operation failed/i, fn ->
-        MnesiaException.raise(@error)
+        raise MnesiaException.build(@error)
       end)
     end
 
     test "throws an exception with data" do
       assert_raise(MnesiaException, ~r/#{@message}/i, fn ->
-        MnesiaException.raise(@error)
+        raise MnesiaException.build(@error)
       end)
     end
 
@@ -27,14 +27,14 @@ defmodule Memento.Tests.Error.MnesiaException do
       error_message = "{:some, :message}"
 
       assert_raise(MnesiaException, ~r/#{error_message}/, fn ->
-        MnesiaException.raise(error_tuple)
+        raise MnesiaException.build(error_tuple)
       end)
 
       aborted_tuple = {:aborted, {:another, :message}}
       aborted_message = "{:another, :message}"
 
       assert_raise(MnesiaException, ~r/#{aborted_message}/, fn ->
-        MnesiaException.raise(aborted_tuple)
+        raise MnesiaException.build(aborted_tuple)
       end)
     end
   end
