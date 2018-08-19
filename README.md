@@ -117,7 +117,8 @@ defmodule Blog.Post do
   use Memento.Table,
     attributes: [:id, :title, :content, :status, :author],
     index: [:status, :author],
-    type: :ordered_set
+    type: :ordered_set,
+    autoincrement: true
 
 
   # You can also define other methods
@@ -128,8 +129,8 @@ end
 Once you have defined your schemas, you need to create them before you can interact with them:
 
 ```elixir
-Memento.Table.create(Blog.Author)
-Memento.Table.create(Blog.Post)
+:ok = Memento.Table.create(Blog.Author)
+:ok = Memento.Table.create(Blog.Post)
 ```
 
 See the [`Memento.Table`][docs-table] documentation for detailed examples and more information about all the options.
@@ -231,7 +232,7 @@ See [`Query.select/3`][docs-query-select] for more information about the guard o
     - [ ] first/next/prev/all_keys
     - [ ] test matchspec
     - [ ] continue/1 for select continuations
-    - [ ] autoincrement
+    - [x] autoincrement
     - [ ] Helper use macro
  - [x] Memento.Transaction
     - [x] Simple/Synchronous
