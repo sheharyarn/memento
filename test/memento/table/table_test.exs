@@ -153,11 +153,31 @@ defmodule Memento.Tests.Table do
 
     test "deletes an mnesia table from memento definition" do
       assert {:atomic, :ok} = :mnesia.create_table(@table, [])
-      assert :ok = Memento.Table.delete(@table)
+      assert :ok = Memento.Table.delete!(@table)
     end
 
 
     test "returns :error if the table does not exists" do
+      assert_raise(Memento.DoesNotExistError, ~r/does not exist/i, fn ->
+        Memento.Table.delete!(@table)
+      end)
+    end
+  end
+
+
+
+
+  describe "#delete!" do
+    @table Tables.User
+
+
+    test "deletes an mnesia table from memento definition" do
+      assert {:atomic, :ok} = :mnesia.create_table(@table, [])
+      assert :ok = Memento.Table.delete!(@table)
+    end
+
+
+    test "raises errors if the table does not exists" do
       assert {:error, {:no_exists, _}} = Memento.Table.delete(@table)
     end
   end

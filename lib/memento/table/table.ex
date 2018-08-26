@@ -218,6 +218,18 @@ defmodule Memento.Table do
 
 
 
+
+  @doc "Same as `delete/1`, but raises error on failure."
+  @spec delete!(name) :: :ok | no_return
+  def delete!(table) do
+    table
+    |> delete
+    |> handle_for_bang!
+  end
+
+
+
+
   @doc """
   Returns all table information.
 

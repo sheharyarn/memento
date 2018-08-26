@@ -50,6 +50,7 @@ defmodule Memento.Error do
 
   defp do_normalize(reason) do
     case reason do
+      # Mnesia Error Codes
       :no_transaction ->
         %NoTransactionError{message: "Not inside a Memento Transaction"}
 
@@ -59,8 +60,11 @@ defmodule Memento.Error do
       {:already_exists, resource} ->
         %AlreadyExistsError{message: "#{inspect(resource)} already exists"}
 
+
+      # Custom Error Code - Not Part of Mnesia
       {:autoincrement, message} ->
         %InvalidOperationError{message: "Autoincrement #{message}"}
+
 
       # Don't need custom errors for the rest, fallback to MnesiaException
       # and raise with Mnesia's description of the error
