@@ -3,10 +3,19 @@ defmodule Memento.Mixfile do
 
   @app     :memento
   @name    "Memento"
-  @version "0.1.0"
+  @version "0.2.0"
   @github  "https://github.com/sheharyarn/#{@app}"
   @author  "Sheharyar Naseer"
   @license "MIT"
+
+
+  # NOTE:
+  # To publish package or update docs, use the `docs`
+  # mix environment to not include support modules
+  # that are normally included in the `dev` environment
+  #
+  #   MIX_ENV=docs hex.publish
+  #
 
 
   def project do
@@ -57,7 +66,7 @@ defmodule Memento.Mixfile do
 
   # Package Description
   defp description do
-    "Mnesia Simplified"
+    "Simple & Powerful Elixir wrapper for the Mnesia Database"
   end
 
 
