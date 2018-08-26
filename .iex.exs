@@ -19,9 +19,9 @@ alias Definitions.Tables.Email, as: E
 alias Definitions.Tables.Movie, as: M
 
 # Create Tables
-Table.create(U)
-Table.create(E)
-Table.create(M)
+Table.create!(U)
+Table.create!(E)
+Table.create!(M)
 
 # Seed with some values
 U.seed

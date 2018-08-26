@@ -129,8 +129,8 @@ end
 Once you have defined your schemas, you need to create them before you can interact with them:
 
 ```elixir
-:ok = Memento.Table.create(Blog.Author)
-:ok = Memento.Table.create(Blog.Post)
+Memento.Table.create!(Blog.Author)
+Memento.Table.create!(Blog.Post)
 ```
 
 See the [`Memento.Table`][docs-table] documentation for detailed examples and more information about all the options.
