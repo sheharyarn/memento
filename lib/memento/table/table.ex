@@ -1,5 +1,7 @@
 defmodule Memento.Table do
   alias Memento.Table.Definition
+
+  require Memento.Error
   require Memento.Mnesia
 
 
@@ -188,6 +190,18 @@ defmodule Memento.Table do
 
 
 
+
+  @doc "Same as `create/2`, but raises error on failure."
+  @spec create!(name, Keyword.t) :: :ok | no_return
+  def create!(table, opts \\ []) do
+    table
+    |> create(opts)
+    |> handle_for_bang!
+  end
+
+
+
+
   @doc """
   Deletes a Memento Table for Mnesia.
 
@@ -214,9 +228,9 @@ defmodule Memento.Table do
   @spec info(name, atom) :: any
   def info(table, key \\ :all) do
     Definition.validate_table!(table)
-
     Memento.Mnesia.call(:table_info, [table, key])
   end
+
 
 
 
@@ -234,6 +248,19 @@ defmodule Memento.Table do
     |> Memento.Mnesia.handle_result
   end
 
+
+
+
+
+  # Private Helpers
+  # ---------------
+
+
+  # Handle Result for Bang Methods
+  defp handle_for_bang!(:ok), do: :ok
+  defp handle_for_bang!(error) do
+    Memento.Error.raise_from_code(error)
+  end
 
 end
 

@@ -109,6 +109,38 @@ defmodule Memento.Tests.Table do
 
 
 
+  describe "#create!" do
+    @table Tables.User
+
+    test "returns :ok when everything goes as expected" do
+      assert :ok = Memento.Table.create!(@table)
+    end
+
+
+    test "raises AlreadyExistsError if table already exists" do
+      assert {:atomic, :ok} = :mnesia.create_table(@table, [])
+      assert_raise(Memento.AlreadyExistsError, ~r/already exists/i, fn ->
+        Memento.Table.create!(@table)
+      end)
+    end
+
+
+    test "raises InvalidOperationError when autoincrement is used with a type other than :ordered_set" do
+      defmodule MetaApp.AutoincrementBagBang do
+        use Memento.Table,
+          attributes: [:id, :name],
+          autoincrement: true
+      end
+
+      assert_raise(Memento.InvalidOperationError, ~r/can only be used with.*ordered.set/i, fn ->
+        Memento.Table.create!(MetaApp.AutoincrementBagBang)
+      end)
+    end
+  end
+
+
+
+
   describe "#delete" do
     @table Tables.User
 
