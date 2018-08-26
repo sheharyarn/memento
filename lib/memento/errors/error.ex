@@ -1,4 +1,5 @@
 defmodule Memento.Error do
+  alias Memento.InvalidOperationError
   alias Memento.NoTransactionError
   alias Memento.AlreadyExistsError
   alias Memento.DoesNotExistError
@@ -57,6 +58,9 @@ defmodule Memento.Error do
 
       {:already_exists, resource} ->
         %AlreadyExistsError{message: "#{inspect(resource)} already exists"}
+
+      {:autoincrement, message} ->
+        %InvalidOperationError{message: "Autoincrement #{message}"}
 
       # Don't need custom errors for the rest, fallback to MnesiaException
       # and raise with Mnesia's description of the error

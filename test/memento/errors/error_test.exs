@@ -51,6 +51,11 @@ defmodule Memento.Tests.Error do
     end
 
 
+    test "resolves to InvalidOperationError for :autoincrement" do
+      assert %Memento.InvalidOperationError{} = Memento.Error.normalize({:autoincrement, "blah blah"})
+    end
+
+
     @rest_of_mnesia_errors ~w[
       nested_transaction bad_arg combine_error bad_index index_exists
       system_limit mnesia_down not_a_db_node bad_type node_not_running

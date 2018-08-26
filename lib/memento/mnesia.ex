@@ -8,7 +8,7 @@ defmodule Memento.Mnesia do
 
 
 
-  # Public API
+  # Helper API
   # ----------
 
 
@@ -29,7 +29,19 @@ defmodule Memento.Mnesia do
 
 
 
-  @doc "Normalize the result of an :mnesia call"
+  @doc """
+  Normalize the result of an :mnesia call
+
+  Mnesia transactions even rescue serious errors and return the
+  underlying error code and stacktrace. That does not seem
+  right, because if an error is raised by some method inside a
+  transaction, it should be handled/rescued directly inside that
+  scope.
+
+  This will check if an exception was rescued inside the mnesia
+  transaction and will re-raise it (even if the non-bang versions
+  of the Memento transaction methods are used).
+  """
   @spec handle_result(any) :: any
   def handle_result(result) do
     case result do
