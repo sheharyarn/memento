@@ -1,3 +1,4 @@
+require Logger
 alias Memento.{
   Table,
   Query,
@@ -18,10 +19,12 @@ alias Definitions.Tables.User,  as: U
 alias Definitions.Tables.Email, as: E
 alias Definitions.Tables.Movie, as: M
 
+
 # Create Tables
-Table.create!(U)
-Table.create!(E)
-Table.create!(M)
+Table.create(U) |> inspect |> Logger.debug
+Table.create(E) |> inspect |> Logger.debug
+Table.create(M) |> inspect |> Logger.debug
+
 
 # Seed with some values
 U.seed
