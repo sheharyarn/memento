@@ -216,10 +216,10 @@ defmodule Memento.Query do
   @doc """
   Writes a Memento record to its Mnesia table.
 
-  Returns `:ok` on success, or aborts the transaction on failure.
-  This operatiion acquires a lock of the kind specified, which can
-  be either `:write` or `:sticky_write` (defaults to `:write`).
-  See `t:lock/0` and `:mnesia.write/3` for more details.
+  Returns the written record on success, or aborts the transaction
+  on failure. This operatiion acquires a lock of the kind specified,
+  which can be either `:write` or `:sticky_write` (defaults to
+  `:write`). See `t:lock/0` and `:mnesia.write/3` for more details.
 
 
   ## Autoincrement and `nil` primary keys
@@ -227,7 +227,8 @@ defmodule Memento.Query do
   This method will raise an error if the primary key of the passed
   Memento record is `nil` and the table does not have autoincrement
   enabled. If it is enabled, this will find the last numeric key
-  used and increment it.
+  used, increment it and assign it as the primary key of the written
+  record (which will be returned as a result of the write operation).
 
   To enable autoincrement, the table needs to be of the type
   `ordered_set` and `autoincrement: true` has to be specified in
@@ -237,20 +238,23 @@ defmodule Memento.Query do
   ## Examples
 
   ```
-  Memento.Query.write(%Blog.Post{id: 4, title: "something", ... })
-  # => :ok
+  Memento.Query.write(%Blog.Post{title: "something", ... })
+  # => %Blog.Post{id: 4, title: "something"}
 
   Memento.Query.write(%Blog.Author{username: "sye", ... })
-  # => :ok
+  # => %Blog.Author{username: "sye", ... }
   ```
   """
-  @spec write(Table.record, options) :: :ok | no_return
+  @spec write(Table.record, options) :: Table.record | no_return
   def write(record = %{__struct__: table}, opts \\ []) do
-    record = prepare_record_for_write!(table, record)
-    record = Query.Data.dump(record)
+    struct = prepare_record_for_write!(table, record)
+    tuple  = Query.Data.dump(struct)
     lock   = Keyword.get(opts, :lock, :write)
 
-    Mnesia.call(:write, [table, record, lock])
+    case Mnesia.call(:write, [table, tuple, lock]) do
+      :ok  -> struct
+      term -> term
+    end
   end
 
 

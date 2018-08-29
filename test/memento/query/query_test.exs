@@ -54,7 +54,8 @@ defmodule Memento.Tests.Query do
 
     test "writes the record to mnesia" do
       Support.Mnesia.transaction fn ->
-        assert :ok = Query.write(%@table{id: :some_id, name: :some_name})
+        record = %@table{id: :some_id, name: :some_name}
+        assert record == Query.write(record)
         assert [{@table, :some_id, :some_name}] = :mnesia.read(@table, :some_id)
       end
     end
@@ -62,8 +63,8 @@ defmodule Memento.Tests.Query do
 
     test "overwrites a previous record with same key" do
       Support.Mnesia.transaction fn ->
-        :ok = Query.write(%@table{id: :key, name: :old_value})
-        :ok = Query.write(%@table{id: :key, name: :new_value})
+        %{id: :key, name: :old_value} = Query.write(%@table{id: :key, name: :old_value})
+        %{id: :key, name: :new_value} = Query.write(%@table{id: :key, name: :new_value})
 
         assert [{@table, :key, :new_value}] = :mnesia.read(@table, :key)
       end
@@ -80,15 +81,15 @@ defmodule Memento.Tests.Query do
     test "it writes as usual if a key is specified" do
       Support.Mnesia.transaction! fn ->
         record = %@table{id: 100, title: "Watchmen", director: "Zack Snyder", year: 2009}
-        assert :ok = Query.write(record)
+        assert %{id: 100} = Query.write(record)
       end
     end
 
 
     test "it assigns key '1' if no existing records exist and key is nil" do
       Support.Mnesia.transaction! fn ->
-        assert []  = Query.all(@table)
-        assert :ok = Query.write(%@table{title: "Watchmen"})
+        assert [] = Query.all(@table)
+        assert %{id: 1} = Query.write(%@table{title: "Watchmen"})
         assert [%{id: 1}] = Query.all(@table)
       end
     end
@@ -98,10 +99,10 @@ defmodule Memento.Tests.Query do
       Support.Mnesia.transaction! fn ->
         assert []  = Query.all(@table)
 
-        assert :ok = Query.write(%@table{title: "Watchmen", id: 10})
-        assert :ok = Query.write(%@table{title: "Deadpool"})
-        assert :ok = Query.write(%@table{title: "Avengers"})
-        assert :ok = Query.write(%@table{title: "Ragnarok"})
+        assert %{id: 10} = Query.write(%@table{title: "Watchmen", id: 10})
+        assert %{id: 11} = Query.write(%@table{title: "Deadpool"})
+        assert %{id: 12} = Query.write(%@table{title: "Avengers"})
+        assert %{id: 13} = Query.write(%@table{title: "Ragnarok"})
 
         assert %{id: 10, title: "Watchmen"} = Query.read(@table, 10)
         assert %{id: 11, title: "Deadpool"} = Query.read(@table, 11)
@@ -115,11 +116,11 @@ defmodule Memento.Tests.Query do
       Support.Mnesia.transaction! fn ->
         assert []  = Query.all(@table)
 
-        assert :ok = Query.write(%@table{title: "Watchmen", id: 10})
-        assert :ok = Query.write(%@table{title: "Deadpool", id: :xyz})
-        assert :ok = Query.write(%@table{title: "Ragnarok", id: "hello"})
-        assert :ok = Query.write(%@table{title: "Punisher", id: -100})
-        assert :ok = Query.write(%@table{title: "Avengers"})
+        assert %{id: 10}      = Query.write(%@table{title: "Watchmen", id: 10})
+        assert %{id: :xyz}    = Query.write(%@table{title: "Deadpool", id: :xyz})
+        assert %{id: "hello"} = Query.write(%@table{title: "Ragnarok", id: "hello"})
+        assert %{id: -100}    = Query.write(%@table{title: "Punisher", id: -100})
+        assert %{id: 11}      = Query.write(%@table{title: "Avengers"})
 
         assert %{id: 10, title: "Watchmen"} = Query.read(@table, 10)
         assert %{id: 11, title: "Avengers"} = Query.read(@table, 11)
