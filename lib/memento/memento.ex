@@ -3,9 +3,11 @@ defmodule Memento do
 
 
   @moduledoc """
-  Nothing here now, come back later
+  Simple + Powerful interface to the Erlang Mnesia Database.
 
-  TODO: Convert this into an 'Application'
+
+  See the [README](https://github.com/sheharyarn/memento) to get
+  started.
   """
 
 
