@@ -253,7 +253,37 @@ See [`Query.select/3`][docs-query-select] for more information about the guard o
 
 
 
+## Persisting to Disk
+
+Setting up disk persistence in `Mnesia` has always been a bit weird. It involves stopping the application, creating
+schemas on disk, restarting the application and then creating the tables with certain options. Here are the steps
+you need to take to do all of that:
+
+```elixir
+# List of nodes where you want to persist
+nodes = [ node() ]
+
+# Create the schema
+Memento.stop
+Memento.Schema.create(nodes)
+Memento.start
+
+# Create your tables with disc_copies (only the ones you want persisted on disk)
+Memento.Table.create!(TableA, disc_copies: nodes)
+Memento.Table.create!(TableB, disc_copies: nodes)
+Memento.Table.create!(TableC)
+```
+
+This needs to be done only once and not every time the application starts. It also makes sense to create a helper
+function or mix task that does this for you. You can see a [sample implementation here][que-persistence].
+
+<br/>
+
+
+
+
 ## FAQ
+
 
 
 #### 1. Why Memento/Mnesia?
@@ -341,3 +371,5 @@ This package is available as open source under the terms of the [MIT License][li
   [docs-query-select]:    https://hexdocs.pm/memento/Memento.Query.html#select/3
 
   [github-fork]:          https://github.com/sheharyarn/memento/fork
+  [que-persistence]:      https://github.com/sheharyarn/que/blob/dc3764a27f8ce3e28b15a7bfafbca604fb424ecb/lib/que/persistence/mnesia/mnesia.ex#L90-L108
+
