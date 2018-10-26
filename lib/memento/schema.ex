@@ -11,10 +11,10 @@ defmodule Memento.Schema do
   application is running on.
 
   ```
-  # Create disk copies on current node
+  # Create schema on current node
   Memento.Schema.create([ node() ]
 
-  # Create disk copies on many nodes
+  # Create schema on many nodes
   node_list = [node(), :alice@host_x, :bob@host_y, :eve@host_z]
   Memento.Schema.create(node_list)
   ```
@@ -23,6 +23,24 @@ defmodule Memento.Schema do
   be persisted to disk have to be included. RAM-only nodes should be
   left out. Disk schemas can also be deleted by calling `delete/1` and
   you can get information about them by calling `info/0`.
+
+
+  ## Example
+
+  ```elixir
+  # The nodes where you want to persist
+  nodes = [ node() ]
+
+  # Create the schema
+  Memento.stop
+  Memento.Schema.create(nodes)
+  Memento.start
+
+  # Create disc copies of your tables
+  Memento.Table.create!(TableA, disc_copies: nodes)
+  Memento.Table.create!(TableB, disc_copies: nodes)
+  ```
+
   """
 
 
