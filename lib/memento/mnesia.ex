@@ -15,6 +15,23 @@ defmodule Memento.Mnesia do
   @doc "Call an Mnesia function"
   defmacro call(method, arguments \\ []) do
     quote(bind_quoted: [fun: method, args: arguments]) do
+      apply(:mnesia, fun, args)
+    end
+  end
+
+
+
+  @doc """
+  Call an Mnesia function and catch any exits
+
+  Should ONLY be used with transaction methods, because catching
+  exits inside transactions seriously impact the performance of
+  Mnesia.
+
+  Reference: https://github.com/sheharyarn/memento/issues/2
+  """
+  defmacro call_and_catch(method, arguments \\ []) do
+    quote(bind_quoted: [fun: method, args: arguments]) do
       require Memento.Error
 
       try do

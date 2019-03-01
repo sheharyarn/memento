@@ -68,7 +68,7 @@ defmodule Memento.Transaction do
   @spec execute(fun, retries) :: {:ok, any} | {:error, any}
   def execute(function, retries \\ :infinity) do
     :transaction
-    |> Memento.Mnesia.call([function, retries])
+    |> Memento.Mnesia.call_and_catch([function, retries])
     |> Memento.Mnesia.handle_result
   end
 
@@ -102,7 +102,7 @@ defmodule Memento.Transaction do
   @spec execute_sync(fun, retries) :: {:ok, any} | {:error, any}
   def execute_sync(function, retries \\ :infinity) do
     :sync_transaction
-    |> Memento.Mnesia.call([function, retries])
+    |> Memento.Mnesia.call_and_catch([function, retries])
     |> Memento.Mnesia.handle_result
   end
 
