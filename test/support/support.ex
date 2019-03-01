@@ -29,6 +29,10 @@ defmodule Memento.Support do
     end
 
 
+    def transaction(fun) when is_function(fun) do
+      Memento.Transaction.execute(fun)
+    end
+
     def transaction({module, method, args})
     when is_atom(module) and is_atom(method) do
       transaction(fn ->
@@ -41,11 +45,6 @@ defmodule Memento.Support do
       transaction(fn ->
         Memento.Mnesia.call(method, args)
       end)
-    end
-
-
-    def transaction(fun) when is_function(fun) do
-      Memento.Transaction.execute(fun)
     end
 
   end
