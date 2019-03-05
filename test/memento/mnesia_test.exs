@@ -7,6 +7,14 @@ defmodule Memento.Tests.Mnesia do
 
 
   describe "#call" do
+    test "delegates method calls to the mnesia module" do
+      assert :yes == Mnesia.call(:system_info, [:is_running])
+    end
+  end
+
+
+
+  describe "#call_and_catch" do
     setup do
       Support.Mnesia.stop
       :ok
@@ -16,7 +24,7 @@ defmodule Memento.Tests.Mnesia do
     @func :system_info
     @args [:is_running]
     test "delegates method calls to the mnesia module" do
-      assert :no == Mnesia.call(@func, @args)
+      assert :no == Mnesia.call_and_catch(@func, @args)
     end
 
 
@@ -24,7 +32,7 @@ defmodule Memento.Tests.Mnesia do
     @args []
     test "re-raises mnesia exits as memento exceptions" do
       assert_raise(MnesiaException, ~r/not running/i, fn ->
-        Mnesia.call(@func, @args)
+        Mnesia.call_and_catch(@func, @args)
       end)
     end
 
@@ -33,7 +41,7 @@ defmodule Memento.Tests.Mnesia do
     @args [Tables.User, :all]
     test "prints descriptions of the error" do
       assert_raise(MnesiaException, ~r/tried to perform op on non-existing/i, fn ->
-        Mnesia.call(@func, @args)
+        Mnesia.call_and_catch(@func, @args)
       end)
     end
   end

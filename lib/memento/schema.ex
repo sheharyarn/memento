@@ -66,7 +66,7 @@ defmodule Memento.Schema do
     end
 
     :create_schema
-    |> Memento.Mnesia.call([nodes])
+    |> Memento.Mnesia.call_and_catch([nodes])
     |> Memento.Mnesia.handle_result
   end
 
@@ -83,7 +83,7 @@ defmodule Memento.Schema do
   @spec delete(list(node)) :: :ok | {:error, any}
   def delete(nodes) do
     :delete_schema
-    |> Memento.Mnesia.call([nodes])
+    |> Memento.Mnesia.call_and_catch([nodes])
     |> Memento.Mnesia.handle_result
   end
 
@@ -96,7 +96,7 @@ defmodule Memento.Schema do
   @spec info() :: :ok
   def info do
     :schema
-    |> Memento.Mnesia.call
+    |> Memento.Mnesia.call_and_catch
     |> Memento.Mnesia.handle_result
   end
 
@@ -109,7 +109,7 @@ defmodule Memento.Schema do
   @spec info(Memento.Table.name) :: :ok
   def info(table) do
     :schema
-    |> Memento.Mnesia.call([table])
+    |> Memento.Mnesia.call_and_catch([table])
     |> Memento.Mnesia.handle_result
   end
 
