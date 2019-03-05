@@ -25,7 +25,7 @@ defmodule Memento.Mnesia do
   Call an Mnesia function and catch any exits
 
   Should ONLY be used with transaction methods, because catching
-  exits inside transactions seriously impact the performance of
+  exits inside transactions seriously impacts the performance of
   Mnesia.
 
   Reference: https://github.com/sheharyarn/memento/issues/2
