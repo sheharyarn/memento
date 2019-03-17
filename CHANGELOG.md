@@ -2,7 +2,14 @@ Changelog
 =========
 
 
-## Version 0.3.0
+## v0.3.1
+
+ - [Bugfix] Convert mnesia's `:"$end_of_table"` code to empty list
+    - Previously raised UndefinedFunctionError during coercion
+
+
+
+## v0.3.0
 
  - [Bugfix] Catch Mnesia exits _outside_ transactions (#2)
      - This fixes issues where Memento would unintentionally mess with Mnesia's
