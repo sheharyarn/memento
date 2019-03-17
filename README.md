@@ -63,7 +63,7 @@ Add `:memento` to your list of dependencies in your Mix file:
 
 ```elixir
 def deps do
-  [{:memento, "~> 0.3.0"}]
+  [{:memento, "~> 0.3.1"}]
 end
 ```
 
