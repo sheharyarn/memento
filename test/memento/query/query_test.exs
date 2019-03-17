@@ -365,6 +365,15 @@ defmodule Memento.Tests.Query do
         assert [%@table{} | _rest] = records
       end
     end
+
+
+    test "Returns empty list when nothing matches and limit is non-nil" do
+      match_none = [{ @table.__info__.query_base, [{:==, :id, :invalid}], [:"$_"] }]
+
+      Support.Mnesia.transaction fn ->
+        assert [] = Query.select_raw(@table, match_none, limit: 5)
+      end
+    end
   end
 
 end

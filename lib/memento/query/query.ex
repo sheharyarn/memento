@@ -669,6 +669,8 @@ defmodule Memento.Query do
     coerce_records(records)
   end
 
+  defp coerce_records(:"$end_of_table"), do: []
+
 
   # Raises error if tuple size and no. of attributes is not equal
   defp validate_match_pattern!(table, pattern) do
