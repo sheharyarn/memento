@@ -156,6 +156,10 @@ defmodule Memento.Table.Definition do
           # Indices aren't atoms
           !Enum.all?(index, &is_atom/1) ->
             "Invalid index list specified"
+          
+          # Autoincrement isn't a boolean
+          !is_boolean(auto) ->
+             "Invalid autoincrement parameter specified"
 
           # Table type is not one of allowed
           !Enum.member?(@allowed_types, type) ->
