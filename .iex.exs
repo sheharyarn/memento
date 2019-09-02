@@ -15,21 +15,24 @@ alias Memento.{
 
 
 # Table Aliases
-alias Definitions.Tables.User,  as: U
-alias Definitions.Tables.Email, as: E
-alias Definitions.Tables.Movie, as: M
+alias Definitions.Tables.User,   as: U
+alias Definitions.Tables.Email,  as: E
+alias Definitions.Tables.Movie,  as: M
+alias Definitions.Tables.Nested, as: N
 
 
 # Create Tables
 Table.create(U) |> inspect |> Logger.debug
 Table.create(E) |> inspect |> Logger.debug
 Table.create(M) |> inspect |> Logger.debug
+Table.create(N) |> inspect |> Logger.debug
 
 
 # Seed with some values
 U.seed
 E.seed
 M.seed
+N.seed
 
 
 # Transaction Helpers

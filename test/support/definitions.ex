@@ -70,5 +70,28 @@ defmodule Memento.Support.Definitions do
       end
     end
 
+
+    defmodule Nested do
+      alias __MODULE__
+      use Memento.Table,
+        type: :ordered_set,
+        autoincrement: true,
+        attributes: [:id, :data]
+
+      def seed do
+        nested = [
+          %Nested{id: 1, data: %{title: "Elixir",  type: :language,  stars: 15000}},
+          %Nested{id: 2, data: %{title: "Phoenix", type: :framework, stars: 13000}},
+          %Nested{id: 3, data: %{title: "Memento", type: :library,   stars: 160}},
+          %Nested{id: 4, data: %{title: "Ecto",    type: :library,   stars: 4000}},
+          %Nested{id: 5, data: %{title: "Ruby",    type: :language,  stars: 16000}},
+        ]
+
+        Memento.Support.Mnesia.transaction(fn ->
+          Enum.each(nested, &Memento.Query.write/1)
+        end)
+      end
+    end
+
   end
 end
