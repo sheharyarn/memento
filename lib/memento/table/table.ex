@@ -111,10 +111,11 @@ defmodule Memento.Table do
 
   @doc false
   defmacro __using__(opts) do
-    Definition.validate_options!(opts)
+    opts = Macro.expand(opts, __CALLER__)
 
     quote do
       opts = unquote(opts)
+      Definition.validate_options!(opts)
 
       @table_attrs Keyword.get(opts, :attributes)
       @table_type  Keyword.get(opts, :type, :set)
