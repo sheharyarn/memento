@@ -20,6 +20,25 @@ defmodule Memento.Tests.Table do
     end
 
 
+    test "works with sigils" do
+      defmodule Meta.SupportsSigils do
+        use Memento.Table, attributes: ~w[id username]a
+      end
+
+      assert Meta.SupportsSigils.__info__()[:attributes] == [:id, :username]
+    end
+
+
+    test "works with module attributes" do
+      defmodule Meta.SupportsAttributes do
+        @table_attrs [:id, :username]
+        use Memento.Table, attributes: @table_attrs
+      end
+
+      assert Meta.SupportsAttributes.__info__()[:attributes] == [:id, :username]
+    end
+
+
     test "raises error for invalid options" do
       assert_raise(Memento.Error, ~r/invalid options/i, fn ->
         defmodule MetaApp.InvalidOptions do
