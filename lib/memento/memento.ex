@@ -1,5 +1,6 @@
 defmodule Memento do
   require Memento.Mnesia
+  require Memento.Error
 
 
   @moduledoc """
@@ -37,6 +38,39 @@ defmodule Memento do
   @spec stop() :: :ok | {:error, any}
   def stop do
     Application.stop(:mnesia)
+  end
+
+
+
+
+  @doc """
+  Tells Memento about other nodes running Memento/Mnesia.
+
+  You can use this to connect to and synchronize with other
+  nodes at runtime and/or on discovery, to take full advantage
+  of the distribution mode of Memento and Mnesia.
+
+  This is a wrapper method around `:mnesia.change_config/2`.
+
+  ## Examples
+
+  ```
+  # Connect to Memento running on a specific node
+  Memento.add_nodes(:node_xyz@some_host)
+
+  # Add all connected nodes to Memento distributed database
+  Memento.add_nodes(Node.list())
+  ```
+  """
+  @spec add_nodes(node | list(node)) :: {:ok, list(node)} | {:error, any}
+  def add_nodes(nodes) do
+    nodes = List.wrap(nodes)
+
+    if Enum.any?(nodes, & !is_atom(&1)) do
+      Memento.Error.raise("Invalid Node list passed")
+    end
+
+    Memento.Mnesia.call(:change_config, [:extra_db_nodes, nodes])
   end
 
 
