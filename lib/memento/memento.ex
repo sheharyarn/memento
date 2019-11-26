@@ -52,7 +52,8 @@ defmodule Memento do
 
   This is a wrapper method around `:mnesia.change_config/2`.
 
-  ## Examples
+
+  ## Example
 
   ```
   # Connect to Memento running on a specific node

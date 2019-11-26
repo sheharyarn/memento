@@ -1,5 +1,6 @@
 defmodule Memento.Schema do
   require Memento.Mnesia
+  import Memento.Error
 
 
   @moduledoc """
@@ -46,6 +47,17 @@ defmodule Memento.Schema do
 
 
 
+  # Type Definitions
+  # ----------------
+
+
+  @typedoc "Schema / Table copy mode"
+  @type storage_mode :: :ram_copies | :disc_copies | :disc_only_copies
+
+
+
+
+
   # Public API
   # ----------
 
@@ -67,7 +79,7 @@ defmodule Memento.Schema do
 
     :create_schema
     |> Memento.Mnesia.call_and_catch([nodes])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -84,7 +96,7 @@ defmodule Memento.Schema do
   def delete(nodes) do
     :delete_schema
     |> Memento.Mnesia.call_and_catch([nodes])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -96,8 +108,8 @@ defmodule Memento.Schema do
   @spec info() :: :ok
   def info do
     :schema
-    |> Memento.Mnesia.call_and_catch
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.call_and_catch()
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -110,7 +122,44 @@ defmodule Memento.Schema do
   def info(table) do
     :schema
     |> Memento.Mnesia.call_and_catch([table])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
+  end
+
+
+
+
+  @doc """
+  Sets the schema storage mode for the specified node.
+
+  Useful when you want to change the schema mode on the fly,
+  usually when connecting to a new, unsynchronized node on
+  discovery at runtime.
+
+  The mode can only be `:ram_copies` or `:disc_copies`. If the
+  storage mode is set to `ram_copies`, then no table on that
+  node can be disc-resident.
+
+  Also see `:mnesia.change_table_copy_type/3`.
+
+
+  ## Example
+
+  ```
+  Memento.Schema.set_storage_mode(:node@host, :disc_copies)
+  ```
+  """
+  @spec set_storage_mode(node, storage_mode) :: :ok
+  def set_storage_mode(node, mode) do
+    :change_table_copy_type
+    |> Memento.Mnesia.call_and_catch([:schema, node, mode])
+    |> Memento.Mnesia.handle_result()
+    |> case do
+      error when is_error(error, :bad_type) ->
+        {:error, :invalid_storage_mode}
+
+      other ->
+        other
+    end
   end
 
 end

@@ -14,6 +14,16 @@ defmodule Memento.Error do
 
 
 
+  # This guard passes errors tuples of these formats:
+  #  - {:error, {type, ...}}
+  #  - {:error, {type, :b, :c}}
+  #
+  # Everything else, including other error tuples will fail this guard
+  defguardp is_error_reason(reason, type) when is_tuple(reason) and elem(reason, 0) == type
+  defguard is_error(error, type) when is_tuple(error) and elem(error, 0) == :error and is_error_reason(elem(error, 1), type)
+
+
+
 
   # Macros to Raise Errors
   # ----------------------
@@ -42,7 +52,7 @@ defmodule Memento.Error do
   # --------------
 
 
-  # Helper Method to Build Memento Error
+  # Helper Method to Build Memento Exceptions
   def normalize({:error,   reason}), do: do_normalize(reason)
   def normalize({:aborted, reason}), do: do_normalize(reason)
   def normalize(reason),             do: do_normalize(reason)
