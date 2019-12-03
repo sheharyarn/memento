@@ -26,6 +26,12 @@ defmodule Memento.Supervisor do
 
   use GenServer
 
+  @type config :: [startup: module(), unsplit: module(), tables: [Memento.Table.name()]]
+
+  @doc """
+  Start a `Memento.Supervisor`
+  """
+  @spec start_link(config) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(config) when is_list(config) do
     GenServer.start_link(__MODULE__, config)
   end
