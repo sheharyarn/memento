@@ -5,12 +5,8 @@ defmodule Memento.Mnesia do
   # via a macro, handle the result including re-raising
   # any errors that have been caught.
 
-
-
-
   # Helper API
   # ----------
-
 
   @doc "Call an Mnesia function"
   defmacro call(method, arguments \\ []) do
@@ -18,8 +14,6 @@ defmodule Memento.Mnesia do
       apply(:mnesia, fun, args)
     end
   end
-
-
 
   @doc """
   Call an Mnesia function and catch any exits
@@ -39,12 +33,8 @@ defmodule Memento.Mnesia do
       catch
         :exit, error -> Memento.Error.raise_from_code(error)
       end
-
     end
   end
-
-
-
 
   @doc """
   Normalize the result of an :mnesia call
@@ -74,6 +64,10 @@ defmodule Memento.Mnesia do
       {:error, reason} ->
         {:error, reason}
 
+      {:aborted, reason = {:no_majority, _}} ->
+        call(:report_event, {:minority_write_attempt, node()})
+        {:error, reason}
+
       {:aborted, reason = {exception, data}} ->
         reraise_if_valid!(exception, data)
         {:error, reason}
@@ -83,16 +77,12 @@ defmodule Memento.Mnesia do
     end
   end
 
-
-
-
-
   # Private Helpers
   # ---------------
 
-
   # Check if the error is actually an exception, and reraise it
   defp reraise_if_valid!(:throw, data), do: throw(data)
+
   defp reraise_if_valid!(exception, stacktrace) do
     error = Exception.normalize(:error, exception, stacktrace)
 
@@ -110,6 +100,4 @@ defmodule Memento.Mnesia do
         nil
     end
   end
-
-
 end
