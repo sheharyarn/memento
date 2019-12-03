@@ -9,7 +9,7 @@ defmodule Memento.Strategy.Unsplit do
   https://github.com/uwiger/unsplit
 
   Mnesia _needs_ an unsplit strategy because it isn't magically
-  able to avoid [CAP theorum](https://en.wikipedia.org/wiki/CAP_theorem)
+  able to avoid [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem)
   problems. The OTP team implemented logic to detect fail conditions
   but left all things recovery as an exercise to the consumer.
 

@@ -25,7 +25,10 @@ defmodule Memento.Supervisor do
   """
 
   use GenServer
-  require Memento.Mnesia
+
+  def start_link(config) when is_list(config) do
+    GenServer.start_link(__MODULE__, config)
+  end
 
   @doc """
   Supervisor GenServer Init
@@ -37,7 +40,7 @@ defmodule Memento.Supervisor do
   def init(config) do
     Memento.start()
     config.startup.execute(config.tables, config.nodes)
-    Memento.Mnesia.call(:subscribe, :system)
+    :mnesia.subscribe(:system)
     {:ok, config}
   end
 
@@ -60,9 +63,7 @@ defmodule Memento.Supervisor do
   indefinitely in low write volume cases.
   """
   @impl true
-  def handle_info({mnesia_user, {:mnesia_system_event, {:minority_write_attempt, _}}}, state) do
-    IO.puts(mnesia_user)
-
+  def handle_info({:mnesia_system_event, {:mnesia_user, {:minority_write_attempt, _node}}}, state) do
     if state.unsplit.recovery_type() == :decentralized and length(Node.list()) > 0 do
       state.unsplit.heal(state.tables, state.nodes)
     end
