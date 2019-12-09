@@ -15,7 +15,7 @@ defmodule Memento.Supervisor do
      ]}
   ```
 
-  One added, this module:
+  Once added, this module:
 
     1. Integrates database supervision into your application tree
     2. Subscribes to `:mnesia` system events
@@ -51,16 +51,19 @@ defmodule Memento.Supervisor do
   end
 
   @doc """
-  Heal, triggered by observed `inconsistent_database` events
+  Heal, centralized, triggered by `inconsistent_database` events
   """
   @impl true
   def handle_info({:mnesia_system_event, {:inconsistent_database, _context, _node}}, state) do
-    # @TODO: traditional unsplit behavior
+    if state.unsplit.recovery_type() == :centralized do
+      state.unsplit.heal(state.tables, state.nodes)
+    end
+
     {:noreply, state}
   end
 
   @doc """
-  Heal, triggered by observed `minority_write_attempt` events
+  Heal, decentralized, triggered by `minority_write_attempt` events
 
   Only attempt rejoin when other nodes come back into view.
 
