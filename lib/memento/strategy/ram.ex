@@ -1,4 +1,19 @@
 defmodule Memento.Strategy.RAM do
+  @moduledoc """
+  Module for using Memento in a RAM-based configuration
+
+  `Memento.Strategy.RAM` starts Memento in a RAM-only
+  configuration. Each node joined to the cluster attempts
+  to create the desired tables on startup, but only the
+  first succeeds. The others detect the existing tables
+  on failure and then adds them from remote node(s).
+
+  Unsplit is handled in a decentralized manner. In the
+  event of a netsplit, the minority node(s) are aware of
+  their situation and refuse to write. The attempt rejoin
+  to the majority on the write failures.
+  """
+
   @behaviour Memento.Strategy
   require Memento.Mnesia
 
