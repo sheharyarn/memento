@@ -6,11 +6,11 @@ defmodule Memento.Strategy.RAM do
   configuration. Each node joined to the cluster attempts
   to create the desired tables on startup, but only the
   first succeeds. The others detect the existing tables
-  on failure and then adds them from remote node(s).
+  on failure and then add them from remote node(s).
 
   Unsplit is handled in a decentralized manner. In the
   event of a netsplit, the minority node(s) are aware of
-  their situation and refuse to write. The attempt rejoin
+  their situation and refuse to write. They attempt rejoin
   to the majority on the write failures.
   """
 
