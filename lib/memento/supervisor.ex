@@ -33,7 +33,7 @@ defmodule Memento.Supervisor do
   """
   @spec start_link(config) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(config) when is_list(config) do
-    GenServer.start_link(__MODULE__, config)
+    GenServer.start_link(__MODULE__, config, name: Memento.Supervisor)
   end
 
   @doc """
@@ -46,8 +46,8 @@ defmodule Memento.Supervisor do
   def init(config) do
     Memento.start()
     state = Enum.into(config, %{})
-    state.startup.execute(state.tables, state.nodes)
-    :mnesia.subscribe(:system)
+    :ok = state.startup.execute(state.tables, state.nodes)
+    {:ok, _} = :mnesia.subscribe(:system)
     {:ok, state}
   end
 
@@ -80,4 +80,10 @@ defmodule Memento.Supervisor do
 
     {:noreply, state}
   end
+
+  @doc """
+  Ignore all other system events
+  """
+  @impl true
+  def handle_info({:mnesia_system_event, _event}, state), do: {:noreply, state}
 end
