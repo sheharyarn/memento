@@ -44,7 +44,6 @@ defmodule Memento.Supervisor do
   """
   @impl true
   def init(config) do
-    Memento.start()
     state = Enum.into(config, %{})
     :ok = state.strategy.startup(state.tables, state.nodes)
     {:ok, _} = :mnesia.subscribe(:system)

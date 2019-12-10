@@ -6,6 +6,7 @@ defmodule Memento.Strategy.RAM do
 
   @impl true
   def startup(tables, nodes \\ Node.list()) do
+    :ok = Memento.start()
     {:ok, _} = Memento.Mnesia.call(:change_config, [:extra_db_nodes, nodes])
     Enum.each(tables, fn x -> Memento.Table.create(x) |> handle_result(x) end)
     :ok = Memento.Mnesia.call(:wait_for_tables, [tables, @wait_timeout])
@@ -22,6 +23,8 @@ defmodule Memento.Strategy.RAM do
 
   @impl true
   def recovery_type, do: :decentralized
+
+  ### Private Functions ###
 
   defp handle_result(:ok, _table), do: :ok
 
