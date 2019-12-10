@@ -9,8 +9,8 @@ defmodule Memento.Supervisor do
   ```
     {Memento.Supervisor,
      [
-       startup: Memento.Strategy.Startup.RAM,
-       unsplit: Memento.Strategy.Unsplit.RAM,
+       nodes: Node.list(),
+       strategy: Memento.Strategy.RAM,
        tables: @mnesia_tables
      ]}
   ```
@@ -26,7 +26,7 @@ defmodule Memento.Supervisor do
 
   use GenServer
 
-  @type config :: [startup: module(), unsplit: module(), tables: [Memento.Table.name()]]
+  @type config :: [nodes: [node()], strategy: module(), tables: [Memento.Table.name()]]
 
   @doc """
   Start a `Memento.Supervisor`
@@ -46,7 +46,7 @@ defmodule Memento.Supervisor do
   def init(config) do
     Memento.start()
     state = Enum.into(config, %{})
-    :ok = state.startup.execute(state.tables, state.nodes)
+    :ok = state.strategy.startup(state.tables, state.nodes)
     {:ok, _} = :mnesia.subscribe(:system)
     {:ok, state}
   end
@@ -56,8 +56,8 @@ defmodule Memento.Supervisor do
   """
   @impl true
   def handle_info({:mnesia_system_event, {:inconsistent_database, _context, _node}}, state) do
-    if state.unsplit.recovery_type() == :centralized do
-      state.unsplit.heal(state.tables, state.nodes)
+    if state.strategy.recovery_type() == :centralized do
+      state.strategy.unsplit(state.tables, state.nodes)
     end
 
     {:noreply, state}
@@ -74,8 +74,8 @@ defmodule Memento.Supervisor do
   """
   @impl true
   def handle_info({:mnesia_system_event, {:mnesia_user, {:minority_write_attempt, _node}}}, state) do
-    if state.unsplit.recovery_type() == :decentralized and length(Node.list()) > 0 do
-      state.unsplit.heal(state.tables, state.nodes)
+    if state.strategy.recovery_type() == :decentralized and length(Node.list()) > 0 do
+      state.strategy.unsplit(state.tables, state.nodes)
     end
 
     {:noreply, state}

@@ -1,10 +1,11 @@
-defmodule Memento.Strategy.Unsplit do
+defmodule Memento.Strategy do
   @moduledoc """
-  Module is a behaviour defining supervised unsplit strategy
+  Module is a behaviour defining startup and unsplit strategies
 
-  `Memento.Strategy.Unsplit` defines how to "unsplit" Memento
-  under supervision. The reference implementation on "unsplitting"
-  Mnesia that inspired the naming here can be seen at:
+  `Memento.Strategy` defines how to startup Memento for use under app
+  supervision and how to "unsplit" a failing cluster back together.
+  The reference implementation on "unsplitting" Mnesia that inspired
+  the naming here can be seen at:
 
   https://github.com/uwiger/unsplit
 
@@ -17,11 +18,18 @@ defmodule Memento.Strategy.Unsplit do
   """
 
   @doc """
+  Execute the startup strategy
+
+  Requires caller to provide table names. Optional list of nodes.
+  """
+  @callback startup([Memento.Table.name()], [node()]) :: :ok | {:error, String.t()}
+
+  @doc """
   Heal a cluster back together
 
   On success, the result is a restored, fully-operational cluster.
   """
-  @callback heal([Memento.Table.name()], [node()]) :: :ok | {:error, String.t()}
+  @callback unsplit([Memento.Table.name()], [node()]) :: :ok | {:error, String.t()}
 
   @doc """
   Defines the recovery type
