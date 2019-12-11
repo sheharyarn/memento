@@ -21,6 +21,7 @@ defmodule Memento.Strategy.RAM do
 
   @impl true
   def startup(tables, nodes \\ Node.list()) do
+    Memento.start()
     {:ok, _} = Memento.Mnesia.call(:change_config, [:extra_db_nodes, nodes])
     Enum.each(tables, fn x -> Memento.Table.create(x) |> handle_result(x) end)
     :ok = Memento.Mnesia.call(:wait_for_tables, [tables, @wait_timeout])
