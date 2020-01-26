@@ -1,6 +1,5 @@
 defmodule Memento.Schema do
   require Memento.Mnesia
-  import Memento.Error
 
 
   @moduledoc """
@@ -43,16 +42,6 @@ defmodule Memento.Schema do
   ```
 
   """
-
-
-
-
-  # Type Definitions
-  # ----------------
-
-
-  @typedoc "Schema / Table copy mode"
-  @type storage_mode :: :ram_copies | :disc_copies | :disc_only_copies
 
 
 
@@ -139,27 +128,20 @@ defmodule Memento.Schema do
   storage mode is set to `ram_copies`, then no table on that
   node can be disc-resident.
 
-  Also see `:mnesia.change_table_copy_type/3`.
+  This just calls `Memento.Table.set_storage_type/3` underneath
+  with `:schema` as the table. Also see
+  `:mnesia.change_table_copy_type/3` for more details.
 
 
   ## Example
 
   ```
-  Memento.Schema.set_storage_mode(:node@host, :disc_copies)
+  Memento.Schema.set_storage_type(:node@host, :disc_copies)
   ```
   """
-  @spec set_storage_mode(node, storage_mode) :: :ok
-  def set_storage_mode(node, mode) do
-    :change_table_copy_type
-    |> Memento.Mnesia.call_and_catch([:schema, node, mode])
-    |> Memento.Mnesia.handle_result()
-    |> case do
-      error when is_error(error, :bad_type) ->
-        {:error, :invalid_storage_mode}
-
-      other ->
-        other
-    end
+  @spec set_storage_type(node, Memento.Table.storage_type) :: :ok | {:error, any}
+  def set_storage_type(node, type) do
+    Memento.Table.set_storage_type(:schema, node, type)
   end
 
 end

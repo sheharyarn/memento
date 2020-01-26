@@ -119,7 +119,7 @@ defmodule Memento do
 
   For more information, see `:mnesia.wait_for_tables/2`.
 
-  # Examples
+  ## Examples
 
   ```
   # Wait until the `Movies` table is ready
@@ -129,7 +129,7 @@ defmodule Memento do
   Memento.wait([TableA, TableB])
   ```
   """
-  @spec wait(list(Memento.Table.t), integer | :infinity) :: :ok | {:timeout, list(Memento.Table.t)} | {:error, any}
+  @spec wait(list(Memento.Table.name), integer | :infinity) :: :ok | {:timeout, list(Memento.Table.t)} | {:error, any}
   def wait(tables, timeout \\ 3000) do
     tables = List.wrap(tables)
     Memento.Mnesia.call(:wait_for_tables, [tables, timeout])
