@@ -42,7 +42,7 @@ defmodule Memento.Error do
   # --------------
 
 
-  # Helper Method to Build Memento Error
+  # Helper Method to Build Memento Exceptions
   def normalize({:error,   reason}), do: do_normalize(reason)
   def normalize({:aborted, reason}), do: do_normalize(reason)
   def normalize(reason),             do: do_normalize(reason)

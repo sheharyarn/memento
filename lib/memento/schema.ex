@@ -46,6 +46,7 @@ defmodule Memento.Schema do
 
 
 
+
   # Public API
   # ----------
 
@@ -67,7 +68,7 @@ defmodule Memento.Schema do
 
     :create_schema
     |> Memento.Mnesia.call_and_catch([nodes])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -84,7 +85,7 @@ defmodule Memento.Schema do
   def delete(nodes) do
     :delete_schema
     |> Memento.Mnesia.call_and_catch([nodes])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -96,8 +97,8 @@ defmodule Memento.Schema do
   @spec info() :: :ok
   def info do
     :schema
-    |> Memento.Mnesia.call_and_catch
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.call_and_catch()
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -110,7 +111,37 @@ defmodule Memento.Schema do
   def info(table) do
     :schema
     |> Memento.Mnesia.call_and_catch([table])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
+  end
+
+
+
+
+  @doc """
+  Sets the schema storage mode for the specified node.
+
+  Useful when you want to change the schema mode on the fly,
+  usually when connecting to a new, unsynchronized node on
+  discovery at runtime.
+
+  The mode can only be `:ram_copies` or `:disc_copies`. If the
+  storage mode is set to `ram_copies`, then no table on that
+  node can be disc-resident.
+
+  This just calls `Memento.Table.set_storage_type/3` underneath
+  with `:schema` as the table. Also see
+  `:mnesia.change_table_copy_type/3` for more details.
+
+
+  ## Example
+
+  ```
+  Memento.Schema.set_storage_type(:node@host, :disc_copies)
+  ```
+  """
+  @spec set_storage_type(node, Memento.Table.storage_type) :: :ok | {:error, any}
+  def set_storage_type(node, type) do
+    Memento.Table.set_storage_type(:schema, node, type)
   end
 
 end

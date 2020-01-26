@@ -84,6 +84,9 @@ defmodule Memento.Table do
   @typedoc "A Memento.Table record data struct"
   @type record :: struct()
 
+  @typedoc "Table storage/copy type"
+  @type storage_type :: :ram_copies | :disc_copies | :disc_only_copies
+
 
 
 
@@ -197,7 +200,7 @@ defmodule Memento.Table do
   def create!(table, opts \\ []) do
     table
     |> create(opts)
-    |> handle_for_bang!
+    |> handle_for_bang!()
   end
 
 
@@ -214,7 +217,7 @@ defmodule Memento.Table do
 
     :delete_table
     |> Memento.Mnesia.call([table])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -224,8 +227,110 @@ defmodule Memento.Table do
   @spec delete!(name) :: :ok | no_return
   def delete!(table) do
     table
-    |> delete
-    |> handle_for_bang!
+    |> delete()
+    |> handle_for_bang!()
+  end
+
+
+
+
+  @doc """
+  Makes a copy of a table at the given node.
+
+  Especially useful when you want to replicate a table on another
+  node on the fly, usually when connecting to it the first time.
+
+  The argument `type` must be a valid `storage_type()` atom. This
+  can also be used to create a replica of the internal `:schema`
+  table.
+
+  Also see `:mnesia.add_table_copy/3`.
+
+  ## Example
+
+  ```
+  # Create an on-disc replica of `Users` table on another node
+  Memento.Table.create_copy(Users, :some_node@host_x, :disc_copies)
+  ```
+  """
+  @spec create_copy(name, node, storage_type) :: :ok | {:error, any}
+  def create_copy(table, node, type) do
+    :add_table_copy
+    |> Memento.Mnesia.call_and_catch([table, node, type])
+    |> Memento.Mnesia.handle_result()
+  end
+
+
+
+
+  @doc """
+  Deletes the replica of a table on the specified node.
+
+  When the last replica of a table is deleted, the table disappears
+  entirely. This function can also be used to delete the replica of
+  the internal `:schema` table which will cause the Mnesia node to
+  be removed (Mnesia/Memento must be stopped first).
+
+  Also see `:mnesia.del_table_copy/2`.
+  """
+  @spec delete_copy(name, node) :: :ok | {:error, any}
+  def delete_copy(table, node) do
+    :del_table_copy
+    |> Memento.Mnesia.call_and_catch([table, node])
+    |> Memento.Mnesia.handle_result()
+  end
+
+
+
+
+  @doc """
+  Moves a table's copy from one node to the other.
+
+  This operation preserves the storage type of the table. For example,
+  a `:ram_copies` table when moved from one node, remains keeps its
+  `:ram_copies` storage type on the new node.
+
+  Other transactions can still read and write while it's being moved.
+  This function cannot be called on the internal `:local_content`
+  tables.
+
+  Also see `:mnesia.move_table_copy/3`.
+  """
+  @spec move_copy(name, node, node) :: :ok | {:error, any}
+  def move_copy(table, node_from, node_to) do
+    :move_table_copy
+    |> Memento.Mnesia.call_and_catch([table, node_from, node_to])
+    |> Memento.Mnesia.handle_result()
+  end
+
+
+
+
+  @doc """
+  Sets the storage type of a table for the specified node.
+
+  Useful when you want to change the table's copy type on the fly,
+  usually when connecting to a new, unsynchronized node on
+  discovery at runtime.
+
+  The argument `type` must be a valid `storage_type()` atom. This
+  can also be used for the internal `:schema` table, but you should
+  use `Memento.Schema.set_storage_type/2` instead.
+
+  See `:mnesia.change_table_copy_type/3` for more details.
+
+
+  ## Example
+
+  ```
+  Memento.Table.set_storage_type(MyTable, :node@host, :disc_copies)
+  ```
+  """
+  @spec set_storage_type(name, node, storage_type) :: :ok | {:error, any}
+  def set_storage_type(table, node, type) do
+    :change_table_copy_type
+    |> Memento.Mnesia.call_and_catch([table, node, type])
+    |> Memento.Mnesia.handle_result()
   end
 
 
@@ -258,7 +363,7 @@ defmodule Memento.Table do
 
     :clear_table
     |> Memento.Mnesia.call([table])
-    |> Memento.Mnesia.handle_result
+    |> Memento.Mnesia.handle_result()
   end
 
 
