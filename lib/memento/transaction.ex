@@ -115,7 +115,7 @@ defmodule Memento.Transaction do
   @spec execute_sync!(fun, retries) :: any | no_return
   def execute_sync!(fun, retries \\ :infinity) do
     fun
-    |> execute(retries)
+    |> execute_sync(retries)
     |> handle_result
   end
 
