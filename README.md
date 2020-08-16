@@ -22,7 +22,7 @@
 
 <p align="center">
   <b>Simple but Powerful Elixir interface to the Erlang Mnesia Database</b></br>
-  <sub>Mnesia. Memento. <a href="https://www.imdb.com/title/tt0209144/">Get it?</a><sub>
+  <sub>Mnesia. Memento. <a href="https://www.imdb.com/title/tt0209144/">Get it?</a></sub>
 </p>
 
 <br/>
