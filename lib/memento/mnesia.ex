@@ -74,6 +74,10 @@ defmodule Memento.Mnesia do
       {:error, reason} ->
         {:error, reason}
 
+      {:aborted, reason = {:no_majority, _}} ->
+        call(:report_event, [{:minority_write_attempt, node()}])
+        {:error, reason}
+
       {:aborted, reason = {exception, data}} ->
         reraise_if_valid!(exception, data)
         {:error, reason}

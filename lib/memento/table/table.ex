@@ -169,6 +169,7 @@ defmodule Memento.Table do
 
     # Build new Options
     info = table.__info__()
+    default_opts = [majority: true]
     opts = Definition.merge_options(info.options, opts)
 
     # Validate Options
@@ -184,7 +185,7 @@ defmodule Memento.Table do
       # Else create the Table
       true ->
         main = [attributes: info.attributes]
-        mnesia_opts = Keyword.merge(opts.mnesia, main)
+        mnesia_opts = default_opts |> Keyword.merge(opts.mnesia) |> Keyword.merge(main)
 
         :create_table
         |> Memento.Mnesia.call([table, mnesia_opts])
@@ -381,4 +382,3 @@ defmodule Memento.Table do
   end
 
 end
-

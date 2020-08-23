@@ -23,7 +23,7 @@ defmodule Memento.Mixfile do
       # Project
       app:           @app,
       version:       @version,
-      elixir:        "~> 1.4",
+      elixir:        "~> 1.7",
       description:   description(),
       package:       package(),
       deps:          deps(),
@@ -51,8 +51,9 @@ defmodule Memento.Mixfile do
   # Dependencies
   defp deps do
     [
-      {:ex_doc,  ">= 0.0.0", only: :docs},
-      {:inch_ex, ">= 0.0.0", only: :docs},
+      {:ex_unit_clustered_case, "~> 0.4",   only: :test},
+      {:ex_doc,                 ">= 0.0.0", only: :docs},
+      {:inch_ex,                ">= 0.0.0", only: :docs},
     ]
   end
 
@@ -82,4 +83,3 @@ defmodule Memento.Mixfile do
   end
 
 end
-
