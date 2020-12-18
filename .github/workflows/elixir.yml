@@ -14,8 +14,20 @@ jobs:
 
     strategy:
       matrix: 
-        elixir: ['1.10', '1.11']
+        elixir: ['1.8', '1.9', '1.10', '1.11']
         include:
+          - elixir: '1.8'
+            otp-release: '20'
+          - elixir: '1.8'
+            otp-release: '21'
+          - elixir: '1.8'
+            otp-release: '22'
+          - elixir: '1.9'
+            otp-release: '20'
+          - elixir: '1.9'
+            otp-release: '21'
+          - elixir: '1.9'
+            otp-release: '22'
           - elixir: '1.10'
             otp-release: '21.0'
           - elixir: '1.10'
