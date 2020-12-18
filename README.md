@@ -6,8 +6,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://travis-ci.org/sheharyarn/memento">
-    <img alt="Build Status" src="https://img.shields.io/travis/sheharyarn/memento/master.svg" />
+  <a href="https://github.com/sheharyarn/memento/workflows">
+    <img alt="Elixir CI" src="https://github.com/evolution-gaming/memento/workflows/Elixir%20CI/badge.svg" />
   </a>
   <a href="https://hexdocs.pm/memento">
     <img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=master" />
