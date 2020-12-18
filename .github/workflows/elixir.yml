@@ -40,6 +40,3 @@ jobs:
       run: mix deps.get
     - name: Run tests
       run: mix test
-    - name: Post
-      env:
-        MIX_ENV: docs mix inch.report
