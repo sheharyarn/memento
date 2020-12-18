@@ -14,14 +14,14 @@ jobs:
 
     strategy:
       matrix: 
-        elixir: [1.10, 1.11]
+        elixir: ['1.10', '1.11']
         include:
-          - elixir: 1.10
-            otp-release: 21.0
-          - elixir: 1.10
-            otp-release: 22.0
-          - elixir: 1.11
-            otp-release: 23.0
+          - elixir: '1.10'
+            otp-release: '21.0'
+          - elixir: '1.10'
+            otp-release: '22.0'
+          - elixir: '1.11'
+            otp-release: '23.0'
       
     steps:
     - uses: actions/checkout@v2
