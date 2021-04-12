@@ -369,6 +369,25 @@ defmodule Memento.Table do
 
 
 
+  @doc """
+  Some applications need to wait for certain tables to be accessible to do useful work.
+  Either hangs until all tables in table list are accessible, or until timeout is reached.
+
+  Returns `:ok` on success and `{:error, reason}` on failure.
+  If timeout is reached while waiting for tables to be ready, returns `{timeout, [table]}`.
+  """
+  @spec wait_for_tables([name()], number()) :: :ok | {:error, any} | {number, [name()]}
+  def wait_for_tables(tables, timeout \\ 5_000) do
+    for table <- tables do
+      Definition.validate_table!(table)
+    end
+
+    :wait_for_tables
+    |> Memento.Mnesia.call([tables, timeout])
+    |> Memento.Mnesia.handle_result()
+  end
+
+
 
   # Private Helpers
   # ---------------
@@ -381,4 +400,3 @@ defmodule Memento.Table do
   end
 
 end
-

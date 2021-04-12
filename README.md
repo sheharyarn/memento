@@ -251,7 +251,7 @@ function or mix task that does this for you. You can see a [sample implementatio
     - [x] Create/Delete helpers
     - [x] clear_table
     - [x] table_info
-    - [ ] wait
+    - [x] wait
     - [ ] Ecto-like DSL
     - [ ] Migration Support
  - [x] Memento.Query

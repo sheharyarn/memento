@@ -230,6 +230,20 @@ defmodule Memento.Tests.Table do
 
 
 
+  describe "#wait_for_tables" do
+    @table Tables.User
+    @timeout 5000
+
+    test "returns :ok almost immediately when table is ready" do
+      Memento.Table.create(@table)
+
+      assert Memento.Table.wait_for_tables([@table]) == :mnesia.wait_for_tables([@table], @timeout)
+    end
+  end
+
+
+
+
   describe "#clear" do
     @table Tables.User
     @key_empty :"$end_of_table"
