@@ -5,9 +5,11 @@
   </a>
 </h1>
 
+[![CI](https://github.com/sheharyarn/memento/actions/workflows/ci.yml/badge.svg?branch=master)]()
+
 <p align="center">
-  <a href="https://github.com/sheharyarn/memento/workflows">
-    <img alt="Elixir CI" src="https://github.com/evolution-gaming/memento/workflows/Elixir%20CI/badge.svg" />
+  <a href="https://github.com/sheharyarn/memento/actions/workflows/ci.yml">
+    <img alt="CI Status" src="https://github.com/sheharyarn/memento/actions/workflows/ci.yml/badge.svg" />
   </a>
   <a href="https://hexdocs.pm/memento">
     <img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=master" />
