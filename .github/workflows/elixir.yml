@@ -1,0 +1,54 @@
+name: Elixir CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix: 
+        elixir: ['1.8', '1.9', '1.10', '1.11']
+        include:
+          - elixir: '1.8'
+            otp-release: '20'
+          - elixir: '1.8'
+            otp-release: '21'
+          - elixir: '1.8'
+            otp-release: '22'
+          - elixir: '1.9'
+            otp-release: '20'
+          - elixir: '1.9'
+            otp-release: '21'
+          - elixir: '1.9'
+            otp-release: '22'
+          - elixir: '1.10'
+            otp-release: '21.0'
+          - elixir: '1.10'
+            otp-release: '22.0'
+          - elixir: '1.11'
+            otp-release: '23.0'
+      
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Elixir
+      uses: actions/setup-elixir@v1
+      with:
+        elixir-version: ${{matrix.elixir}}
+        otp-version: ${{matrix.otp-release}}
+    - name: Restore dependencies cache
+      uses: actions/cache@v2
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    - name: Install dependencies
+      run: mix deps.get
+    - name: Run tests
+      run: mix test
