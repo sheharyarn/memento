@@ -5,7 +5,6 @@
   </a>
 </h1>
 
-[![CI](https://github.com/sheharyarn/memento/actions/workflows/ci.yml/badge.svg?branch=master)]()
 
 <p align="center">
   <a href="https://github.com/sheharyarn/memento/actions/workflows/ci.yml">
