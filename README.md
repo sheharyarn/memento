@@ -16,6 +16,9 @@
   <a href="https://hex.pm/packages/memento">
     <img alt="Version" src="https://img.shields.io/hexpm/v/memento.svg" />
   </a>
+  <a href="https://hex.pm/packages/memento">
+    <img alt="Version" src="https://img.shields.io/hexpm/dt/memento.svg" />
+  </a>
   <a href="./LICENSE">
     <img alt="License" src="https://img.shields.io/hexpm/l/memento.svg" />
   </a>
