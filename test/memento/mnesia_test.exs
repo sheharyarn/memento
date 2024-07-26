@@ -51,7 +51,7 @@ defmodule Memento.Tests.Mnesia do
   describe "#handle_result" do
     test "reraises specific erlang errors as elixir exceptions" do
       assert_raise(UndefinedFunctionError, ~r/is undefined/i, result_for(fn ->
-        RandomModule.undefined_fun
+        RandomModule.undefined_fun()
       end))
     end
 

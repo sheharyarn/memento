@@ -276,7 +276,7 @@ defmodule Memento.Query do
   """
   @spec all(Table.name, options) :: list(Table.record)
   def all(table, opts \\ []) do
-    pattern = table.__info__.query_base
+    pattern = table.__info__().query_base
     lock = Keyword.get(opts, :lock, :read)
 
     :match_object
@@ -420,8 +420,10 @@ defmodule Memento.Query do
   @result [:"$_"]
   @spec select(Table.name, list(tuple) | tuple, options) :: list(Table.record)
   def select(table, guards, opts \\ []) do
-    attr_map   = table.__info__.query_map
-    match_head = table.__info__.query_base
+    info = table.__info__()
+
+    attr_map   = info.query_map
+    match_head = info.query_base
     guards     = Memento.Query.Spec.build(guards, attr_map)
 
     select_raw(table, [{ match_head, guards, @result }], opts)
@@ -491,7 +493,7 @@ defmodule Memento.Query do
   Return all records:
 
   ```
-  match_head = Movie.__info__.query_base
+  match_head = Movie.__info__().query_base
   result = [:"$_"]
   guards = []
 
@@ -674,8 +676,7 @@ defmodule Memento.Query do
 
   # Raises error if tuple size and no. of attributes is not equal
   defp validate_match_pattern!(table, pattern) do
-    same_size? =
-      (tuple_size(pattern) == table.__info__.size)
+    same_size? = (tuple_size(pattern) == table.__info__().size)
 
     unless same_size? do
       Memento.Error.raise(
