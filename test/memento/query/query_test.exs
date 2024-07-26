@@ -314,7 +314,7 @@ defmodule Memento.Tests.Query do
 
   describe "#select_raw" do
     @table Tables.Movie
-    @match_all [{ @table.__info__.query_base, [], [:"$_"] }]
+    @match_all [{ @table.__info__().query_base, [], [:"$_"] }]
 
     setup do
       Memento.Table.create(@table)
@@ -368,7 +368,7 @@ defmodule Memento.Tests.Query do
 
 
     test "Returns empty list when nothing matches and limit is non-nil" do
-      match_none = [{ @table.__info__.query_base, [{:==, :id, :invalid}], [:"$_"] }]
+      match_none = [{ @table.__info__().query_base, [{:==, :id, :invalid}], [:"$_"] }]
 
       Support.Mnesia.transaction fn ->
         assert [] = Query.select_raw(@table, match_none, limit: 5)
