@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+## v0.4.0
+
+ - Fix function warnings on recent Elixir versions
+ - Update minimum Elixir version to 1.14
+
+
+
 ## v0.3.1
 
  - [Bugfix] Convert mnesia's `:"$end_of_table"` code to empty list
