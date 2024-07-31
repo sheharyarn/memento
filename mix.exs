@@ -14,7 +14,7 @@ defmodule Memento.Mixfile do
   # mix environment to not include support modules
   # that are normally included in the `dev` environment
   #
-  #   MIX_ENV=docs hex.publish
+  #   MIX_ENV=docs mix hex.publish
   #
 
 
