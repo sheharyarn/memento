@@ -1,9 +1,9 @@
 <!-- Heading: Start -->
-<h1 align="center">
+<div align="center">
   <a href="https://hexdocs.pm/memento">
-    <img alt="Memento" src='media/logo.png' width='450px'/>
+    <img alt="Memento" src="media/logo.png" width="450px"/>
   </a>
-</h1>
+</div>
 
 
 <p align="center">

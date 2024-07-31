@@ -7,8 +7,7 @@ defmodule Memento do
   Simple + Powerful interface to the Erlang Mnesia Database.
 
 
-  See the [README](https://github.com/sheharyarn/memento) to get
-  started.
+  See the [README](https://hexdocs.pm/memento) to get started.
   """
 
 

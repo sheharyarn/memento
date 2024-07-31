@@ -27,17 +27,9 @@ defmodule Memento.Mixfile do
       description:   description(),
       package:       package(),
       deps:          deps(),
+      docs:          docs(),
       elixirc_paths: elixirc_paths(Mix.env),
-
-      # ExDoc
-      name:         @name,
-      source_url:   @github,
-      homepage_url: @github,
-      docs: [
-        main:       @name,
-        canonical:  "https://hexdocs.pm/#{@app}",
-        extras:     ["README.md"]
-      ]
+      homepage_url:  @github,
     ]
   end
 
@@ -76,8 +68,28 @@ defmodule Memento.Mixfile do
       name: @app,
       maintainers: [@author],
       licenses: [@license],
-      files: ~w(mix.exs lib README.md),
-      links: %{"Github" => @github}
+      files: ~w(mix.exs lib README.md CHANGELOG.md),
+      links: %{"GitHub" => @github}
+    ]
+  end
+
+
+  # ExDoc
+  defp docs do
+    [
+      name: @name,
+      main: "readme",
+      source_url: @github,
+      source_ref: "v#{@version}",
+      canonical: "https://hexdocs.pm/#{@app}",
+      extras: [
+        {"README.md", title: @name},
+        "CHANGELOG.md",
+        "LICENSE"
+      ],
+      assets: %{
+        "media" => "media"
+      }
     ]
   end
 end
