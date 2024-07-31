@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+## v0.4.1
+
+ - Patch release to fix hex publish issues
+ - No functional changes in code
+
+
+
 ## v0.4.0
 
  - Fix function warnings on recent Elixir versions
