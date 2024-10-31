@@ -33,12 +33,8 @@ defmodule Memento.Query.Data do
   ```
   """
 
-
-
-
   # Public API
   # ----------
-
 
   @doc """
   Convert Mnesia data tuple into Memento Table struct.
@@ -51,7 +47,7 @@ defmodule Memento.Query.Data do
   table's attributes and convert it into a struct of the Memento
   table you defined.
   """
-  @spec load(tuple) :: Memento.Table.record
+  @spec load(tuple) :: Memento.Table.record()
   def load(data) when is_tuple(data) do
     [table | values] =
       Tuple.to_list(data)
@@ -64,9 +60,6 @@ defmodule Memento.Query.Data do
     struct(table, values)
   end
 
-
-
-
   @doc """
   Convert Memento Table struct into Mnesia data tuple.
 
@@ -75,15 +68,13 @@ defmodule Memento.Query.Data do
   table definition, and this will convert it into a tuple
   representing an Mnesia record.
   """
-  @spec dump(Memento.Table.record) :: tuple
+  @spec dump(Memento.Table.record()) :: tuple
   def dump(data = %{__struct__: table}) do
     values =
       table.__info__()
       |> Map.get(:attributes)
       |> Enum.map(&Map.get(data, &1))
 
-    List.to_tuple([ table | values ])
+    List.to_tuple([table | values])
   end
-
-
 end

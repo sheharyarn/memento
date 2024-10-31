@@ -2,14 +2,12 @@ defmodule Memento.Tests.Error do
   use Memento.Support.Case, async: true
   require Memento.Error
 
-
   describe "#raise" do
     test "raises error with default message" do
       assert_raise(Memento.Error, "Operation Failed", fn ->
-        Memento.Error.raise
+        Memento.Error.raise()
       end)
     end
-
 
     @message "Something Happened"
     test "raises error with given message" do
@@ -18,8 +16,6 @@ defmodule Memento.Tests.Error do
       end)
     end
   end
-
-
 
   describe "#raise_from_code" do
     # Testing just one code here. The rest should also work if all the
@@ -33,28 +29,22 @@ defmodule Memento.Tests.Error do
     end
   end
 
-
-
   describe "#normalize" do
     test "resolves to AlreadyExistsError for :already_exists" do
       assert %Memento.AlreadyExistsError{} = Memento.Error.normalize({:already_exists, X})
     end
 
-
     test "resolves to DoesNotExistError for :no_exists" do
       assert %Memento.DoesNotExistError{} = Memento.Error.normalize({:no_exists, X})
     end
-
 
     test "resolves to NoTransactionError for :no_transaction" do
       assert %Memento.NoTransactionError{} = Memento.Error.normalize(:no_transaction)
     end
 
-
     test "resolves to InvalidOperationError for :autoincrement" do
       assert %Memento.InvalidOperationError{} = Memento.Error.normalize({:autoincrement, "blah blah"})
     end
-
 
     @rest_of_mnesia_errors ~w[
       nested_transaction bad_arg combine_error bad_index index_exists
@@ -67,5 +57,4 @@ defmodule Memento.Tests.Error do
       end)
     end
   end
-
 end

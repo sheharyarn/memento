@@ -7,7 +7,6 @@ defmodule Memento.Query do
   alias Memento.Table
   alias Memento.Table.Definition
 
-
   @moduledoc """
   Module to read/write from Memento Tables.
 
@@ -89,13 +88,8 @@ defmodule Memento.Query do
   ```
   """
 
-
-
-
-
   # Type Definitions
   # ----------------
-
 
   @typedoc """
   Option Keyword that can be passed to some methods.
@@ -124,12 +118,10 @@ defmodule Memento.Query do
   and its value defaults to `true`.
   """
   @type options :: [
-    lock: lock,
-    limit: non_neg_integer,
-    coerce: boolean,
-  ]
-
-
+          lock: lock,
+          limit: non_neg_integer,
+          coerce: boolean
+        ]
 
   @typedoc """
   Types of locks that can be acquired.
@@ -166,13 +158,8 @@ defmodule Memento.Query do
   """
   @type lock :: :read | :write | :sticky_write
 
-
-
-
-
   # Public API
   # ----------
-
 
   @doc """
   Finds the Memento record for the given id in the specified table.
@@ -201,17 +188,15 @@ defmodule Memento.Query do
   # => nil
   ```
   """
-  @spec read(Table.name, any, options) :: Table.record | nil
+  @spec read(Table.name(), any, options) :: Table.record() | nil
   def read(table, id, opts \\ []) do
     lock = Keyword.get(opts, :lock, :read)
+
     case Mnesia.call(:read, [table, id, lock]) do
-      []           -> nil
+      [] -> nil
       [record | _] -> Query.Data.load(record)
     end
   end
-
-
-
 
   @doc """
   Writes a Memento record to its Mnesia table.
@@ -245,20 +230,17 @@ defmodule Memento.Query do
   # => %Blog.Author{username: "sye", ... }
   ```
   """
-  @spec write(Table.record, options) :: Table.record | no_return
+  @spec write(Table.record(), options) :: Table.record() | no_return
   def write(record = %{__struct__: table}, opts \\ []) do
     struct = prepare_record_for_write!(table, record)
-    tuple  = Query.Data.dump(struct)
-    lock   = Keyword.get(opts, :lock, :write)
+    tuple = Query.Data.dump(struct)
+    lock = Keyword.get(opts, :lock, :write)
 
     case Mnesia.call(:write, [table, tuple, lock]) do
-      :ok  -> struct
+      :ok -> struct
       term -> term
     end
   end
-
-
-
 
   @doc """
   Returns all records of a Table.
@@ -274,7 +256,7 @@ defmodule Memento.Query do
   Memento.Query.match(Movie, {:_, :_, :_, :_})
   ```
   """
-  @spec all(Table.name, options) :: list(Table.record)
+  @spec all(Table.name(), options) :: list(Table.record())
   def all(table, opts \\ []) do
     pattern = table.__info__().query_base
     lock = Keyword.get(opts, :lock, :read)
@@ -283,9 +265,6 @@ defmodule Memento.Query do
     |> Mnesia.call([table, pattern, lock])
     |> coerce_records
   end
-
-
-
 
   @doc """
   Returns all records in a table that match the specified pattern.
@@ -329,7 +308,7 @@ defmodule Memento.Query do
   Memento.Query.match(Movie, {:_, :_, :_, :_, :_})
   ```
   """
-  @spec match(Table.name, tuple, options) :: list(Table.record) | no_return
+  @spec match(Table.name(), tuple, options) :: list(Table.record()) | no_return
   def match(table, pattern, opts \\ []) when is_tuple(pattern) do
     validate_match_pattern!(table, pattern)
     lock = Keyword.get(opts, :lock, :read)
@@ -342,9 +321,6 @@ defmodule Memento.Query do
     |> Mnesia.call([table, pattern, lock])
     |> coerce_records
   end
-
-
-
 
   @doc """
   Return all records matching the given query.
@@ -418,19 +394,16 @@ defmodule Memento.Query do
   ```
   """
   @result [:"$_"]
-  @spec select(Table.name, list(tuple) | tuple, options) :: list(Table.record)
+  @spec select(Table.name(), list(tuple) | tuple, options) :: list(Table.record())
   def select(table, guards, opts \\ []) do
     info = table.__info__()
 
-    attr_map   = info.query_map
+    attr_map = info.query_map
     match_head = info.query_base
-    guards     = Memento.Query.Spec.build(guards, attr_map)
+    guards = Memento.Query.Spec.build(guards, attr_map)
 
-    select_raw(table, [{ match_head, guards, @result }], opts)
+    select_raw(table, [{match_head, guards, @result}], opts)
   end
-
-
-
 
   @doc """
   Returns all records in the given table according to the full Erlang
@@ -564,17 +537,17 @@ defmodule Memento.Query do
   See the [`Match Specification`](http://erlang.org/doc/apps/erts/match_spec.html)
   docs, `:mnesia.select/2` and `:ets.select/2` more details and examples.
   """
-  @spec select_raw(Table.name, term, options) :: list(Table.record) | list(term)
+  @spec select_raw(Table.name(), term, options) :: list(Table.record()) | list(term)
   def select_raw(table, match_spec, opts \\ []) do
     # Default options
-    lock   = Keyword.get(opts, :lock, :read)
-    limit  = Keyword.get(opts, :limit, nil)
+    lock = Keyword.get(opts, :lock, :read)
+    limit = Keyword.get(opts, :limit, nil)
     coerce = Keyword.get(opts, :coerce, true)
 
     # Use select/4 if there is limit, otherwise use select/3
     args =
       case limit do
-        nil   -> [table, match_spec, lock]
+        nil -> [table, match_spec, lock]
         limit -> [table, match_spec, limit, lock]
       end
 
@@ -583,13 +556,10 @@ defmodule Memento.Query do
 
     # Coerce result conversion if `coerce: true`
     case coerce do
-      true  -> coerce_records(result)
+      true -> coerce_records(result)
       false -> result
     end
   end
-
-
-
 
   @doc """
   Delete a Record in the given table for the specified key.
@@ -609,15 +579,12 @@ defmodule Memento.Query do
   Memento.Query.delete(Blog.Post, 10)
   ```
   """
-  @spec delete(Table.name, term, options) :: :ok
+  @spec delete(Table.name(), term, options) :: :ok
   def delete(table, key, opts \\ []) do
     lock = Keyword.get(opts, :lock, :write)
 
     Mnesia.call(:delete, [table, key, lock])
   end
-
-
-
 
   @doc """
   Delete the given Memento record object.
@@ -645,7 +612,7 @@ defmodule Memento.Query do
   Memento.Query.delete_record(email_record)
   ```
   """
-  @spec delete_record(Table.record, options) :: :ok
+  @spec delete_record(Table.record(), options) :: :ok
   def delete_record(record = %{__struct__: table}, opts \\ []) do
     record = Query.Data.dump(record)
     lock = Keyword.get(opts, :lock, :write)
@@ -653,13 +620,8 @@ defmodule Memento.Query do
     Mnesia.call(:delete_object, [table, record, lock])
   end
 
-
-
-
-
   # Private Helpers
   # ---------------
-
 
   # Coerce results when is simple list or tuple
   defp coerce_records(records) when is_list(records) do
@@ -673,25 +635,21 @@ defmodule Memento.Query do
 
   defp coerce_records(:"$end_of_table"), do: []
 
-
   # Raises error if tuple size and no. of attributes is not equal
   defp validate_match_pattern!(table, pattern) do
-    same_size? = (tuple_size(pattern) == table.__info__().size)
+    same_size? = tuple_size(pattern) == table.__info__().size
 
     unless same_size? do
-      Memento.Error.raise(
-        "Match Pattern length is not equal to the no. of attributes"
-      )
+      Memento.Error.raise("Match Pattern length is not equal to the no. of attributes")
     end
   end
-
 
   # Ensures that a record has a primary key present if autoincrement
   # has been enabled, before it can be written
   defp prepare_record_for_write!(table, record) do
-    info     = table.__info__()
+    info = table.__info__()
     autoinc? = Definition.has_autoincrement?(table)
-    primary  = Map.get(record, info.primary_key)
+    primary = Map.get(record, info.primary_key)
 
     cond do
       # If primary key is specified, don't do anything to the record
@@ -707,12 +665,9 @@ defmodule Memento.Query do
       # If primary key is not specified and there is no autoincrement
       # enabled either, raise an error
       is_nil(primary) ->
-        Memento.Error.raise(
-          "Memento records cannot have a nil primary key unless autoincrement is enabled"
-        )
+        Memento.Error.raise("Memento records cannot have a nil primary key unless autoincrement is enabled")
     end
   end
-
 
   # Get the next numeric key (for ordered sets w/ autoincrement)
   #
@@ -725,7 +680,7 @@ defmodule Memento.Query do
   # counter, so a key that was used for a previously deleted
   # record is not used again (like SQL)?
   @default_value 0
-  @increment_by  1
+  @increment_by 1
   defp autoincrement_key_for(table) do
     :all_keys
     |> Mnesia.call([table])
@@ -733,5 +688,4 @@ defmodule Memento.Query do
     |> Enum.max(fn -> @default_value end)
     |> Kernel.+(@increment_by)
   end
-
 end
