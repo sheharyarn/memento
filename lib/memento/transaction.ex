@@ -56,7 +56,7 @@ defmodule Memento.Transaction do
   `{:ok, result}` or `{:error, reason}`. Also see
   `:mnesia.transaction/2`.
   """
-  @spec execute(fun, retries) :: {:ok, any} | {:error, any}
+  @spec execute(fun, retries) :: :ok | {:ok, any} | {:error, any}
   def execute(function, retries \\ :infinity) do
     :transaction
     |> Memento.Mnesia.call_and_catch([function, retries])

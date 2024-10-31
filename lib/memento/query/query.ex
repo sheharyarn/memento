@@ -191,10 +191,11 @@ defmodule Memento.Query do
   @spec read(Table.name(), any, options) :: Table.record() | nil
   def read(table, id, opts \\ []) do
     lock = Keyword.get(opts, :lock, :read)
+    coerce? = Keyword.get(opts, :coerce, true)
 
     case Mnesia.call(:read, [table, id, lock]) do
       [] -> nil
-      [record | _] -> Query.Data.load(record)
+      [record | _] -> if coerce?, do: Query.Data.load(record), else: record
     end
   end
 
@@ -394,7 +395,8 @@ defmodule Memento.Query do
   ```
   """
   @result [:"$_"]
-  @spec select(Table.name(), list(tuple) | tuple, options) :: list(Table.record())
+  @spec select(Table.name(), list(tuple) | tuple, options) ::
+          list(Table.record()) | list(tuple()) | {list(term()), :ets.continuation()} | :"$end_of_table"
   def select(table, guards, opts \\ []) do
     info = table.__info__()
 
@@ -537,7 +539,8 @@ defmodule Memento.Query do
   See the [`Match Specification`](http://erlang.org/doc/apps/erts/match_spec.html)
   docs, `:mnesia.select/2` and `:ets.select/2` more details and examples.
   """
-  @spec select_raw(Table.name(), term, options) :: list(Table.record()) | list(term)
+  @spec select_raw(Table.name(), term, options) ::
+          list(Table.record()) | list(term) | {list(term), :ets.continuation()} | :"$end_of_table"
   def select_raw(table, match_spec, opts \\ []) do
     # Default options
     lock = Keyword.get(opts, :lock, :read)
