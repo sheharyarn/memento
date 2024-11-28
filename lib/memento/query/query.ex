@@ -158,6 +158,20 @@ defmodule Memento.Query do
   """
   @type lock :: :read | :write | :sticky_write
 
+  @typedoc """
+  When using `select_raw`, values from Memento tables, the results can come in
+  several shapes depending on which options are given.
+
+  - if no `limit` is given, you will get a list of:
+    - your table's struct for each matched row, if `coerce: true`.
+    - a list of terms as specified by the given match spec, and `coerce: false`.
+  - if a `limit` is given, results may be returned as:
+      - `{list(term), continuation}`, where `continuation` is an opaque value
+        that can be given to `select_continue` to select more results.
+      - `:"$end_of_table"`, indicating there are no more results to read.
+  """
+  @type query_result :: list(Table.record()) | list(term) | {list(term), :ets.continuation()} | :"$end_of_table"
+
   # Public API
   # ----------
 
@@ -264,7 +278,7 @@ defmodule Memento.Query do
 
     :match_object
     |> Mnesia.call([table, pattern, lock])
-    |> coerce_records
+    |> parse_result(Keyword.get(opts, :coerce, false))
   end
 
   @doc """
@@ -320,7 +334,7 @@ defmodule Memento.Query do
 
     :match_object
     |> Mnesia.call([table, pattern, lock])
-    |> coerce_records
+    |> parse_result(Keyword.get(opts, :coerce, false))
   end
 
   @doc """
@@ -539,8 +553,7 @@ defmodule Memento.Query do
   See the [`Match Specification`](http://erlang.org/doc/apps/erts/match_spec.html)
   docs, `:mnesia.select/2` and `:ets.select/2` more details and examples.
   """
-  @spec select_raw(Table.name(), term, options) ::
-          list(Table.record()) | list(term) | {list(term), :ets.continuation()} | :"$end_of_table"
+  @spec select_raw(Table.name(), term, options) :: query_result()
   def select_raw(table, match_spec, opts \\ []) do
     # Default options
     lock = Keyword.get(opts, :lock, :read)
@@ -558,10 +571,17 @@ defmodule Memento.Query do
     result = Mnesia.call(:select, args)
 
     # Coerce result conversion if `coerce: true`
-    case coerce do
-      true -> coerce_records(result)
-      false -> result
-    end
+    parse_result(result, coerce)
+  end
+
+  def select_continue(:"$end_of_table", _opts), do: :"$end_of_table"
+
+  def select_continue(continuation, opts) do
+    coerce = Keyword.get(opts, :coerce, true)
+
+    :select
+    |> Mnesia.call([continuation])
+    |> parse_result(coerce)
   end
 
   @doc """
@@ -626,17 +646,19 @@ defmodule Memento.Query do
   # Private Helpers
   # ---------------
 
-  # Coerce results when is simple list or tuple
-  defp coerce_records(records) when is_list(records) do
-    Enum.map(records, &Query.Data.load/1)
+  defp parse_result(records, coerce?) when is_list(records) do
+    if coerce?, do: Enum.map(records, &Query.Data.load/1), else: records
   end
 
-  defp coerce_records({records, _term}) when is_list(records) do
-    # TODO: Use this {coerce_records(records), term}
-    coerce_records(records)
+  defp parse_result({records, :"$end_of_table"}, coerce?) do
+    parse_result(records, coerce?)
   end
 
-  defp coerce_records(:"$end_of_table"), do: []
+  defp parse_result({records, cont}, coerce?) do
+    {parse_result(records, coerce?), cont}
+  end
+
+  defp parse_result(:"$end_of_table", _coerce?), do: []
 
   # Raises error if tuple size and no. of attributes is not equal
   defp validate_match_pattern!(table, pattern) do
