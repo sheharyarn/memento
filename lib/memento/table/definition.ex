@@ -42,7 +42,7 @@ defmodule Memento.Table.Definition do
     attributes =
       attributes
       |> Enum.count
-      |> Range.new(1)
+      |> Range.new(1, -1)
       |> Enum.reverse
       |> Enum.map(&:"$#{&1}")
 
