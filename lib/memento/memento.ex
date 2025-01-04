@@ -2,7 +2,6 @@ defmodule Memento do
   require Memento.Mnesia
   require Memento.Error
 
-
   @moduledoc """
   Simple + Powerful interface to the Erlang Mnesia Database.
 
@@ -10,12 +9,8 @@ defmodule Memento do
   See the [README](https://hexdocs.pm/memento) to get started.
   """
 
-
-
-
   # Public API
   # ----------
-
 
   @doc """
   Start the Memento Application.
@@ -28,9 +23,6 @@ defmodule Memento do
     Application.start(:mnesia)
   end
 
-
-
-
   @doc """
   Stop the Memento Application.
   """
@@ -38,9 +30,6 @@ defmodule Memento do
   def stop do
     Application.stop(:mnesia)
   end
-
-
-
 
   @doc """
   Tells Memento about other nodes running Memento/Mnesia.
@@ -66,15 +55,12 @@ defmodule Memento do
   def add_nodes(nodes) do
     nodes = List.wrap(nodes)
 
-    if Enum.any?(nodes, & !is_atom(&1)) do
+    if Enum.any?(nodes, &(!is_atom(&1))) do
       Memento.Error.raise("Invalid Node list passed")
     end
 
     Memento.Mnesia.call(:change_config, [:extra_db_nodes, nodes])
   end
-
-
-
 
   @doc """
   Prints `:mnesia` information to console.
@@ -83,9 +69,6 @@ defmodule Memento do
   def info do
     Memento.Mnesia.call(:info, [])
   end
-
-
-
 
   @doc """
   Returns all information about the Mnesia system.
@@ -100,15 +83,11 @@ defmodule Memento do
     Memento.Mnesia.call(:system_info, [key])
   end
 
-
-
-
   # Delegates
 
-  defdelegate wait(tables),          to: Memento.Table
+  defdelegate wait(tables), to: Memento.Table
   defdelegate wait(tables, timeout), to: Memento.Table
 
-  defdelegate transaction(fun),      to: Memento.Transaction,  as: :execute
-  defdelegate transaction!(fun),     to: Memento.Transaction,  as: :execute!
-
+  defdelegate transaction(fun), to: Memento.Transaction, as: :execute
+  defdelegate transaction!(fun), to: Memento.Transaction, as: :execute!
 end
