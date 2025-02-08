@@ -3,6 +3,7 @@ defmodule Memento.TransactionAborted do
 
   @moduledoc false
 
+
   # Raise a Memento.TransactionAborted
   defmacro raise(reason) do
     quote(bind_quoted: [reason: reason]) do
@@ -10,4 +11,6 @@ defmodule Memento.TransactionAborted do
         message: "Transaction aborted with: #{inspect(reason)}"
     end
   end
+
 end
+

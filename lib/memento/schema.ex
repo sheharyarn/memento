@@ -1,6 +1,7 @@
 defmodule Memento.Schema do
   require Memento.Mnesia
 
+
   @moduledoc """
   Module to interact with the database schema.
 
@@ -42,8 +43,13 @@ defmodule Memento.Schema do
 
   """
 
+
+
+
+
   # Public API
   # ----------
+
 
   @doc """
   Creates a new database on disk on the specified nodes.
@@ -65,6 +71,9 @@ defmodule Memento.Schema do
     |> Memento.Mnesia.handle_result()
   end
 
+
+
+
   @doc """
   Deletes the database previously created by `create/1` on the specified
   nodes.
@@ -79,6 +88,9 @@ defmodule Memento.Schema do
     |> Memento.Mnesia.handle_result()
   end
 
+
+
+
   @doc """
   Prints schema information about all Tables to the console.
   """
@@ -89,15 +101,21 @@ defmodule Memento.Schema do
     |> Memento.Mnesia.handle_result()
   end
 
+
+
+
   @doc """
   Prints schema information about the specified Table to the console.
   """
-  @spec info(Memento.Table.name()) :: :ok
+  @spec info(Memento.Table.name) :: :ok
   def info(table) do
     :schema
     |> Memento.Mnesia.call_and_catch([table])
     |> Memento.Mnesia.handle_result()
   end
+
+
+
 
   @doc """
   Sets the schema storage mode for the specified node.
@@ -121,8 +139,9 @@ defmodule Memento.Schema do
   Memento.Schema.set_storage_type(:node@host, :disc_copies)
   ```
   """
-  @spec set_storage_type(node, Memento.Table.storage_type()) :: :ok | {:error, any}
+  @spec set_storage_type(node, Memento.Table.storage_type) :: :ok | {:error, any}
   def set_storage_type(node, type) do
     Memento.Table.set_storage_type(:schema, node, type)
   end
+
 end

@@ -1,6 +1,7 @@
 defmodule Memento.Tests.Memento do
   use Memento.Support.Case
 
+
   describe "#add_nodes" do
     test "raises error when an atom is not passed" do
       assert_raise(Memento.Error, ~r/invalid node list/i, fn ->
@@ -12,8 +13,10 @@ defmodule Memento.Tests.Memento do
       end)
     end
 
+
     test "returns ok for valid atom list" do
       assert {:ok, []} = Memento.add_nodes(:nonexistent_node@host)
     end
   end
+
 end

@@ -4,6 +4,7 @@ defmodule Memento.Tests.Error.MnesiaException do
   alias Memento.MnesiaException
   require MnesiaException
 
+
   describe "#build" do
     @error :hello
     @message ":hello"
@@ -19,6 +20,7 @@ defmodule Memento.Tests.Error.MnesiaException do
         raise MnesiaException.build(@error)
       end)
     end
+
 
     test "parses the underlying message in error tuples" do
       error_tuple = {:error, {:some, :message}}
@@ -36,4 +38,6 @@ defmodule Memento.Tests.Error.MnesiaException do
       end)
     end
   end
+
 end
+

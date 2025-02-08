@@ -3,6 +3,7 @@ defmodule Memento.Transaction do
   require Memento.Error
   require Memento.TransactionAborted
 
+
   @moduledoc """
   Memento's wrapper around Mnesia transactions. This module exports
   methods `execute/2` and `execute_sync/2`, and their bang versions,
@@ -40,14 +41,22 @@ defmodule Memento.Transaction do
   ```
   """
 
+
+
+
   # Type Definitions
   # ----------------
 
   @typedoc "Maximum no. of retries for a transaction"
   @type retries :: :infinity | non_neg_integer
 
+
+
+
+
   # Public API
   # ----------
+
 
   @doc """
   Execute passed function as part of an Mnesia transaction.
@@ -60,8 +69,11 @@ defmodule Memento.Transaction do
   def execute(function, retries \\ :infinity) do
     :transaction
     |> Memento.Mnesia.call_and_catch([function, retries])
-    |> Memento.Mnesia.handle_result()
+    |> Memento.Mnesia.handle_result
   end
+
+
+
 
   @doc """
   Same as `execute/2` but returns the result or raises an error.
@@ -72,6 +84,9 @@ defmodule Memento.Transaction do
     |> execute(retries)
     |> handle_result
   end
+
+
+
 
   @doc """
   Execute the transaction in synchronization with all nodes.
@@ -88,8 +103,11 @@ defmodule Memento.Transaction do
   def execute_sync(function, retries \\ :infinity) do
     :sync_transaction
     |> Memento.Mnesia.call_and_catch([function, retries])
-    |> Memento.Mnesia.handle_result()
+    |> Memento.Mnesia.handle_result
   end
+
+
+
 
   @doc """
   Same as `execute_sync/2` but returns the result or raises an error.
@@ -101,6 +119,9 @@ defmodule Memento.Transaction do
     |> handle_result
   end
 
+
+
+
   @doc """
   Checks if you are inside a transaction.
   """
@@ -108,6 +129,9 @@ defmodule Memento.Transaction do
   def inside? do
     Memento.Mnesia.call(:is_transaction)
   end
+
+
+
 
   @doc """
   Aborts a Memento transaction.
@@ -131,8 +155,13 @@ defmodule Memento.Transaction do
     end
   end
 
+
+
+
+
   # Private Helpers
   # ---------------
+
 
   # Handle Transaction Results. The 'result' should already
   # be 'handled' by the `Memento.Mnesia` module before this
@@ -146,10 +175,12 @@ defmodule Memento.Transaction do
         Memento.TransactionAborted.raise(reason)
 
       {:error, reason} ->
-        Memento.Error.raise("Transaction Failed with: #{inspect(reason)}")
+        Memento.Error.raise "Transaction Failed with: #{inspect(reason)}"
 
       term ->
         term
     end
   end
+
+
 end

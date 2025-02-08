@@ -4,6 +4,8 @@ defmodule Memento.Table do
   require Memento.Error
   require Memento.Mnesia
 
+
+
   @moduledoc """
   Defines a Memento Table schema for Mnesia
 
@@ -68,8 +70,13 @@ defmodule Memento.Table do
   ```
   """
 
+
+
+
+
   # Type Definitions
   # ----------------
+
 
   @typedoc "A Memento.Table module"
   @type name :: module()
@@ -80,8 +87,13 @@ defmodule Memento.Table do
   @typedoc "Table storage/copy type"
   @type storage_type :: :ram_copies | :disc_copies | :disc_only_copies
 
+
+
+
+
   # Callbacks
   # ---------
+
 
   @doc """
   Returns Table definition information.
@@ -92,8 +104,13 @@ defmodule Memento.Table do
   """
   @callback __info__() :: map()
 
+
+
+
+
   # Use Macro
   # ---------
+
 
   @doc false
   defmacro __using__(opts) do
@@ -104,21 +121,21 @@ defmodule Memento.Table do
       Definition.validate_options!(opts)
 
       @table_attrs Keyword.get(opts, :attributes)
-      @table_type Keyword.get(opts, :type, :set)
-      @table_opts Definition.build_options(opts)
+      @table_type  Keyword.get(opts, :type, :set)
+      @table_opts  Definition.build_options(opts)
 
-      @query_map Definition.build_map(@table_attrs)
-      @query_base Definition.build_base(__MODULE__, @table_attrs)
+      @query_map   Definition.build_map(@table_attrs)
+      @query_base  Definition.build_base(__MODULE__, @table_attrs)
 
       @info %{
-        meta: Memento.Table,
-        type: @table_type,
-        attributes: @table_attrs,
-        options: @table_opts,
-        query_base: @query_base,
-        query_map: @query_map,
-        primary_key: hd(@table_attrs),
-        size: length(@table_attrs)
+        meta:         Memento.Table,
+        type:         @table_type,
+        attributes:   @table_attrs,
+        options:      @table_opts,
+        query_base:   @query_base,
+        query_map:    @query_map,
+        primary_key:  hd(@table_attrs),
+        size:         length(@table_attrs),
       }
 
       defstruct Definition.struct_fields(@table_attrs)
@@ -126,8 +143,13 @@ defmodule Memento.Table do
     end
   end
 
+
+
+
+
   # Public API
   # ----------
+
 
   @doc """
   Creates a Memento Table for Mnesia.
@@ -141,7 +163,7 @@ defmodule Memento.Table do
   all options specified in the definition except `:attributes`.  See
   `:mnesia.create_table/2` for all available options.
   """
-  @spec create(name, Keyword.t()) :: :ok | {:error, any}
+  @spec create(name, Keyword.t) :: :ok | {:error, any}
   def create(table, opts \\ []) do
     Definition.validate_table!(table)
 
@@ -153,9 +175,10 @@ defmodule Memento.Table do
     type = info.type
     auto = Keyword.get(opts.memento, :autoincrement, false)
 
+
     cond do
       # Return error if autoincrement is used without ordered_set
-      auto && type != :ordered_set ->
+      auto && (type != :ordered_set) ->
         {:error, {:autoincrement, "can only be used with :ordered_set"}}
 
       # Else create the Table
@@ -165,17 +188,23 @@ defmodule Memento.Table do
 
         :create_table
         |> Memento.Mnesia.call([table, mnesia_opts])
-        |> Memento.Mnesia.handle_result()
+        |> Memento.Mnesia.handle_result
     end
   end
 
+
+
+
   @doc "Same as `create/2`, but raises error on failure."
-  @spec create!(name, Keyword.t()) :: :ok | no_return
+  @spec create!(name, Keyword.t) :: :ok | no_return
   def create!(table, opts \\ []) do
     table
     |> create(opts)
     |> handle_for_bang!()
   end
+
+
+
 
   @doc """
   Deletes a Memento Table for Mnesia.
@@ -191,6 +220,9 @@ defmodule Memento.Table do
     |> Memento.Mnesia.handle_result()
   end
 
+
+
+
   @doc "Same as `delete/1`, but raises error on failure."
   @spec delete!(name) :: :ok | no_return
   def delete!(table) do
@@ -198,6 +230,9 @@ defmodule Memento.Table do
     |> delete()
     |> handle_for_bang!()
   end
+
+
+
 
   @doc """
   Makes a copy of a table at the given node.
@@ -225,6 +260,9 @@ defmodule Memento.Table do
     |> Memento.Mnesia.handle_result()
   end
 
+
+
+
   @doc """
   Deletes the replica of a table on the specified node.
 
@@ -241,6 +279,9 @@ defmodule Memento.Table do
     |> Memento.Mnesia.call_and_catch([table, node])
     |> Memento.Mnesia.handle_result()
   end
+
+
+
 
   @doc """
   Moves a table's copy from one node to the other.
@@ -261,6 +302,9 @@ defmodule Memento.Table do
     |> Memento.Mnesia.call_and_catch([table, node_from, node_to])
     |> Memento.Mnesia.handle_result()
   end
+
+
+
 
   @doc """
   Sets the storage type of a table for the specified node.
@@ -289,6 +333,9 @@ defmodule Memento.Table do
     |> Memento.Mnesia.handle_result()
   end
 
+
+
+
   @doc """
   Returns all table information.
 
@@ -301,6 +348,9 @@ defmodule Memento.Table do
     Definition.validate_table!(table)
     Memento.Mnesia.call(:table_info, [table, key])
   end
+
+
+
 
   @doc """
   Deletes all entries in the given Memento Table.
@@ -315,6 +365,9 @@ defmodule Memento.Table do
     |> Memento.Mnesia.call([table])
     |> Memento.Mnesia.handle_result()
   end
+
+
+
 
   @doc """
   Wait until specified tables are ready.
@@ -349,13 +402,19 @@ defmodule Memento.Table do
     Memento.Mnesia.call(:wait_for_tables, [tables, timeout])
   end
 
+
+
+
+
   # Private Helpers
   # ---------------
 
+
   # Handle Result for Bang Methods
   defp handle_for_bang!(:ok), do: :ok
-
   defp handle_for_bang!(error) do
     Memento.Error.raise_from_code(error)
   end
+
 end
+
