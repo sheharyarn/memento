@@ -358,7 +358,7 @@ defmodule Memento.Tests.Query do
 
     test "Returns just the records when limit is non-nil and coerce is true" do
       Support.Mnesia.transaction fn ->
-        records = Query.select_raw(@table, @match_all, limit: 5, coerce: true)
+        {records, _cont} = Query.select_raw(@table, @match_all, limit: 5, coerce: true)
 
         assert is_list(records)
         assert length(records) == 5
@@ -372,6 +372,33 @@ defmodule Memento.Tests.Query do
 
       Support.Mnesia.transaction fn ->
         assert [] = Query.select_raw(@table, match_none, limit: 5)
+      end
+    end
+  end
+
+  describe "#select_continue" do
+    @table Tables.Movie
+    @match_all [{ @table.__info__().query_base, [], [:"$_"] }]
+
+    setup do
+      Memento.Table.create(@table)
+      @table.seed
+    end
+
+    test "Returns the next `limit` records from the given continuation's previous select_raw" do
+      Support.Mnesia.transaction fn ->
+        {records1, cont} = Query.select_raw(@table, @match_all, limit: 5, coerce: true)
+        {records2, cont} = Query.select_continue(cont, coerce: true)
+        {records3, _cont} = Query.select_continue(cont, coerce: true)
+
+        all_records = [records1, records2, records3]
+        expected_id_ranges = [1..5, 6..10, 11..12]
+        for {records, expected_ids} <- Enum.zip(all_records, expected_id_ranges) do
+          assert is_list(records)
+          assert length(records) == Range.size(expected_ids)
+          assert [%@table{} | _rest] = records
+          assert Enum.all?(records, & &1.id in expected_ids)
+        end
       end
     end
   end

@@ -166,6 +166,8 @@ defmodule Memento.Query do
   """
   @type lock :: :read | :write | :sticky_write
 
+  @opaque continuation :: :"$end_of_table" | tuple()
+
   @typedoc """
   When using `select_raw`, values from Memento tables, the results can come in
   several shapes depending on which options are given.
@@ -178,7 +180,7 @@ defmodule Memento.Query do
         that can be given to `select_continue` to select more results.
       - `:"$end_of_table"`, indicating there are no more results to read.
   """
-  @type query_result :: list(Table.record()) | list(term) | {list(term), :ets.continuation()} | :"$end_of_table"
+  @type query_result :: list(Table.record()) | list(term) | {list(term), continuation} | :"$end_of_table"
 
 
 
@@ -295,7 +297,7 @@ defmodule Memento.Query do
 
     :match_object
     |> Mnesia.call([table, pattern, lock])
-    |> parse_result(Keyword.get(opts, :coerce, false))
+    |> parse_result(Keyword.get(opts, :coerce, true))
   end
 
 
@@ -354,7 +356,7 @@ defmodule Memento.Query do
 
     :match_object
     |> Mnesia.call([table, pattern, lock])
-    |> parse_result(Keyword.get(opts, :coerce, false))
+    |> parse_result(Keyword.get(opts, :coerce, true))
   end
 
 
@@ -433,7 +435,7 @@ defmodule Memento.Query do
   """
   @result [:"$_"]
   @spec select(Table.name, list(tuple) | tuple, options) ::
-          list(Table.record) | list(tuple) | {list(term), :ets.continuation} | :"$end_of_table"
+          list(Table.record) | list(tuple) | {list(term), continuation} | :"$end_of_table"
   def select(table, guards, opts \\ []) do
     info = table.__info__()
 
