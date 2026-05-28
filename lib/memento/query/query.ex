@@ -118,7 +118,7 @@ defmodule Memento.Query do
 
   - `coerce` - Records in Mnesia are stored in the form of a Tuple.
   This converts them into simple Memento struct records of type
-  `t:Memento.Table.record_t/0`. This is equivalent to calling
+  `t:Memento.Table.record_t_t/0`. This is equivalent to calling
   `Memento.Query.Data.load/1` on the returned records. This option is
   only available to some read methods like `select/3` & `match/3`,
   and its value defaults to `true`.
@@ -201,7 +201,7 @@ defmodule Memento.Query do
   # => nil
   ```
   """
-  @spec read(Table.name, any, options) :: Table.record | nil
+  @spec read(Table.name, any, options) :: Table.record_t | nil
   def read(table, id, opts \\ []) do
     lock = Keyword.get(opts, :lock, :read)
     case Mnesia.call(:read, [table, id, lock]) do
@@ -245,7 +245,7 @@ defmodule Memento.Query do
   # => %Blog.Author{username: "sye", ... }
   ```
   """
-  @spec write(Table.record, options) :: Table.record | no_return
+  @spec write(Table.record_t, options) :: Table.record_t | no_return
   def write(record = %{__struct__: table}, opts \\ []) do
     struct = prepare_record_for_write!(table, record)
     tuple  = Query.Data.dump(struct)
@@ -274,7 +274,7 @@ defmodule Memento.Query do
   Memento.Query.match(Movie, {:_, :_, :_, :_})
   ```
   """
-  @spec all(Table.name, options) :: list(Table.record)
+  @spec all(Table.name, options) :: list(Table.record_t)
   def all(table, opts \\ []) do
     pattern = table.__info__().query_base
     lock = Keyword.get(opts, :lock, :read)
@@ -329,7 +329,7 @@ defmodule Memento.Query do
   Memento.Query.match(Movie, {:_, :_, :_, :_, :_})
   ```
   """
-  @spec match(Table.name, tuple, options) :: list(Table.record) | no_return
+  @spec match(Table.name, tuple, options) :: list(Table.record_t) | no_return
   def match(table, pattern, opts \\ []) when is_tuple(pattern) do
     validate_match_pattern!(table, pattern)
     lock = Keyword.get(opts, :lock, :read)
@@ -418,7 +418,7 @@ defmodule Memento.Query do
   ```
   """
   @result [:"$_"]
-  @spec select(Table.name, list(tuple) | tuple, options) :: list(Table.record)
+  @spec select(Table.name, list(tuple) | tuple, options) :: list(Table.record_t)
   def select(table, guards, opts \\ []) do
     info = table.__info__()
 
@@ -564,7 +564,7 @@ defmodule Memento.Query do
   See the [`Match Specification`](http://erlang.org/doc/apps/erts/match_spec.html)
   docs, `:mnesia.select/2` and `:ets.select/2` more details and examples.
   """
-  @spec select_raw(Table.name, term, options) :: list(Table.record) | list(term)
+  @spec select_raw(Table.name, term, options) :: list(Table.record_t) | list(term)
   def select_raw(table, match_spec, opts \\ []) do
     # Default options
     lock   = Keyword.get(opts, :lock, :read)
@@ -622,7 +622,7 @@ defmodule Memento.Query do
   @doc """
   Delete the given Memento record object.
 
-  This method accepts a `t:Memento.Table.record_t/0` object and deletes
+  This method accepts a `t:Memento.Table.record_t_t/0` object and deletes
   that from its table. A complete record object needs to be specified
   for this to work. Options default to `[lock: :write]`.
 
@@ -645,7 +645,7 @@ defmodule Memento.Query do
   Memento.Query.delete_record(email_record)
   ```
   """
-  @spec delete_record(Table.record, options) :: :ok
+  @spec delete_record(Table.record_t, options) :: :ok
   def delete_record(record = %{__struct__: table}, opts \\ []) do
     record = Query.Data.dump(record)
     lock = Keyword.get(opts, :lock, :write)
