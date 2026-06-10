@@ -82,7 +82,7 @@ defmodule Memento.Table do
   @type name :: module()
 
   @typedoc "A Memento.Table record data struct"
-  @type record :: struct()
+  @type record_t :: struct()
 
   @typedoc "Table storage/copy type"
   @type storage_type :: :ram_copies | :disc_copies | :disc_only_copies
