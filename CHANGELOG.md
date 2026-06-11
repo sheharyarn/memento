@@ -2,6 +2,18 @@ Changelog
 =========
 
 
+## v0.6.0
+
+ - Fix collision with built-in `record/0` type in Elixir v1.19.0+ ([#44](https://github.com/sheharyarn/memento/pull/44)) by @matthewsinclair
+
+
+
+## v0.5.0
+
+ - Fix Range deprecation warning in Elixir v1.18.0+ ([#38](https://github.com/sheharyarn/memento/pull/38)) by @sax
+
+
+
 ## v0.4.1
 
  - Patch release to fix hex publish issues

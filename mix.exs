@@ -3,7 +3,7 @@ defmodule Memento.Mixfile do
 
   @app     :memento
   @name    "Memento"
-  @version "0.5.0"
+  @version "0.6.0"
   @github  "https://github.com/sheharyarn/#{@app}"
   @author  "Sheharyar Naseer"
   @license "MIT"
