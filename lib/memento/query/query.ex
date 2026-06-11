@@ -134,7 +134,7 @@ defmodule Memento.Query do
   @typedoc """
   Types of locks that can be acquired.
 
-  There are, in total, 3 types of locks that can be aqcuired, but
+  There are, in total, 3 types of locks that can be acquired, but
   some operations don't support all of them. The `write/2` method,
   for example, can only accept `:write` or `:sticky_write` locks.
 
