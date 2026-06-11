@@ -5,26 +5,24 @@ defmodule Memento.Support.Case do
   Default Test Case with important aliases/imports
   """
 
-
   using do
     quote do
       alias Memento.Support
       alias Memento.Support.Definitions.Tables
 
-      import Support.Mnesia, only: [
-        transaction:  1,
-        transaction!: 1,
-      ]
+      import Support.Mnesia,
+        only: [
+          transaction: 1,
+          transaction!: 1
+        ]
     end
   end
 
-
   setup tags do
     unless tags[:async] do
-      Memento.Support.Mnesia.reset
+      Memento.Support.Mnesia.reset()
     end
 
     :ok
   end
-
 end

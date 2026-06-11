@@ -9,25 +9,25 @@ defmodule Memento.MnesiaException do
   @moduledoc false
   @newline "\n   "
 
-
-
   # Build the Exception struct
   def build(error) do
     message =
-      "Mnesia operation failed" <> @newline <>
-      info(error) <> @newline <>
-      "Mnesia Error: " <> inspect(error)
+      "Mnesia operation failed" <>
+        @newline <>
+        info(error) <>
+        @newline <>
+        "Mnesia Error: " <> inspect(error)
 
     %MnesiaException{
       data: error,
-      message: message,
+      message: message
     }
   end
 
-
   # Fetch Mnesia's description of the error
   defp info({code, _, _}), do: info(code)
-  defp info({code, _}),    do: info(code)
+  defp info({code, _}), do: info(code)
+
   defp info(code) do
     desc = :mnesia.error_description(code)
 
@@ -36,5 +36,4 @@ defmodule Memento.MnesiaException do
       true -> inspect(desc)
     end
   end
-
 end
