@@ -27,7 +27,7 @@ defmodule Memento.Tests.Query.Data do
     @table RandomModule
     test "raises error for invalid memento tables" do
       assert_raise(FunctionClauseError, ~r/no .* clause matching/i, fn ->
-        Data.dump({@table, :some_id, :some_name})
+        apply(Data, :dump, [{@table, :some_id, :some_name}])
       end)
     end
   end
