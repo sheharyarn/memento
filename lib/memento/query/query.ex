@@ -118,7 +118,7 @@ defmodule Memento.Query do
 
   - `coerce` - Records in Mnesia are stored in the form of a Tuple.
   This converts them into simple Memento struct records of type
-  `t:Memento.Table.record_t_t/0`. This is equivalent to calling
+  `t:Memento.Table.record_t/0`. This is equivalent to calling
   `Memento.Query.Data.load/1` on the returned records. This option is
   only available to some read methods like `select/3` & `match/3`,
   and its value defaults to `true`.
@@ -622,7 +622,7 @@ defmodule Memento.Query do
   @doc """
   Delete the given Memento record object.
 
-  This method accepts a `t:Memento.Table.record_t_t/0` object and deletes
+  This method accepts a `t:Memento.Table.record_t/0` object and deletes
   that from its table. A complete record object needs to be specified
   for this to work. Options default to `[lock: :write]`.
 
