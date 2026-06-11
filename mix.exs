@@ -21,7 +21,7 @@ defmodule Memento.Mixfile do
       # Project
       app: @app,
       version: @version,
-      elixir: "~> 1.14",
+      elixir: "~> 1.16",
       description: description(),
       package: package(),
       deps: deps(),
