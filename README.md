@@ -17,7 +17,7 @@
     <img alt="Version" src="https://img.shields.io/hexpm/v/memento.svg" />
   </a>
   <a href="https://hex.pm/packages/memento">
-    <img alt="Version" src="https://img.shields.io/hexpm/dt/memento.svg" />
+    <img alt="Downloads" src="https://img.shields.io/hexpm/dt/memento.svg" />
   </a>
   <a href="./LICENSE">
     <img alt="License" src="https://img.shields.io/hexpm/l/memento.svg" />
@@ -242,51 +242,7 @@ function or mix task that does this for you. You can see a [sample implementatio
 
 
 
-## Roadmap
-
- - [x] Memento
-    - [x] start/stop
-    - [x] info
-    - [x] system_info
-    - [ ] Application
-    - [ ] Config Vars
- - [x] Memento.Table
-    - [x] Create/Delete helpers
-    - [x] clear_table
-    - [x] table_info
-    - [x] wait
-    - [ ] Ecto-like DSL
-    - [ ] Migration Support
- - [x] Memento.Query
-    - [x] Integration with Memento.Table
-    - [x] match/select
-    - [x] read/write/delete
-    - [ ] first/next/prev/all_keys
-    - [ ] test matchspec
-    - [ ] continue/1 for select continuations
-    - [x] autoincrement
-    - [ ] Helper use macro
- - [x] Memento.Transaction
-    - [x] Simple/Synchronous
-    - [x] Bang versions
-    - [x] inside?
-    - [x] abort
-    - [ ] Lock Helpers
- - [x] Memento.Schema
-    - [x] create/delete
-    - [x] print (schema/1)
- - [ ] Memento.Collection
-    - [ ] Easy Helpers
-    - [ ] Custom DSL
-  - [ ] Mix Tasks
-
-<br/>
-
-
-
-
 ## FAQ
-
 
 
 #### 1. Why Memento/Mnesia?
@@ -349,30 +305,28 @@ This package is available as open source under the terms of the [MIT License][li
 
 
 
+[logo]:                 media/logo.png
+[shield-version]:       https://img.shields.io/hexpm/v/memento.svg
+[shield-license]:       https://img.shields.io/hexpm/l/memento.svg
+[shield-downloads]:     https://img.shields.io/hexpm/dt/memento.svg
+[shield-travis]:        https://img.shields.io/travis/sheharyarn/memento/master.svg
+[shield-inch]:          https://inch-ci.org/github/sheharyarn/memento.svg?branch=master
 
-  [logo]:                 media/logo.png
-  [shield-version]:       https://img.shields.io/hexpm/v/memento.svg
-  [shield-license]:       https://img.shields.io/hexpm/l/memento.svg
-  [shield-downloads]:     https://img.shields.io/hexpm/dt/memento.svg
-  [shield-travis]:        https://img.shields.io/travis/sheharyarn/memento/master.svg
-  [shield-inch]:          https://inch-ci.org/github/sheharyarn/memento.svg?branch=master
+[travis-ci]:            https://travis-ci.org/sheharyarn/memento
+[inch-ci]:              https://inch-ci.org/github/sheharyarn/memento
 
-  [travis-ci]:            https://travis-ci.org/sheharyarn/memento
-  [inch-ci]:              https://inch-ci.org/github/sheharyarn/memento
+[license]:              ./LICENSE
+[mnesia]:               http://erlang.org/doc/man/mnesia.html
+[hexpm]:                https://hex.pm/packages/memento
+[imdb-memento]:         https://www.imdb.com/title/tt0209144/
+[que]:                  https://github.com/sheharyarn/que
+[amnesia]:              https://github.com/meh/amnesia
 
-  [license]:              ./LICENSE
-  [mnesia]:               http://erlang.org/doc/man/mnesia.html
-  [hexpm]:                https://hex.pm/packages/memento
-  [imdb-memento]:         https://www.imdb.com/title/tt0209144/
-  [que]:                  https://github.com/sheharyarn/que
-  [amnesia]:              https://github.com/meh/amnesia
+[docs]:                 https://hexdocs.pm/memento
+[docs-transaction]:     https://hexdocs.pm/memento/Memento.Transaction.html
+[docs-table]:           https://hexdocs.pm/memento/Memento.Table.html
+[docs-query]:           https://hexdocs.pm/memento/Memento.Query.html
+[docs-query-select]:    https://hexdocs.pm/memento/Memento.Query.html#select/3
 
-  [docs]:                 https://hexdocs.pm/memento
-  [docs-transaction]:     https://hexdocs.pm/memento/Memento.Transaction.html
-  [docs-table]:           https://hexdocs.pm/memento/Memento.Table.html
-  [docs-query]:           https://hexdocs.pm/memento/Memento.Query.html
-  [docs-query-select]:    https://hexdocs.pm/memento/Memento.Query.html#select/3
-
-  [github-fork]:          https://github.com/sheharyarn/memento/fork
-  [que-persistence]:      https://github.com/sheharyarn/que/blob/dc3764a27f8ce3e28b15a7bfafbca604fb424ecb/lib/que/persistence/mnesia/mnesia.ex#L90-L108
-
+[github-fork]:          https://github.com/sheharyarn/memento/fork
+[que-persistence]:      https://github.com/sheharyarn/que/blob/dc3764a27f8ce3e28b15a7bfafbca604fb424ecb/lib/que/persistence/mnesia/mnesia.ex#L90-L108
