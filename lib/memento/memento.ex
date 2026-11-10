@@ -3,8 +3,11 @@ defmodule Memento do
   require Memento.Error
 
   @moduledoc """
-  Simple + Powerful interface to the Erlang Mnesia Database.
+  Fast, distributed and transactional storage simplified in Elixir.
 
+  Memento is an Elixir wrapper around Mnesia that provides an idiomatic API
+  for schemas, transactions and queries while retaining compatibility with
+  the underlying Mnesia database.
 
   See the [README](https://hexdocs.pm/memento) to get started.
   """

@@ -52,7 +52,7 @@ defmodule Memento.Mixfile do
 
   # Package Description
   defp description do
-    "Simple & Powerful Elixir wrapper for the Mnesia Database"
+    "Fast, distributed and transactional storage in Elixir with Mnesia"
   end
 
   # Package Information

@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <b>Simple but Powerful Elixir interface to the Erlang Mnesia Database</b></br>
+  <b>Fast, distributed and transactional storage in Elixir.</b></br>
   <sub>Mnesia. Memento. <a href="https://www.imdb.com/title/tt0209144/">Get it?</a></sub>
 </p>
 
@@ -50,11 +50,10 @@
 
 
 
-**Memento** is an extremely easy-to-use and powerful wrapper in Elixir that makes it intuitive to work with
-[Mnesia][mnesia], the Erlang Distributed Realtime Database. The original Mnesia API in Erlang is convoluted, unorganized
-and combined with the complex `MatchSpec` and `QLC` query language, is hard to work with in Elixir, especially for
-beginners. Memento attempts to define a simple API to work with schemas, removing the majority of complexity associated
-with it.
+**Memento** is an easy-to-use Elixir wrapper around [Mnesia][mnesia], Erlang's distributed, real-time database. It provides an
+idiomatic API for defining schemas, running transactions and querying data while remaining compatible with Mnesia.
+Memento simplifies Mnesia's API and its `MatchSpec` and `QLC` query tools so you can use its distributed storage without
+taking on the underlying complexity.
 
 <br/>
 
@@ -95,7 +94,7 @@ environment (You can add `.mnesia` to your `.gitignore`):
 ```elixir
 # config/config.exs
 config :mnesia,
-  dir: '.mnesia/#{Mix.env}/#{node()}'        # Notice the single quotes
+  dir: ~c'.mnesia/#{Mix.env}/#{node()}'        # Notice the ~c sigil
 ```
 
 <br/>
@@ -156,9 +155,9 @@ Memento.transaction! fn ->
 end
 
 # => [
-#  %Blog.Author{username: :sye,     fullname: "Sheharyar Naseer"},
-#  %Blog.Author{username: :jeanne,  fullname: "Jeanne Bolding"},
-#  %Blog.Author{username: :pshore,  fullname: "Paul Shore"},
+#  %Blog.Author{username: :sye,     fullname: "Sheharyar"},
+#  %Blog.Author{username: :jeanne,  fullname: "Jeanne"},
+#  %Blog.Author{username: :pshore,  fullname: "Paul"},
 # ]
 ```
 
