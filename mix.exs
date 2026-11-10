@@ -52,7 +52,7 @@ defmodule Memento.Mixfile do
 
   # Package Description
   defp description do
-    "Fast, distributed and transactional storage in Elixir with Mnesia"
+    "Fast, distributed and transactional storage in Elixir with Mnesia 💾"
   end
 
   # Package Information
