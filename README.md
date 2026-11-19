@@ -11,7 +11,7 @@
     <img alt="CI Status" src="https://github.com/sheharyarn/memento/actions/workflows/ci.yml/badge.svg" />
   </a>
   <a href="https://hexdocs.pm/memento">
-    <img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=master" />
+    <img alt="Coverage" src="https://inch-ci.org/github/sheharyarn/memento.svg?branch=main" />
   </a>
   <a href="https://hex.pm/packages/memento">
     <img alt="Version" src="https://img.shields.io/hexpm/v/memento.svg" />
@@ -309,8 +309,8 @@ This package is available as open source under the terms of the [MIT License][li
 [shield-version]:       https://img.shields.io/hexpm/v/memento.svg
 [shield-license]:       https://img.shields.io/hexpm/l/memento.svg
 [shield-downloads]:     https://img.shields.io/hexpm/dt/memento.svg
-[shield-travis]:        https://img.shields.io/travis/sheharyarn/memento/master.svg
-[shield-inch]:          https://inch-ci.org/github/sheharyarn/memento.svg?branch=master
+[shield-travis]:        https://img.shields.io/travis/sheharyarn/memento/main.svg
+[shield-inch]:          https://inch-ci.org/github/sheharyarn/memento.svg?branch=main
 
 [travis-ci]:            https://travis-ci.org/sheharyarn/memento
 [inch-ci]:              https://inch-ci.org/github/sheharyarn/memento

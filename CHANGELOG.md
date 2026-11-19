@@ -50,5 +50,5 @@ Check the [commit history][commits].
 
 
 
-  [commits]: https://github.com/sheharyarn/memento/commits/master
+  [commits]: https://github.com/sheharyarn/memento/commits/main
 
