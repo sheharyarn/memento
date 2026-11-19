@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <b>Fast, distributed and transactional storage in Elixir.</b></br>
+  <b>Fast, distributed and transactional storage in Elixir with Mnesia.</b></br>
   <sub>Mnesia. Memento. <a href="https://www.imdb.com/title/tt0209144/">Get it?</a></sub>
 </p>
 
